@@ -1,15 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>      // auta einai dika mou
-#include <sys/file.h>                               //
-#include <sys/stat.h>                               //
-#include <sys/errno.h>                              //
-
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <limits.h>
 
-#define LINE_MAX 100        // auta einai dika mou
+// #define LINE_MAX 100        // auta einai dika mou
 
 static const char *commands[] = {"hello", "kati", "help", "kat", "trial", "try", "testing1", "testing2", "test", "less", "ls", "quit", NULL};
 
@@ -17,7 +13,6 @@ char *custom_generator(const char *text, int state)
 {
     static int list_index;      // should be static to has the same value in all iterations //
     static int len;
-    //const char *match;
 
     if(!state)
     {
@@ -25,24 +20,14 @@ char *custom_generator(const char *text, int state)
         len = strlen(text);
     }
 
-    // while (commands[list_index] != NULL)
-    // {
-    //     const char* match = commands[list_index];
-    //     list_index++;
-
-    //     if(strncmp(match, text, len) == 0)
-    //     {
-    //         return strdup(match);
-    //     }
-    // }
-
     while(commands[list_index] != NULL)
     {
         const char *match = commands[list_index];
         list_index++;
+
         if(strncmp(match, text, len) == 0)
         {
-            return strdup(match);
+            return strdup(match);   // return a pointer of copy of match //
         }
     }   
 
@@ -52,15 +37,7 @@ char *custom_generator(const char *text, int state)
 char **custom_completer(const char *text, int start, int end)
 {
     char **matches = NULL;
-    // char **matches[100][100];
     int i;
-    int matches_len = 0;
-
-    // matches = (char**) malloc(1*sizeof(char*));
-    // for(int i = 0; i < 100; i++)
-    // {
-    //     matches[i] = malloc(10*sizeof(char));
-    // }
 
     if(text == NULL || text[0] == '\0')
     {
@@ -70,17 +47,12 @@ char **custom_completer(const char *text, int start, int end)
     {
         for (i = 0; commands[i] != NULL; i++)
         {
-            if(strncmp(text, commands[i], end-start) == 0)      // if the word matches with one in array
+            if(strncmp(text, commands[i], end-start) == 0)      // if the word matches with one in array //
             {
                 // if you add matches = rl_completion_matches(commands[i], custom_generator); it does not work correct //
                 matches = rl_completion_matches(text, custom_generator);     // GNU Readline passes correct arguments on custom_generator //
-                // char *match = custom_generator(text, 0);
-                // if (match != NULL) 
-                // {
-                //     matches[matches_len] = realloc(matches, (matches_len + 2) * sizeof(char));
-                //     matches[matches_len] == match;
-                //     // matches[matches_len] = NULL;
-                // }
+
+                return matches;
             }
         }
     }
@@ -94,8 +66,6 @@ int main(int argc, char *argv[])
     char *text = NULL; // readline result //
     char *textexpansion; // readline result history expanded //
     int expansionresult;
-
-    char file_name[LINE_MAX];
 
     HIST_ENTRY **the_history_list; // readline commands history list - NULL terminated //
     char command[LINE_MAX]; // current command //
@@ -145,12 +115,6 @@ int main(int argc, char *argv[])
         }
         else if (strncmp(command, "less ", 5) == 0)
         {
-            // scanf(" %s", file_name);
-            // // sprintf()
-            // printf("it is %s\n", file_name);
-            // //sprintf(command, file_name);
-            // strcat(command, " ");
-            //strcat(command, file_name);
             system(command);
         }
         else if(strcmp(command, "ls") == 0)
