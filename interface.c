@@ -1,17 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>      // auta einai dika mou
-#include <sys/file.h>                               //
-#include <sys/stat.h>                               //
-#include <sys/errno.h>                              //
+// #include <sys/types.h>      // auta einai dika mou
+// #include <sys/file.h>                               //
+// #include <sys/stat.h>                               //
+// #include <sys/errno.h>                              //
 
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <unistd.h>
+#include "tcl.h"
+#include <limits.h>
+// #include <syscall.h>
 
-#define LINE_MAX 100        // auta einai dika mou
+// #define LINE_MAX 100        // auta einai dika mou
 
-static const char *commands[] = {"hello", "kati", "help", "kat", "trial", "try", "testing1", "testing2", "test", "less", "ls", "quit", NULL};
+static const char *commands[] = {"hello", "kati", "help", "kat", "trial", "try", "testing1", "testing2", "test", "less", "ls", "quit", "pwd", "history", NULL};
 
 char *custom_generator(const char *text, int state)
 {
@@ -97,12 +101,19 @@ int main(int argc, char *argv[])
 
     char file_name[LINE_MAX];
 
+    Tcl_Interp *interp;
+
+    interp = Tcl_CreateInterp();
+
+    Tcl_Eval(interp, "puts  \"hello from TCL\"");
+
     HIST_ENTRY **the_history_list; // readline commands history list - NULL terminated //
     char command[LINE_MAX]; // current command //
     unsigned long i;
     // Readline Initialisation //
     rl_completion_entry_function = NULL; // use rl_filename_completion_function(), the default filename completer //
     rl_attempted_completion_function = custom_completer;
+    //rl_completion_suppress_append = 1;
     rl_completion_append_character = '\0';
     using_history(); // initialise history functions //
     while (1)
@@ -126,6 +137,7 @@ int main(int argc, char *argv[])
             free(text);
         }
         // handle two basic commands: history and quit //
+        //printf("command is %d\n", strlen(command));
         if (strcmp(command, "quit") == 0)
         {
             return EXIT_SUCCESS;
@@ -146,7 +158,7 @@ int main(int argc, char *argv[])
         else if (strncmp(command, "less ", 5) == 0)
         {
             // scanf(" %s", file_name);
-            // // sprintf()
+            // // sprintf()l
             // printf("it is %s\n", file_name);
             // //sprintf(command, file_name);
             // strcat(command, " ");
@@ -156,6 +168,20 @@ int main(int argc, char *argv[])
         else if(strcmp(command, "ls") == 0)
         {
             system(command);
+        }
+        else
+        {
+            // if (Tcl_Eval(interp, command) == TCL_ERROR)
+            // {
+            //     printf("TCL ERROR\n");
+            // }
+            // else
+            // {
+                #define ANSI_COLOR_RED     "\x1b[31m"
+                Tcl_Eval(interp, command);
+
+                printf(ANSI_COLOR_RED "%s\n" ANSI_COLOR_RED "\n", Tcl_GetStringResult(interp) );
+            // }
         }
     }
 }
