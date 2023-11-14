@@ -5,15 +5,20 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <unistd.h>
-// #include "tcl.h"
 #include <tcl8.6/tcl.h>
 #include <limits.h>
 #include <syscall.h>
+
+#define ANSI_COLOR_RED     "\x1b[31m"   // define color codes to print TCL messages //
+#define ANSI_COLOR_RESET   "\x1b[0m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+
 
 static const char *commands[] = 
 {
     // system calls
     "less", "ls", "quit", "help", "man", "history", 
+
     // TCL commands
     "after", "errorInfo", "load", "re_syntax", "tcl_startOfNextWord",
     "append", "eval", "lrange", "read", "tcl_startOfPreviousWord",
@@ -57,7 +62,7 @@ char *custom_generator(const char *text, int state)
     static int list_index;      // should be static to has the same value in all iterations //
     static int len;
 
-    if(!state)
+    if(!state)      // if state is 1 it is new word //
     {
         list_index = 0;
         len = strlen(text);
@@ -70,7 +75,7 @@ char *custom_generator(const char *text, int state)
 
         if(strncmp(match, text, len) == 0)
         {
-            return strdup(match);
+            return strdup(match);   // return a copy of match //
         }
     }   
 
@@ -81,14 +86,50 @@ char **custom_completer(const char *text, int start, int end)
 {
     char **matches = NULL;
 
-    /* If this word is at the start of the line, then it is a command
-    to complete.  Otherwise it is the name of a file in the current
-    directory. */
-  if (start == 0)
-    matches = rl_completion_matches (text, custom_generator);
+    if (start == 0)     // if it is the first word in command //
+    {
+        matches = rl_completion_matches (text, custom_generator);
+    }
 
-  return (matches);
+    return (matches);       // return NULL and call default file completer //
 
+}
+
+void help_command()
+{
+    int pos = 0;    // reset pos to 0 //
+    int counter = 0;
+    printf("============================\n");
+    printf("     SYSTEM COMMANDS\n");
+    printf("============================\n\n");
+    
+    while(commands[pos] != NULL && pos != 6)
+    {
+        printf("%s",  commands[pos]);
+        printf("  •  ");
+        pos++;
+    }
+    printf("\n\n");
+
+    printf("============================\n");
+    printf("     TCL COMMANDS\n");
+    printf("============================\n\n");
+    while(commands[pos] != NULL)
+    {
+        counter++;
+        printf("%s",  commands[pos]);
+        if(counter == 6)
+        {
+            printf("\n");
+            counter = 0;
+        }
+        else
+        {
+            printf("  •  ");
+        }
+        pos++;
+    }
+    printf("\n");
 }
 
 
@@ -102,17 +143,15 @@ int main(int argc, char *argv[])
 
     interp = Tcl_CreateInterp();
 
-    int pos = 0, counter = 0;
-
     HIST_ENTRY **the_history_list; // readline commands history list - NULL terminated //
     char command[LINE_MAX]; // current command //
     unsigned long i;
     // Readline Initialisation //
     rl_completion_entry_function = NULL; // use rl_filename_completion_function(), the default filename completer //
     rl_attempted_completion_function = custom_completer;
-    //rl_completion_suppress_append = 1;
-    rl_completion_append_character = '\0';
+    rl_completion_append_character = '\0';  // should not apply ' ' in the end of word //
     using_history(); // initialise history functions //
+
     while (1)
     {
         text = readline("PR> ");
@@ -175,44 +214,11 @@ int main(int argc, char *argv[])
         }
         else if(strncmp(command, "help", 4) == 0)
         {
-            printf("============================\n");
-            printf("     SYSTEM COMMANDS\n");
-            printf("============================\n\n");
-            while(commands[pos] != NULL && pos != 6)
-            {
-                printf("%s",  commands[pos]);
-                printf("  •  ");
-                pos++;
-            }
-            printf("\n\n");
-
-            printf("============================\n");
-            printf("     TCL COMMANDS\n");
-            printf("============================\n\n");
-            while(commands[pos] != NULL)
-            {
-                counter++;
-                printf("%s",  commands[pos]);
-                if(counter == 6)
-                {
-                    printf("\n");
-                    counter = 0;
-                }
-                else
-                {
-                    printf("  •  ");
-                }
-                pos++;
-            }
-            printf("\n");
+            help_command();     // call custom command help to print all available commands //
         }
 
         else if (strncmp(command, "\0", 1) != 0)
         {
-            #define ANSI_COLOR_RED     "\x1b[31m"
-            #define ANSI_COLOR_RESET   "\x1b[0m"
-            #define ANSI_COLOR_GREEN   "\x1b[32m"
-
             if (Tcl_Eval(interp, command) == TCL_ERROR)
             {
                 printf(ANSI_COLOR_RED "%s\n" ANSI_COLOR_RESET, Tcl_GetStringResult(interp));

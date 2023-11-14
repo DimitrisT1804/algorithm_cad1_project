@@ -1,5 +1,5 @@
 # Welcome message
-puts "Welcome to the Tcl Shell Demo!"
+puts "Welcome to the HW1 Demo!"
 
 # Variable assignment and arithmetic
 set a 5
@@ -12,14 +12,6 @@ puts "Variable b: $b"
 puts "Sum: $sum"
 puts "Product: $product"
 
-# Control structure (if-else)
-set temperature 25
-if {$temperature > 30} {
-    puts "It's hot outside!"
-} else {
-    puts "It's a pleasant day."
-}
-
 # Loop (for)
 puts "Counting from 1 to 5:"
 for {set i 1} {$i <= 5} {incr i} {
@@ -28,6 +20,7 @@ for {set i 1} {$i <= 5} {incr i} {
 
 # Procedure definition
 proc square {num} {
+
     return [expr $num * $num]
 }
 
@@ -48,24 +41,19 @@ if {$age < 18} {
     puts "You are an adult."
 }
 
-# File operations
-set filename "demo_file.txt"
-set filecontent "This is a Tcl shell demo."
+# User input
+puts -nonewline "Enter your age: "
+flush stdout
+gets stdin age
 
-# Write to a file
-set filehandle [open $filename w]
-puts -nonewline $filehandle $filecontent
-close $filehandle
+# Message based on user input
+puts "You entered: $age"
+if {$age < 18} {
+    puts "You are a minor."
+} else {
+    puts "You are an adult."
+}
 
-# Read from a file
-set filehandle [open $filename r]
-set filedata [read $filehandle]
-close $filehandle
-
-puts "File content: $filedata"
-
-# Delete the file
-file delete $filename
 
 puts "Demo complete!"
 
