@@ -1,52 +1,81 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include <sys/types.h>      // auta einai dika mou
-// #include <sys/file.h>                               //
-// #include <sys/stat.h>                               //
-// #include <sys/errno.h>                              //
 
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <unistd.h>
-#include "tcl.h"
+#include <tcl8.6/tcl.h>
 #include <limits.h>
-// #include <syscall.h>
+#include <syscall.h>
 
-// #define LINE_MAX 100        // auta einai dika mou
+#define ANSI_COLOR_RED     "\x1b[31m"   // define color codes to print TCL messages //
+#define ANSI_COLOR_RESET   "\x1b[0m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
 
-static const char *commands[] = {"hello", "kati", "help", "kat", "trial", "try", "testing1", "testing2", "test", "less", "ls", "quit", "pwd", "history", NULL};
+
+static const char *commands[] = 
+{
+    // system calls
+    "less", "ls", "quit", "help", "man", "history", 
+
+    // TCL commands
+    "after", "errorInfo", "load", "re_syntax", "tcl_startOfNextWord",
+    "append", "eval", "lrange", "read", "tcl_startOfPreviousWord",
+    "apply", "exec", "lrepeat", "refchan", "tcl_traceCompile",
+    "argc", "exit", "lreplace", "regexp", "tcl_traceExec",
+    "argv", "expr", "lreverse", "registry", "tcl_version",
+    "argv0", "fblocked", "lsearch", "regsub", "tcl_wordBreakAfter",
+    "array", "fconfigure", "lset", "rename", "tcl_wordBreakBefore",
+    "auto_execok", "fcopy", "lsort", "return", "tcl_wordchars",
+    "auto_import", "file", "mathfunc", "safe", "tcltest",
+    "auto_load", "fileevent", "mathop", "scan", "tell",
+    "auto_mkindex", "filename", "memory", "seek", "throw",
+    "auto_path", "flush", "msgcat", "self", "time",
+    "auto_qualify", "for", "my", "set", "timerate",
+    "auto_reset", "foreach", "namespace", "socket", "tm",
+    "bgerror", "format", "next", "source", "trace",
+    "binary", "gets", "nextto", "split", "transchan",
+    "break", "glob", "oo::class", "string", "try",
+    "catch", "global", "oo::copy", "subst", "unknown",
+    "cd", "history", "oo::define", "switch", "unload",
+    "chan", "http", "oo::objdefine", "tailcall", "unset",
+    "clock", "if", "oo::object", "Tcl", "update",
+    "close", "incr", "open", "tcl::prefix", "uplevel",
+    "concat", "info", "package", "tcl_endOfWord", "upvar",
+    "continue", "interp", "parray", "tcl_findLibrary", "variable",
+    "coroutine", "join", "pid", "tcl_interactive", "vwait",
+    "dde", "lappend", "pkg::create", "tcl_library", "while",
+    "dict", "lassign", "pkg_mkIndex", "tcl_nonwordchars", "yield",
+    "encoding", "lindex", "platform", "tcl_patchLevel", "yieldto",
+    "env", "linsert", "platform::shell", "tcl_pkgPath", "zlib",
+    "eof", "list", "proc", "tcl_platform",
+    "error", "llength", "puts", "tcl_precision",
+    "errorCode", "lmap", "pwd", "tcl_rcFileName", 
+    
+    NULL    // should terminate with NULL //
+
+};
 
 char *custom_generator(const char *text, int state)
 {
     static int list_index;      // should be static to has the same value in all iterations //
     static int len;
-    //const char *match;
 
-    if(!state)
+    if(!state)      // if state is 1 it is new word //
     {
         list_index = 0;
         len = strlen(text);
     }
 
-    // while (commands[list_index] != NULL)
-    // {
-    //     const char* match = commands[list_index];
-    //     list_index++;
-
-    //     if(strncmp(match, text, len) == 0)
-    //     {
-    //         return strdup(match);
-    //     }
-    // }
-
     while(commands[list_index] != NULL)
     {
         const char *match = commands[list_index];
         list_index++;
+
         if(strncmp(match, text, len) == 0)
         {
-            return strdup(match);
+            return strdup(match);   // return a copy of match //
         }
     }   
 
@@ -56,40 +85,51 @@ char *custom_generator(const char *text, int state)
 char **custom_completer(const char *text, int start, int end)
 {
     char **matches = NULL;
-    // char **matches[100][100];
-    int i;
-    int matches_len = 0;
 
-    // matches = (char**) malloc(1*sizeof(char*));
-    // for(int i = 0; i < 100; i++)
-    // {
-    //     matches[i] = malloc(10*sizeof(char));
-    // }
-
-    if(text == NULL || text[0] == '\0')
+    if (start == 0)     // if it is the first word in command //
     {
-        matches = rl_completion_matches("", custom_generator);
+        matches = rl_completion_matches (text, custom_generator);
     }
-    else
+
+    return (matches);       // return NULL and call default file completer //
+
+}
+
+void help_command()
+{
+    int pos = 0;    // reset pos to 0 //
+    int counter = 0;
+    printf("============================\n");
+    printf("     SYSTEM COMMANDS\n");
+    printf("============================\n\n");
+    
+    while(commands[pos] != NULL && pos != 6)
     {
-        for (i = 0; commands[i] != NULL; i++)
+        printf("%s",  commands[pos]);
+        printf("  •  ");
+        pos++;
+    }
+    printf("\n\n");
+
+    printf("============================\n");
+    printf("     TCL COMMANDS\n");
+    printf("============================\n\n");
+    while(commands[pos] != NULL)
+    {
+        counter++;
+        printf("%s",  commands[pos]);
+        if(counter == 6)
         {
-            if(strncmp(text, commands[i], end-start) == 0)      // if the word matches with one in array
-            {
-                // if you add matches = rl_completion_matches(commands[i], custom_generator); it does not work correct //
-                matches = rl_completion_matches(text, custom_generator);     // GNU Readline passes correct arguments on custom_generator //
-                // char *match = custom_generator(text, 0);
-                // if (match != NULL) 
-                // {
-                //     matches[matches_len] = realloc(matches, (matches_len + 2) * sizeof(char));
-                //     matches[matches_len] == match;
-                //     // matches[matches_len] = NULL;
-                // }
-            }
+            printf("\n");
+            counter = 0;
         }
+        else
+        {
+            printf("  •  ");
+        }
+        pos++;
     }
-
-    return matches;
+    printf("\n");
 }
 
 
@@ -99,13 +139,9 @@ int main(int argc, char *argv[])
     char *textexpansion; // readline result history expanded //
     int expansionresult;
 
-    char file_name[LINE_MAX];
-
     Tcl_Interp *interp;
 
     interp = Tcl_CreateInterp();
-
-    Tcl_Eval(interp, "puts  \"hello from TCL\"");
 
     HIST_ENTRY **the_history_list; // readline commands history list - NULL terminated //
     char command[LINE_MAX]; // current command //
@@ -113,9 +149,9 @@ int main(int argc, char *argv[])
     // Readline Initialisation //
     rl_completion_entry_function = NULL; // use rl_filename_completion_function(), the default filename completer //
     rl_attempted_completion_function = custom_completer;
-    //rl_completion_suppress_append = 1;
-    rl_completion_append_character = '\0';
+    rl_completion_append_character = '\0';  // should not apply ' ' in the end of word //
     using_history(); // initialise history functions //
+
     while (1)
     {
         text = readline("PR> ");
@@ -136,8 +172,17 @@ int main(int argc, char *argv[])
             free(textexpansion);
             free(text);
         }
+        
+        // if last char is space do it \0 to work with strcmp //
+        if(strlen(command) != 0)
+        {
+            if(command[strlen(command)-1] == ' ')
+            {
+                command[strlen(command)-1] = '\0';
+            }
+        }
+
         // handle two basic commands: history and quit //
-        //printf("command is %d\n", strlen(command));
         if (strcmp(command, "quit") == 0)
         {
             return EXIT_SUCCESS;
@@ -155,33 +200,39 @@ int main(int argc, char *argv[])
                 }
             }
         }
-        else if (strncmp(command, "less ", 5) == 0)
-        {
-            // scanf(" %s", file_name);
-            // // sprintf()l
-            // printf("it is %s\n", file_name);
-            // //sprintf(command, file_name);
-            // strcat(command, " ");
-            //strcat(command, file_name);
-            system(command);
-        }
-        else if(strcmp(command, "ls") == 0)
+        else if (strncmp(command, "less", 4) == 0)
         {
             system(command);
         }
-        else
+        else if(strncmp(command, "ls", 2) == 0)
         {
-            // if (Tcl_Eval(interp, command) == TCL_ERROR)
-            // {
-            //     printf("TCL ERROR\n");
-            // }
-            // else
-            // {
-                #define ANSI_COLOR_RED     "\x1b[31m"
-                Tcl_Eval(interp, command);
+            system(command);
+        }
+        else if(strncmp(command, "man", 3) == 0)
+        {
+            system(command);
+        }
+        else if(strncmp(command, "help", 4) == 0)
+        {
+            help_command();     // call custom command help to print all available commands //
+        }
 
-                printf(ANSI_COLOR_RED "%s\n" ANSI_COLOR_RED "\n", Tcl_GetStringResult(interp) );
-            // }
+        else if (strncmp(command, "\0", 1) != 0)
+        {
+            if (Tcl_Eval(interp, command) == TCL_ERROR)
+            {
+                printf(ANSI_COLOR_RED "%s\n" ANSI_COLOR_RESET, Tcl_GetStringResult(interp));
+            }
+            else
+            {
+                if(strcmp(Tcl_GetStringResult(interp), "\n") != 0)
+                    printf(ANSI_COLOR_GREEN "%s\n" ANSI_COLOR_RESET, Tcl_GetStringResult(interp));
+            }
+            if(strncmp(command, "cd", 2) == 0)      // if user call command cd, print current path to know in which dir user is //
+            {
+                Tcl_Eval(interp, "pwd");
+                printf(ANSI_COLOR_GREEN "%s\n" ANSI_COLOR_RESET, Tcl_GetStringResult(interp));
+            }
         }
     }
 }
