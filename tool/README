@@ -1,0 +1,12 @@
+# HW1 for algorithm Cad 1 #
+# Create a TCL shell that supports tab-completion for custom, system and TCL commands #
+----------------------------------------------------------------------------------------
+To compile this one just type: "gcc -Wall -g tcl_shell.c -o tcl_shell -lreadline -ltcl"
+You need to link libraries of Readline and TCL for correct compilation
+
+Run program and check for memory leaks and memory violations using Valgrind
+ex: "valgrind --leak-check=full ./tcl_shell"
+
+The result that you get seems to have violations, but if you analyze it
+you can see that there are memory leaks and errors, only in Tcl_CreateInterp
+which is from TCL library and not from my implementation
