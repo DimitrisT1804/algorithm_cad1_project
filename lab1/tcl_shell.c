@@ -128,6 +128,7 @@ int main(int argc, char *argv[])
         // handle two basic commands: history and quit //
         if (strcmp(command, "quit") == 0)
         {
+            Tcl_DeleteInterp(interp);
             return EXIT_SUCCESS;
         }
         else if (strcmp(command, "history") == 0)
@@ -165,6 +166,7 @@ int main(int argc, char *argv[])
             if (Tcl_Eval(interp, command) == TCL_ERROR)
             {
                 printf(ANSI_COLOR_RED "%s\n" ANSI_COLOR_RESET, Tcl_GetStringResult(interp));
+                //Tcl_Free(Tcl_GetObjResult(interp));
             }
             else
             {
