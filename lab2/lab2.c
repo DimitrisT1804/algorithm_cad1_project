@@ -11,6 +11,14 @@ enum DoorState
     NAME
 };
 
+enum DoorState2 
+{
+    START2,
+    NAME2,
+    CCS,
+    CONNECTIONS
+};
+
 // Function to process events and transition between states
 enum DoorState processEvent(enum DoorState currentState, char *event) 
 {
@@ -35,6 +43,44 @@ enum DoorState processEvent(enum DoorState currentState, char *event)
     }
 }
 
+enum DoorState2 processEvent2(enum DoorState currentState, char *event) 
+{
+    switch (currentState) 
+    {
+        case START2:
+            if(strcmp(event, "IO:") == 0)
+            {
+                return NAME2;
+            }
+            else
+            {
+                return START2;
+            }
+
+        case NAME2:
+            printf("Name is %s\n", event);
+            return CCS;
+
+        case CCS:
+            //printf("Name is %s\n", event);
+            return CONNECTIONS;
+
+        case CONNECTIONS:       // if there are no connections we shoul not take it
+            if(strcmp(event, "IO:") == 0)
+            {
+                return NAME2;
+            }
+            else
+            {
+                printf("Connections is %s\n", event);
+                return CONNECTIONS;
+            }
+
+        default:
+            return currentState;
+    }
+}
+
 
 
 
@@ -51,6 +97,7 @@ int main(int argc, char **argv)
     int j = 0;
 
     enum DoorState currentState = START;
+    enum DoorState2 currentState2 = START;
 
     input_file = argv[1];
 
@@ -65,38 +112,58 @@ int main(int argc, char **argv)
 
     while(fgets(line, sizeof(line), filename) != NULL)
     {
+        //line[sizeof(line)+1] = '\0';
         j = 0;
-        test = strstr(line, "Level I/O Ports:");
+        test = strstr(line, "Top-Level I/O Ports:");
         if(test != NULL)
         {
             printf("Test is %s\n", test);
             flag = 1;  // set the flag that the following line has IO //
+        }
+
+        test = strstr(line, "Top-Level I/O CCs:");
+        if(test != NULL)
+        {
+            printf("Test is %s\n", test);
+            flag = 2;  // set the flag that the following line has IO //
         }
         //printf("line is %s\n", line);
         //printf("%s\n", line);
 
         while(j < strlen(line))
         {
-            for(i = j; i < strlen(line); i++)
+            for(i = j; i < strlen(line)+1; i++)
             {
                 if(line[i] == ' ' || line[i] == '\0')
                 {
                     word[pos] = '\0';
                     break;
                 }
-                word[pos] = line[i];
-                pos++ ;
+                else
+                {
+                    word[pos] = line[i];
+                    pos++ ;
+                }
             }
-            //printf("The word is %s\n", word);
+            printf("The word is %s\n", word);
             pos = 0;
-
-            currentState = processEvent(currentState, word);
+            if(flag == 1)
+                currentState = processEvent(currentState, word);
+            else if (flag == 2)
+                currentState2 = processEvent2(currentState2, word);
 
             while (line[i] == ' ') 
             {
                 i++;
             }
             j = i;
+            //j = i;
+
+
+            // if(line[i] == '\0')
+            // {
+            //     break;
+            // }
         }
     }
 
