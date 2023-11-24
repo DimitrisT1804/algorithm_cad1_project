@@ -127,6 +127,13 @@ int main(int argc, char **argv)
             printf("Test is %s\n", test);
             flag = 2;  // set the flag that the following line has IO //
         }
+
+        test = strstr(line, "Components CCs:");
+        if(test != NULL)
+        {
+            printf("Test is %s\n", test);
+            flag = 3;  // set the flag that the following line has IO //
+        }
         //printf("line is %s\n", line);
         //printf("%s\n", line);
 
@@ -145,7 +152,7 @@ int main(int argc, char **argv)
                     pos++ ;
                 }
             }
-            printf("The word is %s\n", word);
+            //printf("The word is %s\n", word);
             pos = 0;
             if(flag == 1)
                 currentState = processEvent(currentState, word);
