@@ -1,23 +1,6 @@
 // lab 2 //
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "parser.h"
 
-// Enumerate the possible states
-enum DoorState 
-{
-    START,
-    IO,
-    NAME
-};
-
-enum DoorState2 
-{
-    START2,
-    NAME2,
-    CCS,
-    CONNECTIONS
-};
 
 // Function to process events and transition between states
 enum DoorState processEvent(enum DoorState currentState, char *event) 
@@ -36,6 +19,8 @@ enum DoorState processEvent(enum DoorState currentState, char *event)
 
         case NAME:
             printf("Name is %s\n", event);
+            Gatepins_add(event);
+            
             return START;
 
         default:
@@ -43,8 +28,14 @@ enum DoorState processEvent(enum DoorState currentState, char *event)
     }
 }
 
-enum DoorState2 processEvent2(enum DoorState currentState, char *event) 
+enum DoorState2 processEvent2(enum DoorState2 currentState, char *event) 
 {
+    int ghash, ghashdepth;
+    static char IO_pin[LINE_MAX];
+    static char *connection_pin;
+    static int size_event;
+
+    //printf("Event is %s\n", event);
     switch (currentState) 
     {
         case START2:
@@ -59,21 +50,46 @@ enum DoorState2 processEvent2(enum DoorState currentState, char *event)
 
         case NAME2:
             printf("Name is %s\n", event);
+            strcpy(IO_pin, event);
             return CCS;
 
         case CCS:
             //printf("Name is %s\n", event);
+            return CONNECTIONS_COMP;
+
+        case CONNECTIONS_COMP:
+            if(strcmp(event, "\n") == 0 || strcmp(event, " ") == 0)
+                return START2;
+            size_event = strlen(event);
+            connection_pin = my_calloc(1, strlen(event) + 1);
+            strcpy(connection_pin, event);
+
             return CONNECTIONS;
 
-        case CONNECTIONS:       // if there are no connections we shoul not take it
+        case CONNECTIONS:       // if there are no connections we should not take it !!!!!
+            connection_pin = (char *) my_realloc(connection_pin, 1 * (size_event + strlen(event) + 1));
+            strcat(connection_pin, event);  // concut strings together to create connection pin //
             if(strcmp(event, "IO:") == 0)
             {
                 return NAME2;
             }
+            else if (strncmp(event, "#", 1) == 0)
+            {
+                return START2;
+            }
             else
             {
-                printf("Connections is %s\n", event);
-                return CONNECTIONS;
+                printf("Connections is %s\n", connection_pin);
+                get_gatepin_indices(connection_pin, &ghash, &ghashdepth);
+                if(ghashdepth == -1)    // it does not exist in hash //
+                {
+                    Gatepins_add(connection_pin);
+                    //get_gatepin_indices(event, &ghash, &ghashdepth);
+                }
+                printf("Event is %s IOPin is %s and connection_pins is %s\n", event, IO_pin, connection_pin);
+                Gatepin_reload(IO_pin, connection_pin);
+
+                return CONNECTIONS_COMP;
             }
 
         default:
@@ -82,13 +98,33 @@ enum DoorState2 processEvent2(enum DoorState currentState, char *event)
 }
 
 
+void print_gatepinhash()
+{
+    int i, j, k;
 
+    for (i = 0; i < HASH_SIZE; i++)
+    {
+        for(j = 0; j < gatepinhash[i].hashdepth - 1; j++)
+        {
+            if(gatepinhash[i].name[j] != NULL)
+            {
+                printf("The bucket %d on depth %d is %s of type %d\n", i, j, gatepinhash[i].name[j], gatepinhash[i].type[j]);
+                for(k = 0; k < gatepinhash[i].connections_size[j] - 1; k++)
+                {
+                    if(gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]] != NULL)
+                        printf("It has connections %s\n", gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]]);
+                }
+            }
+            printf("-----------------------\n\n");
+        }
+    }
+}
 
 int main(int argc, char **argv)
 {
     char *input_file = NULL;
     FILE *filename;
-    char line[100];
+    char line[LINE_MAX];
     char *test;
     int flag = 0;
     int i = 0;
@@ -110,7 +146,9 @@ int main(int argc, char **argv)
         return -1;  // cannot open this file //
     }
 
-    while(fgets(line, sizeof(line), filename) != NULL)
+    Gatepins_init();
+
+    while(fgets(line, sizeof(line)+1, filename) != NULL)
     {
         //line[sizeof(line)+1] = '\0';
         j = 0;
@@ -173,6 +211,25 @@ int main(int argc, char **argv)
             // }
         }
     }
+
+    print_gatepinhash();
+
+    int count = 0;
+
+    for(i = 0; i < HASH_SIZE; i++)
+    {
+        for(j = 0; j < gatepinhash[i].hashdepth - 1; j++)
+        {
+            if(gatepinhash[i].name[j] != NULL)
+            {
+                if(strncmp(gatepinhash[i].name[j], "N", 1) == 0)
+                {
+                    count++;
+                }
+            }
+        }
+    }
+    printf("Count is %d\n", count);
 
     return 0;
 
