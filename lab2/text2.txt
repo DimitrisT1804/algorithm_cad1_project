@@ -1,0 +1,561 @@
+The bucket 0 on depth 0 is N21 of type -1
+It has connections c432/g3394__2802(/B)
+It has connections c432/g3439__9315(/AN)
+-----------------------
+
+The bucket 0 on depth 1 is N89 of type 0
+It has connections c432/g3467__4733(/AN)
+-----------------------
+
+The bucket 0 on depth 2 is N108 of type 0
+It has connections c432/g3353__6260(/D)
+It has connections c432/g3442__2346(/B)
+It has connections c432/g3466__6161(/B)
+-----------------------
+
+The bucket 0 on depth 3 is N115 of type 0
+It has connections c432/g3428__3680(/B)
+-----------------------
+
+The bucket 0 on depth 4 is c432/g3451__8246(/B) of type 0
+-----------------------
+
+The bucket 0 on depth 5 is c432/g3376__6161(/B) of type 0
+-----------------------
+
+The bucket 0 on depth 6 is c432/g3469__9315(/AN) of type 33
+-----------------------
+
+The bucket 0 on depth 7 is c432/g3378__7410(/B) of type 0
+-----------------------
+
+The bucket 0 on depth 8 is c432/g3393__1617(/B) of type 7
+-----------------------
+
+The bucket 0 on depth 9 is c432/g3473__2346(/AN) of type 3
+-----------------------
+
+The bucket 0 on depth 10 is c432/g3377__2883(/B) of type 0
+-----------------------
+
+The bucket 0 on depth 11 is c432/g3435__7098(/B) of type 0
+-----------------------
+
+The bucket 0 on depth 12 is c432/g3467__4733(/B) of type 1
+-----------------------
+
+The bucket 0 on depth 13 is c432/g3375__9315(/A) of type 0
+-----------------------
+
+The bucket 1 on depth 0 is N4 of type -1
+It has connections c432/g3446__5477(/B)
+It has connections c432/g3471__9945(/B)
+-----------------------
+
+The bucket 1 on depth 1 is N11 of type 0
+It has connections c432/g3451__8246(/B)
+It has connections c432/g3474__1666(/AN)
+-----------------------
+
+The bucket 1 on depth 2 is N37 of type 0
+It has connections c432/g3453__1617(/B)
+It has connections c432/g3468__7410(/AN)
+-----------------------
+
+The bucket 1 on depth 3 is N53 of type 0
+It has connections c432/g3380__2346(/B)
+It has connections c432/g3432__4733(/AN)
+-----------------------
+
+The bucket 1 on depth 4 is N66 of type 0
+It has connections c432/g3440__6131(/B)
+-----------------------
+
+The bucket 1 on depth 5 is N82 of type 0
+It has connections c432/g3366__1881(/D)
+It has connections c432/g3444__7410(/B)
+It has connections c432/g3473__2346(/B)
+-----------------------
+
+The bucket 1 on depth 6 is N95 of type 33
+It has connections c432/g3443__1666(/B)
+It has connections c432/g3467__4733(/B)
+-----------------------
+
+The bucket 1 on depth 7 is c432/g3364__7098(/D) of type 0
+-----------------------
+
+The bucket 1 on depth 8 is c432/g3367__7482(/D) of type 3553358
+-----------------------
+
+The bucket 1 on depth 9 is c432/g3389__4319(/B) of type 0
+-----------------------
+
+The bucket 1 on depth 10 is c432/g3432__4733(/AN) of type 0
+-----------------------
+
+The bucket 1 on depth 11 is c432/g3470__2883(/AN) of type 0
+-----------------------
+
+The bucket 1 on depth 12 is c432/g3445__6417(/B) of type 0
+-----------------------
+
+The bucket 1 on depth 13 is c432/g3374__9945(/B) of type 0
+-----------------------
+
+The bucket 1 on depth 14 is c432/g3427__6783(/B) of type 33
+-----------------------
+
+The bucket 1 on depth 15 is c432/g3353__6260(/D) of type 0
+-----------------------
+
+The bucket 1 on depth 16 is c432/g3428__3680(/B) of type 2
+-----------------------
+
+The bucket 1 on depth 17 is c432/g3456__1705(/A) of type 9
+-----------------------
+
+The bucket 1 on depth 18 is c432/g3451__8246(/A) of type 0
+-----------------------
+
+The bucket 1 on depth 19 is c432/g3381__6417(/A) of type 0
+-----------------------
+
+The bucket 2 on depth 0 is N47 of type -1
+It has connections c432/g3389__4319(/B)
+It has connections c432/g3437__9945(/AN)
+-----------------------
+
+The bucket 2 on depth 1 is N50 of type 0
+It has connections c432/g3458__5122(/B)
+It has connections c432/g3472__7482(/AN)
+-----------------------
+
+The bucket 2 on depth 2 is N430 of type 0
+It has connections c432/g3353__6260(/A)
+It has connections c432/g3356__5526(/Q)
+-----------------------
+
+The bucket 2 on depth 3 is c432/g3474__1666(/B) of type 0
+-----------------------
+
+The bucket 2 on depth 4 is c432/g3456__1705(/B) of type 0
+-----------------------
+
+The bucket 2 on depth 5 is c432/g3365__5115(/D) of type 0
+-----------------------
+
+The bucket 2 on depth 6 is c432/g3441__2883(/B) of type 33
+-----------------------
+
+The bucket 2 on depth 7 is c432/g3381__6417(/B) of type 0
+-----------------------
+
+The bucket 2 on depth 8 is c432/g3437__9945(/C) of type 2
+-----------------------
+
+The bucket 2 on depth 9 is c432/g3468__7410(/B) of type 2
+-----------------------
+
+The bucket 2 on depth 10 is c432/g3472__7482(/B) of type 7
+-----------------------
+
+The bucket 2 on depth 11 is c432/g3470__2883(/B) of type 0
+-----------------------
+
+The bucket 2 on depth 12 is c432/g3444__7410(/B) of type 1
+-----------------------
+
+The bucket 2 on depth 13 is c432/g3466__6161(/B) of type 0
+-----------------------
+
+The bucket 2 on depth 14 is c432/g3374__9945(/A) of type 33
+-----------------------
+
+The bucket 2 on depth 15 is c432/g3354__5107(/Q) of type 0
+-----------------------
+
+The bucket 3 on depth 0 is N17 of type -1
+It has connections c432/g3364__7098(/D)
+It has connections c432/g3438__6161(/C)
+It has connections c432/g3439__9315(/C)
+It has connections c432/g3474__1666(/B)
+-----------------------
+
+The bucket 3 on depth 1 is N60 of type 0
+It has connections c432/g3393__1617(/B)
+It has connections c432/g3429__1617(/B)
+-----------------------
+
+The bucket 3 on depth 2 is N105 of type 0
+It has connections c432/g3375__9315(/B)
+It has connections c432/g3427__6783(/B)
+-----------------------
+
+The bucket 3 on depth 3 is N431 of type 0
+It has connections c432/g3355__4319(/Q)
+-----------------------
+
+The bucket 3 on depth 4 is c432/g3450__6260(/B) of type 0
+-----------------------
+
+The bucket 3 on depth 5 is c432/g3391__5526(/B) of type 0
+-----------------------
+
+The bucket 3 on depth 6 is c432/g3449__5526(/B) of type 33
+-----------------------
+
+The bucket 3 on depth 7 is c432/g3448__8428(/A) of type 0
+-----------------------
+
+The bucket 3 on depth 8 is c432/g3459__7098(/A) of type 3
+-----------------------
+
+The bucket 3 on depth 9 is c432/g3387__6260(/A) of type 6
+-----------------------
+
+The bucket 3 on depth 10 is c432/g3392__6783(/A) of type 0
+-----------------------
+
+The bucket 3 on depth 11 is c432/g3435__7098(/B) of type 0
+-----------------------
+
+The bucket 4 on depth 0 is N14 of type -1
+It has connections c432/g3376__6161(/B)
+It has connections c432/g3425__1705(/B)
+-----------------------
+
+The bucket 4 on depth 1 is N30 of type 0
+It has connections c432/g3365__5115(/D)
+It has connections c432/g3441__2883(/B)
+It has connections c432/g3469__9315(/B)
+-----------------------
+
+The bucket 4 on depth 2 is N63 of type 0
+It has connections c432/g3450__6260(/B)
+It has connections c432/g3470__2883(/AN)
+-----------------------
+
+The bucket 4 on depth 3 is N69 of type 0
+It has connections c432/g3445__6417(/B)
+It has connections c432/g3470__2883(/B)
+-----------------------
+
+The bucket 4 on depth 4 is N76 of type 0
+It has connections c432/g3449__5526(/B)
+It has connections c432/g3473__2346(/AN)
+-----------------------
+
+The bucket 4 on depth 5 is N92 of type 0
+It has connections c432/g3377__2883(/B)
+It has connections c432/g3435__7098(/B)
+-----------------------
+
+The bucket 4 on depth 6 is N223 of type 33
+It has connections c432/g3457__5107(/A)
+It has connections c432/g3450__6260(/A)
+It has connections c432/g3454__4319(/A)
+It has connections c432/g3448__8428(/A)
+It has connections c432/g3449__5526(/A)
+It has connections c432/g3460__6783(/A)
+It has connections c432/g3452__3680(/A)
+It has connections c432/g3456__1705(/A)
+It has connections c432/g3451__8246(/A)
+It has connections c432/g3459__7098(/A)
+It has connections c432/g3462(/Q)
+-----------------------
+
+The bucket 4 on depth 7 is N432 of type 0
+It has connections c432/g3354__5107(/Q)
+-----------------------
+
+The bucket 4 on depth 8 is c432/g3425__1705(/B) of type 3488078
+-----------------------
+
+The bucket 4 on depth 9 is c432/g3380__2346(/B) of type 0
+-----------------------
+
+The bucket 4 on depth 10 is c432/g3392__6783(/B) of type 0
+-----------------------
+
+The bucket 4 on depth 11 is c432/g3443__1666(/B) of type 0
+-----------------------
+
+The bucket 4 on depth 12 is c432/g3455__2802(/B) of type 0
+-----------------------
+
+The bucket 4 on depth 13 is c432/g3431__8428(/B) of type 0
+-----------------------
+
+The bucket 4 on depth 14 is c432/g3457__5107(/A) of type 33
+-----------------------
+
+The bucket 4 on depth 15 is c432/g3450__6260(/A) of type 0
+-----------------------
+
+The bucket 4 on depth 16 is c432/g3401(/Q) of type 3749454
+-----------------------
+
+The bucket 5 on depth 0 is N24 of type -1
+It has connections c432/g3456__1705(/B)
+It has connections c432/g3469__9315(/AN)
+-----------------------
+
+The bucket 5 on depth 1 is N86 of type 0
+It has connections c432/g3392__6783(/B)
+-----------------------
+
+The bucket 5 on depth 2 is N99 of type 0
+-----------------------
+
+The bucket 5 on depth 3 is N112 of type 0
+It has connections c432/g3431__8428(/B)
+-----------------------
+
+The bucket 5 on depth 4 is c432/g3474__1666(/AN) of type 0
+-----------------------
+
+The bucket 5 on depth 5 is c432/g3439__9315(/AN) of type 0
+-----------------------
+
+The bucket 5 on depth 6 is c432/g3396__1705(/B) of type 33
+-----------------------
+
+The bucket 5 on depth 7 is c432/g3436__1881(/B) of type 0
+-----------------------
+
+The bucket 5 on depth 8 is c432/g3432__4733(/C) of type 842216547
+-----------------------
+
+The bucket 5 on depth 9 is c432/g3447__2398(/B) of type 875783983
+-----------------------
+
+The bucket 5 on depth 10 is c432/g3366__1881(/D) of type 1600075317
+-----------------------
+
+The bucket 5 on depth 11 is c432/g3466__6161(/AN) of type 892352305
+-----------------------
+
+The bucket 5 on depth 12 is c432/g3442__2346(/B) of type 692203304
+-----------------------
+
+The bucket 5 on depth 13 is c432/g3454__4319(/A) of type 0
+-----------------------
+
+The bucket 5 on depth 14 is c432/g3460__6783(/A) of type 33
+-----------------------
+
+The bucket 5 on depth 15 is c432/g3452__3680(/A) of type 0
+-----------------------
+
+The bucket 5 on depth 16 is c432/g3462(/Q) of type 959591246
+-----------------------
+
+The bucket 5 on depth 17 is c432/g3379__1666(/A) of type 0
+-----------------------
+
+The bucket 5 on depth 18 is c432/g3382__5477(/Q) of type 0
+-----------------------
+
+The bucket 5 on depth 19 is c432/g3352__2398(/Q) of type 0
+-----------------------
+
+The bucket 6 on depth 0 is N1 of type -1
+It has connections c432/g3448__8428(/B)
+It has connections c432/g3471__9945(/AN)
+-----------------------
+
+The bucket 6 on depth 1 is N27 of type 0
+It has connections c432/g3378__7410(/B)
+It has connections c432/g3438__6161(/AN)
+-----------------------
+
+The bucket 6 on depth 2 is N43 of type 0
+It has connections c432/g3367__7482(/D)
+It has connections c432/g3432__4733(/C)
+It has connections c432/g3437__9945(/C)
+It has connections c432/g3468__7410(/B)
+-----------------------
+
+The bucket 6 on depth 3 is N56 of type 0
+It has connections c432/g3447__2398(/B)
+It has connections c432/g3472__7482(/B)
+-----------------------
+
+The bucket 6 on depth 4 is N102 of type 0
+It has connections c432/g3455__2802(/B)
+It has connections c432/g3466__6161(/AN)
+-----------------------
+
+The bucket 6 on depth 5 is c432/g3448__8428(/B) of type 0
+-----------------------
+
+The bucket 6 on depth 6 is c432/g3387__6260(/B) of type 33
+-----------------------
+
+The bucket 6 on depth 7 is c432/g3420__6417(/B) of type 0
+-----------------------
+
+The bucket 6 on depth 8 is c432/g3438__6161(/C) of type 842216547
+-----------------------
+
+The bucket 6 on depth 9 is c432/g3394__2802(/B) of type 875783983
+-----------------------
+
+The bucket 6 on depth 10 is c432/g3437__9945(/AN) of type 1600074039
+-----------------------
+
+The bucket 6 on depth 11 is c432/g3418__2398(/AN) of type 892614969
+-----------------------
+
+The bucket 6 on depth 12 is c432/g3449__5526(/A) of type 1312894760
+-----------------------
+
+The bucket 6 on depth 13 is c432/g3353__6260(/A) of type 41
+-----------------------
+
+The bucket 7 on depth 0 is clk of type -1
+-----------------------
+
+The bucket 7 on depth 1 is N370 of type 0
+It has connections c432/g3376__6161(/A)
+It has connections c432/g3375__9315(/A)
+It has connections c432/g3374__9945(/A)
+It has connections c432/g3377__2883(/A)
+It has connections c432/g3379__1666(/A)
+It has connections c432/g3378__7410(/A)
+It has connections c432/g3381__6417(/A)
+It has connections c432/g3382__5477(/Q)
+-----------------------
+
+The bucket 7 on depth 2 is c432/g3439__9315(/C) of type 0
+-----------------------
+
+The bucket 7 on depth 3 is c432/g3469__9315(/B) of type 0
+-----------------------
+
+The bucket 7 on depth 4 is c432/g3453__1617(/B) of type 0
+-----------------------
+
+The bucket 7 on depth 5 is c432/g3458__5122(/B) of type 0
+-----------------------
+
+The bucket 7 on depth 6 is c432/g3473__2346(/B) of type 33
+-----------------------
+
+The bucket 7 on depth 7 is c432/g3355__4319(/Q) of type 0
+-----------------------
+
+The bucket 8 on depth 0 is N34 of type -1
+It has connections c432/g3396__1705(/B)
+It has connections c432/g3436__1881(/B)
+-----------------------
+
+The bucket 8 on depth 1 is N421 of type 0
+It has connections c432/g3352__2398(/Q)
+-----------------------
+
+The bucket 8 on depth 2 is c432/g3471__9945(/AN) of type 0
+-----------------------
+
+The bucket 8 on depth 3 is c432/g3438__6161(/AN) of type 0
+-----------------------
+
+The bucket 8 on depth 4 is c432/g3429__1617(/B) of type 0
+-----------------------
+
+The bucket 8 on depth 5 is c432/g3376__6161(/B) of type 0
+-----------------------
+
+The bucket 8 on depth 6 is c432/g3379__1666(/B) of type 33
+-----------------------
+
+The bucket 8 on depth 7 is c432/g3424__5122(/B) of type 0
+-----------------------
+
+The bucket 8 on depth 8 is c432/g3434__7482(/B) of type 9
+-----------------------
+
+The bucket 8 on depth 9 is c432/g3433__5115(/B) of type 0
+-----------------------
+
+The bucket 8 on depth 10 is c432/g3452__3680(/B) of type 0
+-----------------------
+
+The bucket 8 on depth 11 is c432/g3390__8428(/B) of type 0
+-----------------------
+
+The bucket 8 on depth 12 is c432/g3426__5526(/B) of type 1
+-----------------------
+
+The bucket 8 on depth 13 is c432/g3453__1617(/A) of type 0
+-----------------------
+
+The bucket 9 on depth 0 is N8 of type -1
+It has connections c432/g3387__6260(/B)
+It has connections c432/g3420__6417(/B)
+It has connections c432/g3423__8246(/B)
+-----------------------
+
+The bucket 9 on depth 1 is N40 of type 0
+It has connections c432/g3381__6417(/B)
+It has connections c432/g3430__2802(/B)
+-----------------------
+
+The bucket 9 on depth 2 is N73 of type 0
+It has connections c432/g3391__5526(/B)
+It has connections c432/g3418__2398(/AN)
+-----------------------
+
+The bucket 9 on depth 3 is N79 of type 0
+It has connections c432/g3374__9945(/B)
+-----------------------
+
+The bucket 9 on depth 4 is N329 of type 0
+It has connections c432/g3387__6260(/A)
+It has connections c432/g3390__8428(/A)
+It has connections c432/g3392__6783(/A)
+It has connections c432/g3401(/Q)
+-----------------------
+
+The bucket 9 on depth 5 is c432/g3446__5477(/B) of type 0
+-----------------------
+
+The bucket 9 on depth 6 is c432/g3471__9945(/B) of type 33
+-----------------------
+
+The bucket 9 on depth 7 is c432/g3423__8246(/B) of type 0
+-----------------------
+
+The bucket 9 on depth 8 is c432/g3468__7410(/AN) of type 842216547
+-----------------------
+
+The bucket 9 on depth 9 is c432/g3430__2802(/B) of type 875783983
+-----------------------
+
+The bucket 9 on depth 10 is c432/g3472__7482(/AN) of type 1600074039
+-----------------------
+
+The bucket 9 on depth 11 is c432/g3440__6131(/B) of type 892614969
+-----------------------
+
+The bucket 9 on depth 12 is c432/g3467__4733(/AN) of type 692203304
+-----------------------
+
+The bucket 9 on depth 13 is c432/g3375__9315(/B) of type 0
+-----------------------
+
+The bucket 9 on depth 14 is c432/g3390__8428(/A) of type 33
+-----------------------
+
+The bucket 9 on depth 15 is c432/g3376__6161(/A) of type 0
+-----------------------
+
+The bucket 9 on depth 16 is c432/g3377__2883(/A) of type 3749710
+-----------------------
+
+The bucket 9 on depth 17 is c432/g3378__7410(/A) of type 0
+-----------------------
+
+The bucket 9 on depth 18 is c432/g3356__5526(/Q) of type 0
+-----------------------
