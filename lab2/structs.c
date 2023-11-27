@@ -25,15 +25,44 @@ void Gatepins_init()
 
             gatepinhash[i].type[j] = -1;   // init type //
 
-            gatepinhash[i].pinConn[j] = (int*) my_calloc(1, sizeof(int));
-            gatepinhash[i].pinConnDepth[j] = (int*) my_calloc(1, sizeof(int));
+            //gatepinhash[i].pinConn[j] = (int*) my_calloc(1, sizeof(int));     // no need i do this in add //
+            //gatepinhash[i].pinConnDepth[j] = (int*) my_calloc(1, sizeof(int));
 
             gatepinhash[i].connections_size[j] = 1;
         }
     }
 }
 
-void Gatepins_add(char *pin_name)
+void Gatepins_free()
+{
+    int i, j;
+
+    for(i = 0; i < HASH_SIZE; i++)
+    {   
+        for(j = 0; j < gatepinhash[i].hashdepth - 1; j++) // what is the value of hashdepth? 
+        {
+            if(gatepinhash[i].name[j] != NULL)
+            {
+                free(gatepinhash[i].name[j]);
+
+                // gatepinhash[i].parentComponent[j] = 0;
+                // gatepinhash[i].parentComponentDepth[j] = 0;
+                free (gatepinhash[i].pinConn[j]);
+                free (gatepinhash[i].pinConnDepth[j]);
+            }
+        }
+
+        free (gatepinhash[i].name);
+        free (gatepinhash[i].type);
+        free (gatepinhash[i].connections_size);
+        free (gatepinhash[i].pinConn);
+        free (gatepinhash[i].pinConnDepth);
+
+    }
+    free(gatepinhash);
+}
+
+void Gatepins_add(char *pin_name, int pin_type)
 {
     int i;
     unsigned int key;
@@ -73,6 +102,9 @@ void Gatepins_add(char *pin_name)
 
     gatepinhash[key].connections_size = (int*) my_realloc(gatepinhash[key].connections_size, sizeof(int) * gatepinhash[key].hashdepth + 1);
     gatepinhash[key].connections_size[i] = 1;
+
+    gatepinhash[key].type = (int*) my_realloc(gatepinhash[key].type, sizeof(int) * gatepinhash[key].hashdepth + 1);
+    gatepinhash[key].type[i] = pin_type;
 
     gatepinhash[key].hashdepth++ ;  // add one pos in hashdepth //
     printf("Component inserted succesfully\n");

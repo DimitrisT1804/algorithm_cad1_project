@@ -19,7 +19,7 @@ enum DoorState processEvent(enum DoorState currentState, char *event)
 
         case NAME:
             printf("Name is %s\n", event);
-            Gatepins_add(event);
+            Gatepins_add(event, IO_TYPE);
             
             return START;
 
@@ -84,12 +84,13 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
                 get_gatepin_indices(connection_pin, &ghash, &ghashdepth);
                 if(ghashdepth == -1)    // it does not exist in hash //
                 {
-                    Gatepins_add(connection_pin);
+                    Gatepins_add(connection_pin, WIRE);
                     //get_gatepin_indices(event, &ghash, &ghashdepth);
                 }
                 printf("Event is %s IOPin is %s and connection_pins is %s\n", event, IO_pin, connection_pin);
                 Gatepin_reload(IO_pin, connection_pin);
 
+                free(connection_pin);
                 return CONNECTIONS_COMP;
             }
 
@@ -110,7 +111,9 @@ void print_gatepinhash()
             if(gatepinhash[i].name[j] != NULL)
             {
                 //printf("The bucket %d on depth %d is %s of type %d\n", i, j, gatepinhash[i].name[j], gatepinhash[i].type[j]);
-                if(strncmp(gatepinhash[i].name[j], "N", 1) == 0 || strncmp(gatepinhash[i].name[j], "clk", 3) == 0) 
+                
+                //if(strncmp(gatepinhash[i].name[j], "N", 1) == 0 || strncmp(gatepinhash[i].name[j], "clk", 3) == 0) 
+                if(gatepinhash[i].type[j] == IO_TYPE)
                 {
                     printf("IO: %s CCs: ", gatepinhash[i].name[j]);
                     for(k = 0; k < gatepinhash[i].connections_size[j] - 1; k++)
@@ -243,6 +246,9 @@ int main(int argc, char **argv)
         }
     }
     printf("Count is %d and count_2 is %d\n", count, count_2);
+
+    Gatepins_free();
+    fclose(filename);
 
     return 0;
 

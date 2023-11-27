@@ -1,6 +1,6 @@
 CXX = gcc            # C++ compiler
 CXXFLAGS = -Wall -g# Compiler flags
-LDFLAGS = -lm      # Linker flags
+LDFLAGS = -lm    # Linker flags
 SRC_FILES = $(wildcard *.c)   # List of source files
 OBJ_FILES = $(SRC_FILES:.c=.o)  # List of object files
 TARGET = hw2   # Final executable name
