@@ -1,0 +1,7 @@
+IO: N1 CCs: c17/g66__8428 (/A) 
+IO: N2 CCs: c17/g64__6260 (/B) 
+IO: N3 CCs: c17/g66__8428 (/B) c17/g67__5526 (/A) 
+IO: N6 CCs: c17/g67__5526 (/B)IO: N7 CCs: c17/g65__4319 (/B) 
+IO: N22 CCs: c17/g62__2398 (/Q) 
+IO: N23 CCs: c17/g63__5107 (/Q) 
+IO: clk CCs: 

@@ -37,20 +37,24 @@ void Gatepins_add(char *pin_name)
 {
     int i;
     unsigned int key;
-    key = hash_function(pin_name, HASH_SIZE);
 
     if(pin_name == NULL)
         return;
 
+    key = hash_function(pin_name, HASH_SIZE);
+
+
     gatepinhash[key].name = (char **) my_realloc(gatepinhash[key].name, sizeof(char*) * (gatepinhash[key].hashdepth + 1));    // allocate memory for new pin //
-    for(i = 0; i < gatepinhash[key].hashdepth; i++)
-    {
-        if(gatepinhash[key].name[i] == NULL)    // empty //
-            break;
-    }
+    // for(i = 0; i < gatepinhash[key].hashdepth - 1; i++)
+    // {
+    //     if(gatepinhash[key].name[i] == NULL)    // empty //
+    //         break;
+    // }
+    i = gatepinhash[key].hashdepth - 1;
     if(gatepinhash[key].name == NULL)
     {
         printf("ERROR on allocation\n");
+        return;
     }
     gatepinhash[key].name[i] = (char *) my_calloc(1, (strlen(pin_name) + 1) );
 
@@ -58,9 +62,15 @@ void Gatepins_add(char *pin_name)
     // gatepinhash[key].type = (int *) my_realloc(gatepinhash[key].type, sizeof(int) * gatepinhash[key].hashdepth);
     // gatepinhash[key].type[i] = 1;
 
+    /* Realloc for size of pointer array pinConn and pinConnDepth */
     gatepinhash[key].pinConn = (int**) my_realloc(gatepinhash[key].pinConn, sizeof(int*) * (gatepinhash[key].hashdepth + 1));
     gatepinhash[key].pinConnDepth = (int**) my_realloc(gatepinhash[key].pinConnDepth, sizeof(int*) * (gatepinhash[key].hashdepth + 1));
     
+    /* Calloc for the new pin size for each connections, 1 for begin and go on*/
+    gatepinhash[key].pinConn[i] = (int *) my_calloc(1, sizeof(int));
+    gatepinhash[key].pinConnDepth[i] = (int *) my_calloc(1, sizeof(int));
+
+
     gatepinhash[key].connections_size = (int*) my_realloc(gatepinhash[key].connections_size, sizeof(int) * gatepinhash[key].hashdepth + 1);
     gatepinhash[key].connections_size[i] = 1;
 
@@ -115,7 +125,7 @@ void Gatepin_reload(char *source_pin, char *connection_pin)
     }
 
     //gatepinhash[source_hash].pinConn = my_realloc(gatepinhash[source_hash].pinConn, sizeof(int*) * gatepinhash[source_hash].hashdepth);
-    gatepinhash[source_hash].pinConn[source_hash_depth] = (int*) my_realloc(gatepinhash[source_hash].pinConn[source_hash_depth], sizeof(int) * (gatepinhash[source_hash].connections_size[source_hash_depth] +1 ));
+    gatepinhash[source_hash].pinConn[source_hash_depth] = (int*) my_realloc(gatepinhash[source_hash].pinConn[source_hash_depth], sizeof(int) * (gatepinhash[source_hash].connections_size[source_hash_depth] + 1));
     gatepinhash[source_hash].pinConnDepth[source_hash_depth] = (int*) my_realloc(gatepinhash[source_hash].pinConnDepth[source_hash_depth], sizeof(int) * (gatepinhash[source_hash].connections_size[source_hash_depth] + 1));
     
     size_of_connections = gatepinhash[source_hash].connections_size[source_hash_depth]; // get size of connections for current pin //

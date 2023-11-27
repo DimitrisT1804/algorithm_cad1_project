@@ -3,7 +3,7 @@
 #include <string.h>
 #include "custom_functions.h"
 
-#define HASH_SIZE 40
+#define HASH_SIZE 70
 
 struct gatepins
 {

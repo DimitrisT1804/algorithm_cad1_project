@@ -1,0 +1,12 @@
+{
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/dimitris-zorin/Desktop/Subjects/algorithm_cad_hw1/lab2",
+            "binaryPath": "/home/dimitris-zorin/Desktop/Subjects/algorithm_cad_hw1/lab2/hw2",
+            "binaryArgs": []
+        }
+    ],
+    "files.associations": {
+        "typeinfo": "c"
+    }
+}

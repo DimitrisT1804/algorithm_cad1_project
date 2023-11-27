@@ -67,7 +67,8 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
             return CONNECTIONS;
 
         case CONNECTIONS:       // if there are no connections we should not take it !!!!!
-            connection_pin = (char *) my_realloc(connection_pin, 1 * (size_event + strlen(event) + 1));
+            connection_pin = (char *) my_realloc(connection_pin, 1 * (size_event + strlen(event) + 2));
+            strcat(connection_pin, " ");
             strcat(connection_pin, event);  // concut strings together to create connection pin //
             if(strcmp(event, "IO:") == 0)
             {
@@ -108,14 +109,19 @@ void print_gatepinhash()
         {
             if(gatepinhash[i].name[j] != NULL)
             {
-                printf("The bucket %d on depth %d is %s of type %d\n", i, j, gatepinhash[i].name[j], gatepinhash[i].type[j]);
-                for(k = 0; k < gatepinhash[i].connections_size[j] - 1; k++)
+                //printf("The bucket %d on depth %d is %s of type %d\n", i, j, gatepinhash[i].name[j], gatepinhash[i].type[j]);
+                if(strncmp(gatepinhash[i].name[j], "N", 1) == 0 || strncmp(gatepinhash[i].name[j], "clk", 3) == 0) 
                 {
-                    if(gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]] != NULL)
-                        printf("It has connections %s\n", gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]]);
+                    printf("IO: %s CCs: ", gatepinhash[i].name[j]);
+                    for(k = 0; k < gatepinhash[i].connections_size[j] - 1; k++)
+                    {
+                        if(gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]] != NULL)
+                            printf("%s ", gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]]);
+                    }
+                    printf("\n");
                 }
             }
-            printf("-----------------------\n\n");
+            //printf("-----------------------\n\n");
         }
     }
 }
@@ -179,7 +185,7 @@ int main(int argc, char **argv)
         {
             for(i = j; i < strlen(line)+1; i++)
             {
-                if(line[i] == ' ' || line[i] == '\0')
+                if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
                 {
                     word[pos] = '\0';
                     break;
@@ -214,7 +220,7 @@ int main(int argc, char **argv)
 
     print_gatepinhash();
 
-    int count = 0;
+    int count = 0, count_2 = 0;
 
     for(i = 0; i < HASH_SIZE; i++)
     {
@@ -226,10 +232,17 @@ int main(int argc, char **argv)
                 {
                     count++;
                 }
+                else if (strncmp(gatepinhash[i].name[j], "clk", 3) == 0)
+                {
+                    count++;
+                }
+                else if(strcmp(gatepinhash[i].name[j], "\v") == 0)
+                    count++;
+
             }
         }
     }
-    printf("Count is %d\n", count);
+    printf("Count is %d and count_2 is %d\n", count, count_2);
 
     return 0;
 
