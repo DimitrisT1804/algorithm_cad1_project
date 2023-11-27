@@ -1,7 +1,6 @@
 // lab 2 //
 #include "parser.h"
 
-
 // Function to process events and transition between states
 enum DoorState processEvent(enum DoorState currentState, char *event) 
 {
@@ -99,6 +98,66 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
     }
 }
 
+enum lib_parse proccesLib(enum lib_parse currentState, char *event) 
+{
+    int lhash, lhashdepth;
+    static char name_of_cell[LINE_MAX];
+    static char cell_type_name[LINE_MAX];
+    static int cell_type = -1;
+
+    //printf("Event is %s\n", event);
+    switch (currentState) 
+    {
+        case WAIT:
+            if(strcmp(event, "Cell_Type:") == 0)
+            {
+                return CELL_NAME;
+            }
+            else
+            {
+                return WAIT;
+            }
+
+        case CELL_NAME:
+            printf("Cell Name is %s\n", event);
+            strcpy(name_of_cell, event);
+            return CELL_TIMING_TYPE;
+
+        case CELL_TIMING_TYPE:
+            if(strcmp(event, "Cell_Timing_Type:") == 0)
+            {
+                return GET_CELL_TYPE;
+            }
+            else
+            {
+               return CELL_TIMING_TYPE;
+            }
+
+        case GET_CELL_TYPE:
+            // if(strcmp(event, "\n") == 0 || strcmp(event, " ") == 0)
+            //     return WAIT;
+            strcpy(cell_type_name, event);
+
+            get_libhash_indices(name_of_cell, &lhash, &lhashdepth);
+            if(lhashdepth == -1)    // does not exist! //
+            {
+                if(strcmp(cell_type_name, "Combinational") == 0)
+                {
+                    cell_type = COMBINATIONAL;
+                }
+                else if(strcmp(cell_type_name, "Sequential") == 0)
+                {
+                    cell_type = SEQUENTIAL;
+                }
+                Lib_add(name_of_cell, cell_type);
+            }
+            return WAIT;
+
+        default:
+            return currentState;
+    }
+}
+
 
 void print_gatepinhash()
 {
@@ -129,6 +188,27 @@ void print_gatepinhash()
     }
 }
 
+void print_libhash()
+{
+    int i, j;
+
+    for (i = 0; i < LIBHASH_SIZE; i++)
+    {
+        for (j = 0; j < libhash[i].hashdepth - 1; j++)
+        {
+            if(libhash[i].name[j] != NULL)
+            {
+                if(libhash[i].cell_type[j] == 1)
+                    printf("Cell is %s and type is Combinational\n", libhash[i].name[j]);
+                else if (libhash[i].cell_type[j] == 2)
+                    printf("Cell is %s and type is Sequential\n", libhash[i].name[j]);
+                else
+                    printf("ERROR TYPE\n");
+            }
+        }
+    }
+}
+
 int main(int argc, char **argv)
 {
     char *input_file = NULL;
@@ -143,6 +223,7 @@ int main(int argc, char **argv)
 
     enum DoorState currentState = START;
     enum DoorState2 currentState2 = START;
+    enum lib_parse currentState3 = WAIT;
 
     input_file = argv[1];
 
@@ -155,7 +236,9 @@ int main(int argc, char **argv)
         return -1;  // cannot open this file //
     }
 
+    // initialize structs //
     Gatepins_init();
+    Lib_init();
 
     while(fgets(line, sizeof(line)+1, filename) != NULL)
     {
@@ -205,6 +288,8 @@ int main(int argc, char **argv)
                 currentState = processEvent(currentState, word);
             else if (flag == 2)
                 currentState2 = processEvent2(currentState2, word);
+            else if (flag == 3)
+                currentState3 = proccesLib(currentState3, word);
 
             while (line[i] == ' ') 
             {
@@ -222,6 +307,7 @@ int main(int argc, char **argv)
     }
 
     print_gatepinhash();
+    print_libhash();
 
     int count = 0, count_2 = 0;
 
@@ -231,16 +317,21 @@ int main(int argc, char **argv)
         {
             if(gatepinhash[i].name[j] != NULL)
             {
-                if(strncmp(gatepinhash[i].name[j], "N", 1) == 0)
+                // if(strncmp(gatepinhash[i].name[j], "N", 1) == 0)
+                // {
+                //     count++;
+                // }
+                // else if (strncmp(gatepinhash[i].name[j], "clk", 3) == 0)
+                // {
+                //     count++;
+                // }
+                // else if(strcmp(gatepinhash[i].name[j], "\v") == 0)
+                //     count++;
+
+                if(gatepinhash[i].type[j] == IO_TYPE)
                 {
-                    count++;
+                    count++ ;
                 }
-                else if (strncmp(gatepinhash[i].name[j], "clk", 3) == 0)
-                {
-                    count++;
-                }
-                else if(strcmp(gatepinhash[i].name[j], "\v") == 0)
-                    count++;
 
             }
         }

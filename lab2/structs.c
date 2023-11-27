@@ -80,11 +80,6 @@ void Gatepins_add(char *pin_name, int pin_type)
     //         break;
     // }
     i = gatepinhash[key].hashdepth - 1;
-    if(gatepinhash[key].name == NULL)
-    {
-        printf("ERROR on allocation\n");
-        return;
-    }
     gatepinhash[key].name[i] = (char *) my_calloc(1, (strlen(pin_name) + 1) );
 
     strcpy(gatepinhash[key].name[i], pin_name);
@@ -184,3 +179,68 @@ unsigned int hash_function(const char *str, unsigned int num_buckets)
     return (unsigned int)(hash_value % num_buckets);
 }
 
+void Lib_init()
+{
+    int i, j;
+    libhash = (Lib*) my_calloc(LIBHASH_SIZE, sizeof(Lib));
+
+    for(i = 0; i < LIBHASH_SIZE; i++)
+    {
+        libhash[i].hashdepth = 1;
+
+        libhash[i].name = (char**) my_calloc(1, sizeof(char*));
+
+        libhash[i].cell_type = (int *) my_calloc(1, sizeof(int));
+
+        for(j = 0; j < libhash[i].hashdepth; j++)
+        {
+            libhash[i].name[j] = NULL;
+        }
+    }
+}
+
+void Lib_add(char *cell_name, int cell_type)
+{
+    int i;
+    unsigned int key;
+
+    if(cell_name == NULL)
+        return;
+
+    key = hash_function(cell_name, LIBHASH_SIZE);
+
+    libhash[key].name = (char **) my_realloc(libhash[key].name, sizeof(char*) * (libhash[key].hashdepth + 1) );
+
+    i = libhash[key].hashdepth - 1;
+
+    libhash[key].name[i] = (char *) my_calloc((strlen(cell_name) + 1), sizeof(char));
+    strcpy(libhash[key].name[i], cell_name);
+
+    libhash[key].cell_type = (int *) my_realloc(libhash[key].cell_type, sizeof(int) * (libhash[key].hashdepth + 1) );
+    libhash[key].cell_type[i] = cell_type;
+
+    libhash[key].hashdepth++ ;  // add depth in hash table //
+    printf("Cell inserted succesfully on libhash\n");
+}
+
+void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth)
+{
+    int i;
+    unsigned int key;
+    key = hash_function(cell_name, LIBHASH_SIZE);
+    *lhash = key;
+
+    *lhashdepth = -1;
+
+    for(i = 0; i < libhash[*lhash].hashdepth - 1; i++)
+    {
+        if(libhash[*lhash].name[i] != NULL)
+        {
+            if(strcmp(libhash[*lhash].name[i], cell_name) == 0)
+            {
+                *lhashdepth = i;
+                break;
+            }
+        }
+    }    
+}

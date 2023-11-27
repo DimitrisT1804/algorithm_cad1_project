@@ -21,9 +21,21 @@ enum DoorState2
     CONNECTIONS
 };
 
+enum lib_parse
+{
+    WAIT,
+    CELL_NAME,
+    CELL_TIMING_TYPE,
+    GET_CELL_TYPE
+};
+
 enum DoorState processEvent(enum DoorState currentState, char *event);
 
 enum DoorState2 processEvent2(enum DoorState2 currentState, char *event);
 
+enum lib_parse proccesLib(enum lib_parse currentState, char *event);
+
 void print_gatepinhash();
+
+void print_libhash();
 
