@@ -1,5 +1,6 @@
 // lab 2 //
 #include "parser.h"
+#define LAB2
 
 // Function to process events and transition between states
 enum DoorState processEvent(enum DoorState currentState, char *event) 
@@ -209,6 +210,7 @@ void print_libhash()
     }
 }
 
+#ifndef LAB2
 void call_parser(char *input_file)
 {
     FILE *filename;
@@ -317,119 +319,123 @@ void call_parser(char *input_file)
     // Gatepins_free();
     fclose(filename);
 }
+#endif
 
-// int main(int argc, char **argv)
-// {
-//     char *input_file = NULL;
-//     FILE *filename;
-//     char line[LINE_MAX];
-//     char *test;
-//     int flag = 0;
-//     int i = 0;
-//     char word[50] = {'\0'};
-//     int pos = 0;
-//     int j = 0;
+#ifdef LAB2
+int main(int argc, char **argv)
+{
+    char *input_file = NULL;
+    FILE *filename;
+    char line[LINE_MAX];
+    char *test;
+    int flag = 0;
+    int i = 0;
+    char word[50] = {'\0'};
+    int pos = 0;
+    int j = 0;
 
-//     enum DoorState currentState = START;
-//     enum DoorState2 currentState2 = START;
-//     enum lib_parse currentState3 = WAIT;
+    enum DoorState currentState = START;
+    enum DoorState2 currentState2 = START;
+    enum lib_parse currentState3 = WAIT;
 
-//     input_file = argv[1];
+    input_file = argv[1];
 
 
-//     filename = fopen(input_file, "r");  // open file only for reading //
+    filename = fopen(input_file, "r");  // open file only for reading //
 
-//     if(filename == NULL)
-//     {
-//         printf("Cannot open file\n");
-//         return -1;  // cannot open this file //
-//     }
+    if(filename == NULL)
+    {
+        printf("Cannot open file\n");
+        return -1;  // cannot open this file //
+    }
 
-//     // initialize structs //
-//     Gatepins_init();
-//     Lib_init();
+    // initialize structs //
+    Gatepins_init();
+    Lib_init();
 
-//     while(fgets(line, sizeof(line)+1, filename) != NULL)
-//     {
-//         //line[sizeof(line)+1] = '\0';
-//         j = 0;
-//         test = strstr(line, "Top-Level I/O Ports:");
-//         if(test != NULL)
-//         {
-//             printf("Test is %s\n", test);
-//             flag = 1;  // set the flag that the following line has IO //
-//         }
+    while(fgets(line, sizeof(line)+1, filename) != NULL)
+    {
+        //line[sizeof(line)+1] = '\0';
+        j = 0;
+        test = strstr(line, "Top-Level I/O Ports:");
+        if(test != NULL)
+        {
+            printf("Test is %s\n", test);
+            flag = 1;  // set the flag that the following line has IO //
+        }
 
-//         test = strstr(line, "Top-Level I/O CCs:");
-//         if(test != NULL)
-//         {
-//             printf("Test is %s\n", test);
-//             flag = 2;  // set the flag that the following line has IO //
-//         }
+        test = strstr(line, "Top-Level I/O CCs:");
+        if(test != NULL)
+        {
+            printf("Test is %s\n", test);
+            flag = 2;  // set the flag that the following line has IO //
+        }
 
-//         test = strstr(line, "Components CCs:");
-//         if(test != NULL)
-//         {
-//             printf("Test is %s\n", test);
-//             flag = 3;  // set the flag that the following line has IO //
-//         }
+        test = strstr(line, "Components CCs:");
+        if(test != NULL)
+        {
+            printf("Test is %s\n", test);
+            flag = 3;  // set the flag that the following line has IO //
+        }
 
-//         while(j < strlen(line))
-//         {
-//             for(i = j; i < strlen(line)+1; i++)
-//             {
-//                 if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
-//                 {
-//                     word[pos] = '\0';
-//                     break;
-//                 }
-//                 else
-//                 {
-//                     word[pos] = line[i];
-//                     pos++ ;
-//                 }
-//             }
-//             //printf("The word is %s\n", word);
-//             pos = 0;
-//             if(flag == 1)
-//                 currentState = processEvent(currentState, word);
-//             else if (flag == 2)
-//                 currentState2 = processEvent2(currentState2, word);
-//             else if (flag == 3)
-//                 currentState3 = proccesLib(currentState3, word);
+        while(j < strlen(line))
+        {
+            for(i = j; i < strlen(line)+1; i++)
+            {
+                if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
+                {
+                    word[pos] = '\0';
+                    break;
+                }
+                else
+                {
+                    word[pos] = line[i];
+                    pos++ ;
+                }
+            }
+            //printf("The word is %s\n", word);
+            pos = 0;
+            if(flag == 1)
+                currentState = processEvent(currentState, word);
+            else if (flag == 2)
+                currentState2 = processEvent2(currentState2, word);
+            else if (flag == 3)
+                currentState3 = proccesLib(currentState3, word);
 
-//             while (line[i] == ' ') 
-//             {
-//                 i++;
-//             }
-//             j = i;
-//         }
-//     }
+            while (line[i] == ' ') 
+            {
+                i++;
+            }
+            j = i;
+        }
+    }
 
-//     print_gatepinhash();
-//     print_libhash();
+    print_gatepinhash();
+    print_libhash();
 
-//     int count = 0, count_2 = 0;
+    int count = 0, count_2 = 0;
 
-//     for(i = 0; i < HASH_SIZE; i++)
-//     {
-//         for(j = 0; j < gatepinhash[i].hashdepth - 1; j++)
-//         {
-//             if(gatepinhash[i].name[j] != NULL)
-//             {
-//                 if(gatepinhash[i].type[j] == IO_TYPE)
-//                 {
-//                     count++ ;
-//                 }
+    for(i = 0; i < HASH_SIZE; i++)
+    {
+        for(j = 0; j < gatepinhash[i].hashdepth - 1; j++)
+        {
+            if(gatepinhash[i].name[j] != NULL)
+            {
+                if(gatepinhash[i].type[j] == IO_TYPE)
+                {
+                    count++ ;
+                }
 
-//             }
-//         }
-//     }
-//     printf("Count is %d and count_2 is %d\n", count, count_2);
+            }
+        }
+    }
+    printf("Count is %d and count_2 is %d\n", count, count_2);
 
-//     Gatepins_free();
-//     fclose(filename);
+    Gatepins_free();
+    fclose(filename);
 
-//     return 0;
+    return 0;
 
-// }
+}
+
+#endif
