@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 #include "custom_functions.h"
+// #include "globals.h"
 
-#define HASH_SIZE 70
+#define HASH_SIZE 20
 #define IO_TYPE 0
 #define WIRE 1
 

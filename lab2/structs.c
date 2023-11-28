@@ -2,6 +2,8 @@
 #include "structs.h"
 
 
+// gatePins *gatepinhash = NULL;
+
 void Gatepins_init()
 {
     int i, j;

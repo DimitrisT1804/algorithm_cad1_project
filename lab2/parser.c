@@ -209,9 +209,8 @@ void print_libhash()
     }
 }
 
-int main(int argc, char **argv)
+void call_parser(char *input_file)
 {
-    char *input_file = NULL;
     FILE *filename;
     char line[LINE_MAX];
     char *test;
@@ -225,15 +224,12 @@ int main(int argc, char **argv)
     enum DoorState2 currentState2 = START;
     enum lib_parse currentState3 = WAIT;
 
-    input_file = argv[1];
-
-
     filename = fopen(input_file, "r");  // open file only for reading //
 
     if(filename == NULL)
     {
         printf("Cannot open file\n");
-        return -1;  // cannot open this file //
+        return; // cannot open this file //
     }
 
     // initialize structs //
@@ -264,8 +260,6 @@ int main(int argc, char **argv)
             printf("Test is %s\n", test);
             flag = 3;  // set the flag that the following line has IO //
         }
-        //printf("line is %s\n", line);
-        //printf("%s\n", line);
 
         while(j < strlen(line))
         {
@@ -296,13 +290,6 @@ int main(int argc, char **argv)
                 i++;
             }
             j = i;
-            //j = i;
-
-
-            // if(line[i] == '\0')
-            // {
-            //     break;
-            // }
         }
     }
 
@@ -317,17 +304,6 @@ int main(int argc, char **argv)
         {
             if(gatepinhash[i].name[j] != NULL)
             {
-                // if(strncmp(gatepinhash[i].name[j], "N", 1) == 0)
-                // {
-                //     count++;
-                // }
-                // else if (strncmp(gatepinhash[i].name[j], "clk", 3) == 0)
-                // {
-                //     count++;
-                // }
-                // else if(strcmp(gatepinhash[i].name[j], "\v") == 0)
-                //     count++;
-
                 if(gatepinhash[i].type[j] == IO_TYPE)
                 {
                     count++ ;
@@ -338,9 +314,122 @@ int main(int argc, char **argv)
     }
     printf("Count is %d and count_2 is %d\n", count, count_2);
 
-    Gatepins_free();
+    // Gatepins_free();
     fclose(filename);
-
-    return 0;
-
 }
+
+// int main(int argc, char **argv)
+// {
+//     char *input_file = NULL;
+//     FILE *filename;
+//     char line[LINE_MAX];
+//     char *test;
+//     int flag = 0;
+//     int i = 0;
+//     char word[50] = {'\0'};
+//     int pos = 0;
+//     int j = 0;
+
+//     enum DoorState currentState = START;
+//     enum DoorState2 currentState2 = START;
+//     enum lib_parse currentState3 = WAIT;
+
+//     input_file = argv[1];
+
+
+//     filename = fopen(input_file, "r");  // open file only for reading //
+
+//     if(filename == NULL)
+//     {
+//         printf("Cannot open file\n");
+//         return -1;  // cannot open this file //
+//     }
+
+//     // initialize structs //
+//     Gatepins_init();
+//     Lib_init();
+
+//     while(fgets(line, sizeof(line)+1, filename) != NULL)
+//     {
+//         //line[sizeof(line)+1] = '\0';
+//         j = 0;
+//         test = strstr(line, "Top-Level I/O Ports:");
+//         if(test != NULL)
+//         {
+//             printf("Test is %s\n", test);
+//             flag = 1;  // set the flag that the following line has IO //
+//         }
+
+//         test = strstr(line, "Top-Level I/O CCs:");
+//         if(test != NULL)
+//         {
+//             printf("Test is %s\n", test);
+//             flag = 2;  // set the flag that the following line has IO //
+//         }
+
+//         test = strstr(line, "Components CCs:");
+//         if(test != NULL)
+//         {
+//             printf("Test is %s\n", test);
+//             flag = 3;  // set the flag that the following line has IO //
+//         }
+
+//         while(j < strlen(line))
+//         {
+//             for(i = j; i < strlen(line)+1; i++)
+//             {
+//                 if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
+//                 {
+//                     word[pos] = '\0';
+//                     break;
+//                 }
+//                 else
+//                 {
+//                     word[pos] = line[i];
+//                     pos++ ;
+//                 }
+//             }
+//             //printf("The word is %s\n", word);
+//             pos = 0;
+//             if(flag == 1)
+//                 currentState = processEvent(currentState, word);
+//             else if (flag == 2)
+//                 currentState2 = processEvent2(currentState2, word);
+//             else if (flag == 3)
+//                 currentState3 = proccesLib(currentState3, word);
+
+//             while (line[i] == ' ') 
+//             {
+//                 i++;
+//             }
+//             j = i;
+//         }
+//     }
+
+//     print_gatepinhash();
+//     print_libhash();
+
+//     int count = 0, count_2 = 0;
+
+//     for(i = 0; i < HASH_SIZE; i++)
+//     {
+//         for(j = 0; j < gatepinhash[i].hashdepth - 1; j++)
+//         {
+//             if(gatepinhash[i].name[j] != NULL)
+//             {
+//                 if(gatepinhash[i].type[j] == IO_TYPE)
+//                 {
+//                     count++ ;
+//                 }
+
+//             }
+//         }
+//     }
+//     printf("Count is %d and count_2 is %d\n", count, count_2);
+
+//     Gatepins_free();
+//     fclose(filename);
+
+//     return 0;
+
+// }

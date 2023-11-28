@@ -39,3 +39,5 @@ void print_gatepinhash();
 
 void print_libhash();
 
+void call_parser(char *input_file);
+

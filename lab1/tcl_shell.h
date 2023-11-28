@@ -9,6 +9,9 @@
 #include <limits.h>
 #include <syscall.h>
 
+#include "../lab2/parser.h"
+// #include "../lab2/globals.h"
+
 #define ANSI_COLOR_RED     "\x1b[31m"   // define color codes to print TCL messages //
 #define ANSI_COLOR_RESET   "\x1b[0m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"
@@ -16,10 +19,10 @@
 /* Global array that stores all custom, system and TCL commands for tab-completion */
 static const char *commands[] = 
 {
-    // system calls
+    // system calls //
     "less", "ls", "quit", "help", "man", "history", 
 
-    // TCL commands
+    // TCL commands //
     "after", "errorInfo", "load", "re_syntax", "tcl_startOfNextWord",
     "append", "eval", "lrange", "read", "tcl_startOfPreviousWord",
     "apply", "exec", "lrepeat", "refchan", "tcl_traceCompile",
@@ -51,7 +54,10 @@ static const char *commands[] =
     "env", "linsert", "platform::shell", "tcl_pkgPath", "zlib",
     "eof", "list", "proc", "tcl_platform",
     "error", "llength", "puts", "tcl_precision",
-    "errorCode", "lmap", "pwd", "tcl_rcFileName", 
+    "errorCode", "lmap", "pwd", "tcl_rcFileName",
+
+    // custom commands //
+    "read_design", "list_IOs", 
     
     NULL    // should terminate with NULL //
 
@@ -63,3 +69,7 @@ char *custom_generator(const char *text, int state);
 char **custom_completer(const char *text, int start, int end);
 
 void help_command();
+
+int read_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
+
+int list_IO(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);

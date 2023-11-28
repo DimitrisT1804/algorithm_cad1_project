@@ -1,0 +1,2 @@
+read_design lab2/c17.practicalformat
+list_IOs
