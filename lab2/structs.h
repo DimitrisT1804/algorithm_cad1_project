@@ -9,6 +9,7 @@
 #define WIRE 1
 
 #define LIBHASH_SIZE 10
+#define LIB_HASHDEPTH 5
 #define COMBINATIONAL 1
 #define SEQUENTIAL 2
 
@@ -34,11 +35,13 @@ typedef struct gatepins gatePins;
 
 struct library
 {
-    char **name;
+    char *name[LIB_HASHDEPTH];
 
-    int *cell_type;
+    int cell_type[LIB_HASHDEPTH];
 
-    int hashdepth;
+    char **pin_names[LIB_HASHDEPTH];
+
+    int pin_count[LIB_HASHDEPTH];
 
 };
 typedef struct library Lib;

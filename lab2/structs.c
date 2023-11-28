@@ -18,7 +18,7 @@ void Gatepins_init()
         gatepinhash[i].pinConn = (int**) my_calloc(1, sizeof(int*));
         gatepinhash[i].pinConnDepth = (int**) my_calloc(1, sizeof(int*));
 
-        for(j = 0; j < gatepinhash[i].hashdepth; j++) // what is the value of hashdepth? 
+        for(j = 0; j < gatepinhash[i].hashdepth; j++) // what is the value of hashdepth
         {
             gatepinhash[i].name[j] = NULL;
 
@@ -188,15 +188,15 @@ void Lib_init()
 
     for(i = 0; i < LIBHASH_SIZE; i++)
     {
-        libhash[i].hashdepth = 1;
+        // libhash[i].pin_names = (char**) my_calloc(1, sizeof(char*));
 
-        libhash[i].name = (char**) my_calloc(1, sizeof(char*));
+        //libhash[i].cell_type = (int *) my_calloc(1, sizeof(int));
 
-        libhash[i].cell_type = (int *) my_calloc(1, sizeof(int));
-
-        for(j = 0; j < libhash[i].hashdepth; j++)
+        for(j = 0; j < LIB_HASHDEPTH; j++)
         {
             libhash[i].name[j] = NULL;
+            libhash[i].cell_type[j] = -1;  // init //
+            libhash[i].pin_names[j] = NULL;
         }
     }
 }
