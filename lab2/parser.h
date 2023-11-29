@@ -24,9 +24,18 @@ enum DoorState2
 enum lib_parse
 {
     WAIT,
+    COMP_NAME,
+    CELL_TYPE,
     CELL_NAME,
     CELL_TIMING_TYPE,
-    GET_CELL_TYPE
+    GET_CELL_TYPE,
+    WAIT_CCS,
+    OUTPUT_PIN_1,
+    OUTPUT_PIN_2,
+    CONNECTED_PINS,
+    CONNECTED_PINS_2,
+    COMPONENT_2,
+    FUNCTION
 };
 
 enum DoorState processEvent(enum DoorState currentState, char *event);
@@ -40,4 +49,6 @@ void print_gatepinhash();
 void print_libhash();
 
 void call_parser(char *input_file);
+
+void print_comphash();
 

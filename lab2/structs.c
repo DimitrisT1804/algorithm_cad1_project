@@ -211,17 +211,23 @@ void Lib_add(char *cell_name, int cell_type)
 
     key = hash_function(cell_name, LIBHASH_SIZE);
 
-    libhash[key].name = (char **) my_realloc(libhash[key].name, sizeof(char*) * (libhash[key].hashdepth + 1) );
+    //libhash[key].name = (char **) my_realloc(libhash[key].name, sizeof(char*) * (libhash[key].hashdepth + 1) );
 
-    i = libhash[key].hashdepth - 1;
+    for (i = 0; i < LIB_HASHDEPTH; i++)
+    {
+        if(libhash[key].name[i] == NULL)
+            break;
+    }
+
+    // i = LIB_HASHDEPTH;
 
     libhash[key].name[i] = (char *) my_calloc((strlen(cell_name) + 1), sizeof(char));
     strcpy(libhash[key].name[i], cell_name);
 
-    libhash[key].cell_type = (int *) my_realloc(libhash[key].cell_type, sizeof(int) * (libhash[key].hashdepth + 1) );
+    //libhash[key].cell_type = (int *) my_realloc(libhash[key].cell_type, sizeof(int) * (libhash[key].hashdepth + 1) );
     libhash[key].cell_type[i] = cell_type;
 
-    libhash[key].hashdepth++ ;  // add depth in hash table //
+    //libhash[key].hashdepth++ ;  // add depth in hash table //
     printf("Cell inserted succesfully on libhash\n");
 }
 
@@ -234,7 +240,7 @@ void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth)
 
     *lhashdepth = -1;
 
-    for(i = 0; i < libhash[*lhash].hashdepth - 1; i++)
+    for(i = 0; i < LIB_HASHDEPTH; i++)
     {
         if(libhash[*lhash].name[i] != NULL)
         {
@@ -245,4 +251,93 @@ void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth)
             }
         }
     }    
+}
+
+void comphash_init()
+{
+    int i, j;
+
+    comphash = (Components*) my_calloc(COMPHASH_SIZE, sizeof(Components));
+    for (i = 0; i < COMPHASH_SIZE; i++)
+    {
+        for (j = 0; j < COMP_HASHDEPTH; j++)
+        {
+            comphash[i].name[j] = NULL;
+            comphash[i].lib_type[j] = -1;
+            comphash[i].lib_type_depth[j] = -1;  
+            comphash[i].hashpresent[j] = 0;  
+        }
+    }
+}
+
+void comphash_add(char *comp_name, char *cell_name, int cell_type)
+{
+    int i;
+    unsigned int key;
+    int lhash, ldepth;
+
+    if (comp_name == NULL)
+        return;
+    key = hash_function(comp_name, COMPHASH_SIZE);
+
+    for (i = 0; i < COMP_HASHDEPTH; i++)
+    {
+        if(comphash[key].hashpresent[i] == 0) // it is empty //
+            break;
+    }
+    
+    if(i == COMP_HASHDEPTH)
+    {
+        return; // no space available //
+    }
+
+    comphash[key].name[i] = (char *) my_calloc(strlen(comp_name) + 1, sizeof(char));
+    strcpy(comphash[key].name[i], comp_name);
+
+    comphash[key].hashpresent[i] = 1;
+
+    get_libhash_indices(cell_name, &lhash, &ldepth);
+    if(ldepth != -1)
+    {
+        comphash[key].lib_type[i] = lhash;
+        comphash[key].lib_type_depth[i] = ldepth;
+        
+        return;
+    }
+
+    Lib_add(cell_name, cell_type);  // if it does not exist, add it and get lhash and ldepth //
+    get_libhash_indices(cell_name, &lhash, &ldepth);
+
+    comphash[key].lib_type[i] = lhash;
+    comphash[key].lib_type_depth[i] = ldepth;
+}
+
+void get_comphash_indices(char *comp_name, int *chash, int *chashdepth)
+{
+    int i;
+    unsigned int key;
+
+    key = hash_function(comp_name, COMPHASH_SIZE);
+    *chash = key;
+
+    *chashdepth = -1;
+
+    for (i = 0; i < COMP_HASHDEPTH; i++)
+    {
+        if(comphash[key].name != NULL)
+        {
+            if(strcmp(comphash[*chash].name[i], comp_name) == 0)
+            {
+                *chashdepth = i;
+                break;
+            }
+        }
+    }
+}
+
+void structs_init()
+{
+    Gatepins_init();
+    Lib_init();
+    comphash_init();
 }

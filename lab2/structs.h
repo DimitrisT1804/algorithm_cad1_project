@@ -13,6 +13,9 @@
 #define COMBINATIONAL 1
 #define SEQUENTIAL 2
 
+#define COMPHASH_SIZE 20
+#define COMP_HASHDEPTH 10
+
 struct gatepins
 {
     char **name;
@@ -46,11 +49,27 @@ struct library
 };
 typedef struct library Lib;
 
+struct components
+{
+    char *name[COMP_HASHDEPTH];
+
+    int lib_type[COMP_HASHDEPTH];
+
+    int lib_type_depth[COMP_HASHDEPTH];
+
+    int hashpresent[COMP_HASHDEPTH];    /* 0: does not exists
+                                           1: exits */
+};
+typedef struct components Components;
+
 
 gatePins *gatepinhash;
 
 Lib *libhash; 
 
+Components *comphash;
+
+/* gatepinhash functions*/
 void Gatepins_init();
 
 void Gatepins_free();
@@ -70,3 +89,13 @@ void Lib_init();
 void Lib_add(char *cell_name, int cell_type);
 
 void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth);
+
+/* Compohash functions */
+
+void comphash_init();
+
+void comphash_add(char *comp_name, char *cell_name, int cell_type);
+
+void get_comphash_indices(char *comp_name, int *chash, int *chashdepth);
+
+void structs_init();

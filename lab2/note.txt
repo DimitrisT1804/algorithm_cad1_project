@@ -1,0 +1,10 @@
+29/11:
+    working on save components and cells and connections of each pin on the output
+
+    NOT WORKING:
+        output pin keeps only one connections 
+        some components does not stored in hash
+
+    I need to parse one time to count the sizes
+
+    I need to parse one more time to store the parent comp on each pin
