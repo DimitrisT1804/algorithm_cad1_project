@@ -192,12 +192,16 @@ void Lib_init()
 
         //libhash[i].cell_type = (int *) my_calloc(1, sizeof(int));
 
+
         for(j = 0; j < LIB_HASHDEPTH; j++)
         {
             libhash[i].name[j] = NULL;
             libhash[i].function[j] = NULL;
             libhash[i].cell_type[j] = -1;  // init //
             libhash[i].pin_names[j] = NULL;
+            libhash[i].pin_count[j] = 0;
+            
+            libhash[i].pin_names[j] = (char **) calloc(1, sizeof(char *));
         }
     }
 }
@@ -285,6 +289,44 @@ void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth)
     }    
 }
 
+void lib_add_pins (char *cell_name, char *pin_name)
+{
+    int i, j;
+    unsigned int key;
+    int lhash, ldepth;
+
+    if(cell_name == NULL)
+    {
+        return;
+    }
+
+    get_libhash_indices(cell_name, &lhash, &ldepth);
+    if(ldepth == -1)
+    {
+        printf("ERROR: There is not this cell\n");
+        return;
+    }
+
+    for(i = 0; i < libhash[lhash].pin_count[ldepth]; i++)
+    {
+        if(libhash[lhash].pin_names[ldepth][i] != NULL)
+        {
+            if (strcmp(libhash[lhash].pin_names[ldepth][i], pin_name) == 0 )
+            {
+                return; // already exists //
+            }
+        }
+    }
+    // add the pin name on pos i //
+
+    libhash[lhash].pin_count[ldepth]++ ;
+
+    libhash[lhash].pin_names[ldepth] = (char **) realloc(libhash[lhash].pin_names[ldepth], (libhash[lhash].pin_count[ldepth]) * sizeof(char *));
+    libhash[lhash].pin_names[ldepth][libhash[lhash].pin_count[ldepth] - 1] = (char *) calloc(strlen(pin_name) + 1, sizeof(char));
+
+    strcpy(libhash[lhash].pin_names[ldepth][libhash[lhash].pin_count[ldepth] - 1], pin_name);
+}
+
 void comphash_init()
 {
     int i, j;
@@ -358,7 +400,7 @@ void get_comphash_indices(char *comp_name, int *chash, int *chashdepth)
 
     for (i = 0; i < COMP_HASHDEPTH; i++)
     {
-        if(comphash[key].name != NULL)
+        if(comphash[key].name[i] != NULL)
         {
             if(strcmp(comphash[*chash].name[i], comp_name) == 0)
             {

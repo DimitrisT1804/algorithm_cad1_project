@@ -1,6 +1,7 @@
 // lab 2 //
 #include "parser.h"
 #define LAB2
+#define DEBUG
 #define LINE_MAX 10000   // suppose maximum line length //
 
 // Function to process events and transition between states
@@ -351,6 +352,83 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
 }
 
 
+enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, char *event) 
+{
+    int i, j;
+    int chash, cdepth;
+    int lhash, ldepth;
+    static char *comp_name;
+    static char *cell_name;
+
+    //printf("Event is %s\n", event);
+    switch (currentState) 
+    {
+        case BEGIN:
+            if(strcmp(event, "CCs:") == 0)
+            {
+                return GET_COMP_NAME;
+            }
+            else
+            {
+                return BEGIN;
+            }
+
+        case GET_COMP_NAME:
+            if(strcmp(event, "Component:") == 0)
+                return BEGIN;
+
+            // for(i = 0; i < strlen(event); i++)
+            // {
+            //     if(event[i] == '/')
+            //     {
+            //         i = i+1;
+            //         cell_name = (char *) calloc(strlen( (event+i)) + 1, sizeof(char));
+            //         strcpy(cell_name, (event+i));
+            //         break;
+            //     }
+            // }
+            comp_name = (char *) calloc(strlen(event) + 1, sizeof(char));
+            strcpy(comp_name, event);
+
+            printf("COMP_NAME is %s\n", comp_name);
+            
+            get_comphash_indices(comp_name, &chash, &cdepth);
+            if(cdepth == -1)
+            {
+                printf("ERROR: There is not this component!\n");
+            }
+            else
+            {
+                lhash = comphash[chash].lib_type[cdepth];   // get cell pos in libhash //
+                ldepth = comphash[chash].lib_type_depth[cdepth];
+                cell_name = (char *) calloc(strlen(libhash[lhash].name[ldepth])+1, sizeof(char));
+                strcpy(cell_name, libhash[lhash].name[ldepth]);
+            }
+
+            return PIN;
+
+        case PIN:
+            //printf("Name is %s\n", event);
+            j = 0; 
+            for (i = 0; i < strlen(event); i++) // remove brackets from pin //
+            {
+                if(event[i] != '(' && event[i] != ')' && event[i] != '\n')
+                {
+                    event[j++] = event[i]; 
+                }
+            }
+            event[j] = '\0';
+
+            lib_add_pins(cell_name, event);
+
+            return GET_COMP_NAME;
+
+        default:
+            return currentState;
+    }
+}
+
+
 void print_gatepinhash()
 {
     int i, j, k;
@@ -392,7 +470,7 @@ void print_gatepinhash()
 
 void print_libhash()
 {
-    int i, j;
+    int i, j, k;
 
     for (i = 0; i < LIBHASH_SIZE; i++)
     {
@@ -406,6 +484,13 @@ void print_libhash()
                     printf("Cell is %s and type is Sequential with function %s\n", libhash[i].name[j], libhash[i].function[j]);
                 else
                     printf("ERROR TYPE\n");
+
+                printf("CCs are  ");
+                for(k = 0; k < libhash[i].pin_count[j]; k++)
+                {
+                    printf("%s ", libhash[i].pin_names[j][k]);
+                }
+                printf("\n");
             }
         }
     }
@@ -556,10 +641,12 @@ int main(int argc, char **argv)
     char word[50] = {'\0'};
     int pos = 0;
     int j = 0;
+    long int target_line = 0; 
 
     enum DoorState currentState = START;
     enum DoorState2 currentState2 = START;
     enum lib_parse currentState3 = WAIT;
+    enum proccess_lib_pins currentState4 = BEGIN;
 
     input_file = argv[1];
 
@@ -594,6 +681,7 @@ int main(int argc, char **argv)
         }
 
         test = strstr(line, "Components CCs:");
+        target_line = ftell(filename);  // keep track of this line //
         if(test != NULL)
         {
             printf("Test is %s\n", test);
@@ -631,10 +719,52 @@ int main(int argc, char **argv)
             j = i;
         }
     }
+    fseek(filename, 0, SEEK_SET);
 
+    while(fgets(line, sizeof(line)+1, filename) != NULL)
+    {
+        j = 0;
+        test = strstr(line, "Components CCs:");
+        //target_line = ftell(filename);  // keep track of this line //
+        if(test != NULL)
+        {
+            printf("Test is %s\n", test);
+            flag = 4;  // set the flag that the following line has IO //
+        }
+
+        while(j < strlen(line))
+        {
+            for(i = j; i < strlen(line)+1; i++)
+            {
+                if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
+                {
+                    word[pos] = '\0';
+                    break;
+                }
+                else
+                {
+                    word[pos] = line[i];
+                    pos++ ;
+                }
+            }
+            //printf("The word is %s\n", word);
+            pos = 0;
+            if(flag == 4)
+                currentState4 = proccess_lib_pins(currentState4, word);
+
+            while (line[i] == ' ') 
+            {
+                i++;
+            }
+            j = i;
+        }
+    }
+
+    #ifdef DEBUG
     print_gatepinhash();
     print_libhash();
     print_comphash();
+    #endif
 
     int count = 0;
 
@@ -652,7 +782,7 @@ int main(int argc, char **argv)
             }
         }
     }
-    printf("IO pins are is %d\n", count);
+    printf("IO pins are %d\n", count);
 
     count = 0;
     for(i = 0; i < COMPHASH_SIZE; i++)

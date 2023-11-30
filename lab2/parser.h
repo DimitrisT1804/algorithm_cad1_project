@@ -38,11 +38,20 @@ enum lib_parse
     FUNCTION
 };
 
+enum proccess_lib_pins
+{
+    BEGIN,
+    GET_COMP_NAME,
+    PIN
+};
+
 enum DoorState processEvent(enum DoorState currentState, char *event);
 
 enum DoorState2 processEvent2(enum DoorState2 currentState, char *event);
 
 enum lib_parse proccesLib(enum lib_parse currentState, char *event);
+
+enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, char *event);
 
 void print_gatepinhash();
 

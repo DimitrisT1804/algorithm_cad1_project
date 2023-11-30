@@ -94,6 +94,8 @@ void lib_add_function(char *cell_name, char *func_expr);
 
 void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth);
 
+void lib_add_pins (char *cell_name, char *pin_name);
+
 /* Compohash functions */
 
 void comphash_init();
