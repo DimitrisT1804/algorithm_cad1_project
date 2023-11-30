@@ -104,7 +104,7 @@ void Gatepins_add(char *pin_name, int pin_type)
     gatepinhash[key].type[i] = pin_type;
 
     gatepinhash[key].hashdepth++ ;  // add one pos in hashdepth //
-    printf("Component inserted succesfully\n");
+    printf("Gatepin inserted succesfully\n");
  }
 
 void get_gatepin_indices(char *pin_name, int *ghash, int *ghashdepth)
@@ -195,13 +195,14 @@ void Lib_init()
         for(j = 0; j < LIB_HASHDEPTH; j++)
         {
             libhash[i].name[j] = NULL;
+            libhash[i].function[j] = NULL;
             libhash[i].cell_type[j] = -1;  // init //
             libhash[i].pin_names[j] = NULL;
         }
     }
 }
 
-void Lib_add(char *cell_name, int cell_type)
+void Lib_add(char *cell_name, int cell_type, char *func_expr)
 {
     int i;
     unsigned int key;
@@ -224,12 +225,43 @@ void Lib_add(char *cell_name, int cell_type)
     libhash[key].name[i] = (char *) my_calloc((strlen(cell_name) + 1), sizeof(char));
     strcpy(libhash[key].name[i], cell_name);
 
+    libhash[key].function[i] = (char *) my_calloc(strlen(func_expr) + 1, sizeof(char));
+    strcpy(libhash[key].function[i], func_expr);
+
     //libhash[key].cell_type = (int *) my_realloc(libhash[key].cell_type, sizeof(int) * (libhash[key].hashdepth + 1) );
     libhash[key].cell_type[i] = cell_type;
 
     //libhash[key].hashdepth++ ;  // add depth in hash table //
     printf("Cell inserted succesfully on libhash\n");
 }
+
+// void lib_add_function(char *cell_name, char *func_expr)
+// {
+//     int lhash, lhashdepth;
+//     unsigned int key;
+//     int i;
+
+//     get_libhash_indices(cell_name, &lhash, &lhashdepth);
+//     if(lhashdepth == -1)
+//     {
+//         printf("pali error");
+//         return; // ERROR cell does not exists! //
+//     }
+//     if(libhash[key].function[i] != NULL)
+//     {
+//         return;
+//     }
+
+//     key = hash_function(cell_name, LIBHASH_SIZE);
+
+//     for (i = 0; i < LIB_HASHDEPTH; i++)
+//     {
+//         if(libhash[key].name[i] == NULL)
+//             break;
+//     }
+//     libhash[key].function[i] = (char *) my_calloc(strlen(func_expr) + 1, sizeof(char));
+//     strcpy(libhash[key].function[i], func_expr);
+// }
 
 void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth)
 {
@@ -270,7 +302,7 @@ void comphash_init()
     }
 }
 
-void comphash_add(char *comp_name, char *cell_name, int cell_type)
+void comphash_add(char *comp_name, char *cell_name, int cell_type, char *func_expr)
 {
     int i;
     unsigned int key;
@@ -288,13 +320,15 @@ void comphash_add(char *comp_name, char *cell_name, int cell_type)
     
     if(i == COMP_HASHDEPTH)
     {
+        printf("No space!\n");
         return; // no space available //
     }
 
-    comphash[key].name[i] = (char *) my_calloc(strlen(comp_name) + 1, sizeof(char));
+    comphash[key].name[i] = (char *) calloc(strlen(comp_name) + 1, sizeof(char));
     strcpy(comphash[key].name[i], comp_name);
 
     comphash[key].hashpresent[i] = 1;
+    printf("Comp inserted succesfully\n");
 
     get_libhash_indices(cell_name, &lhash, &ldepth);
     if(ldepth != -1)
@@ -305,7 +339,7 @@ void comphash_add(char *comp_name, char *cell_name, int cell_type)
         return;
     }
 
-    Lib_add(cell_name, cell_type);  // if it does not exist, add it and get lhash and ldepth //
+    Lib_add(cell_name, cell_type, func_expr);  // if it does not exist, add it and get lhash and ldepth //
     get_libhash_indices(cell_name, &lhash, &ldepth);
 
     comphash[key].lib_type[i] = lhash;

@@ -4,17 +4,17 @@
 #include "custom_functions.h"
 // #include "globals.h"
 
-#define HASH_SIZE 20
+#define HASH_SIZE 10000
 #define IO_TYPE 0
 #define WIRE 1
 
-#define LIBHASH_SIZE 10
-#define LIB_HASHDEPTH 5
+#define LIBHASH_SIZE 2000
+#define LIB_HASHDEPTH 10
 #define COMBINATIONAL 1
 #define SEQUENTIAL 2
 
-#define COMPHASH_SIZE 20
-#define COMP_HASHDEPTH 10
+#define COMPHASH_SIZE 4000
+#define COMP_HASHDEPTH 30
 
 struct gatepins
 {
@@ -45,6 +45,8 @@ struct library
     char **pin_names[LIB_HASHDEPTH];
 
     int pin_count[LIB_HASHDEPTH];
+
+    char *function[LIB_HASHDEPTH];
 
 };
 typedef struct library Lib;
@@ -86,7 +88,9 @@ unsigned int hash_function(const char *str, unsigned int num_buckets);
 /* libhash function */
 void Lib_init();
 
-void Lib_add(char *cell_name, int cell_type);
+void Lib_add(char *cell_name, int cell_type, char *func_expr);
+
+void lib_add_function(char *cell_name, char *func_expr);
 
 void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth);
 
@@ -94,7 +98,7 @@ void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth);
 
 void comphash_init();
 
-void comphash_add(char *comp_name, char *cell_name, int cell_type);
+void comphash_add(char *comp_name, char *cell_name, int cell_type, char *func_expr);
 
 void get_comphash_indices(char *comp_name, int *chash, int *chashdepth);
 

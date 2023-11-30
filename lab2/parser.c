@@ -1,6 +1,7 @@
 // lab 2 //
 #include "parser.h"
 #define LAB2
+#define LINE_MAX 10000   // suppose maximum line length //
 
 // Function to process events and transition between states
 enum DoorState processEvent(enum DoorState currentState, char *event) 
@@ -62,7 +63,7 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
             if(strcmp(event, "\n") == 0 || strcmp(event, " ") == 0)
                 return START2;
             size_event = strlen(event);
-            connection_pin = my_calloc(1, strlen(event) + 1);
+            connection_pin = my_calloc(strlen(event) + 1, sizeof(char));
             strcpy(connection_pin, event);
 
             return CONNECTIONS;
@@ -246,7 +247,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
                 }
             //     Lib_add(name_of_cell, cell_type);
             // }
-            comphash_add(comp_name, name_of_cell, cell_type);
+            // comphash_add(comp_name, name_of_cell, cell_type);
             // return WAIT;
             return WAIT_CCS;
 
@@ -294,6 +295,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
                 return COMPONENT_2;
             con_pin = (char *) my_calloc(strlen(event) + 1, sizeof(char));
             strcpy(con_pin, event);
+            //printf("check %s\n", event);
 
             return CONNECTED_PINS_2;
             
@@ -301,6 +303,11 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
 
         case CONNECTED_PINS_2:
             j = 0; 
+            //printf("get %s\n", event);
+            if(event[0] != '(')
+            {
+                printf("THIS IS ERROR\n");
+            }
             for (i = 0; i < strlen(event); i++) // remove brackets from pin //
             {
                 if(event[i] != '(' && event[i] != ')')
@@ -321,6 +328,8 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
             }
             Gatepin_reload(out_pin, con_pin);
 
+            return CONNECTED_PINS;
+
         case COMPONENT_2:
             if(strcmp(event, "Function:") == 0)
             {
@@ -332,9 +341,9 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
             }
 
         case FUNCTION:
+            // lib_add_function(name_of_cell, event);
+            comphash_add(comp_name, name_of_cell, cell_type, event);
             return WAIT;
-
-
 
         default:
             return currentState;
@@ -392,9 +401,9 @@ void print_libhash()
             if(libhash[i].name[j] != NULL)
             {
                 if(libhash[i].cell_type[j] == 1)
-                    printf("Cell is %s and type is Combinational\n", libhash[i].name[j]);
+                    printf("Cell is %s and type is Combinational with function %s\n", libhash[i].name[j], libhash[i].function[j]);
                 else if (libhash[i].cell_type[j] == 2)
-                    printf("Cell is %s and type is Sequential\n", libhash[i].name[j]);
+                    printf("Cell is %s and type is Sequential with function %s\n", libhash[i].name[j], libhash[i].function[j]);
                 else
                     printf("ERROR TYPE\n");
             }
@@ -656,7 +665,8 @@ int main(int argc, char **argv)
             }
         }
     }
-    printf("comps are is %d\n", count);
+
+    printf("comps are %d\n", count);
 
     Gatepins_free();
     fclose(filename);

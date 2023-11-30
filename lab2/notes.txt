@@ -1,0 +1,20 @@
+29/11:
+    working on save components and cells and connections of each pin on the output
+
+    NOT WORKING:
+        output pin keeps only one connection (fixed)
+        some components does not stored in hash (fixed)
+
+    To-Do:
+        I need to parse one time to count the sizes
+
+        I need to parse one more time to store the parent comp on each pin,
+        and to store pins in libhash
+        Make all structs with haspresent instead of string == NULL
+        Make gatepinhash with static HASHDEPTH instead of memory allocation
+
+
+
+    CAUTION: the maximum length size is 10000
+
+    Maybe on lpffir there are 402 cells, NOT 487
