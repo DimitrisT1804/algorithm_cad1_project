@@ -86,10 +86,12 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
             strcat(connection_pin, event);  // concut strings together to create connection pin //
             if(strcmp(event, "IO:") == 0)
             {
+                free(connection_pin);
                 return NAME2;
             }
             else if (strncmp(event, "#", 1) == 0)
             {
+                free(connection_pin);
                 return START2;
             }
             else
@@ -107,6 +109,7 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
                 free(connection_pin);
                 return CONNECTIONS_COMP;
             }
+            // free(connection_pin);
 
         default:
             return currentState;
@@ -201,9 +204,9 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
 
         case COMP_NAME:
             printf("Comp name is %s\n", event);
-            comp_name = (char *) calloc(sizeof(event)+1, sizeof(char));
+            comp_name = (char *) calloc(strlen(event)+1, sizeof(char));
             strcpy(comp_name, event);
-            free(comp_name);
+            // free(comp_name);
 
             return CELL_TYPE;
 
@@ -330,6 +333,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
                 //get_gatepin_indices(out_pin_final, &conhash, &conhashdepth); // find new ghash and ghashdepth //
             }
             Gatepin_reload(out_pin, con_pin);
+            free(con_pin);
 
             return CONNECTED_PINS;
 
@@ -346,6 +350,9 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
         case FUNCTION:
             // lib_add_function(name_of_cell, event);
             comphash_add(comp_name, name_of_cell, cell_type, event);
+            free(comp_name);
+            free(out_pin);
+            // free(con_pin);
             return WAIT;
 
         default:
@@ -494,9 +501,9 @@ void print_gatepinhash()
 
     for (i = 0; i < HASH_SIZE; i++)
     {
-        for(j = 0; j < gatepinhash[i].hashdepth - 1; j++)
+        for(j = 0; j < GP_HASHDEPTH; j++)
         {
-            if(gatepinhash[i].name[j] != NULL)
+            if(gatepinhash[i].hashpresent[j] != 0)
             {
                 //printf("The bucket %d on depth %d is %s of type %d\n", i, j, gatepinhash[i].name[j], gatepinhash[i].type[j]);
                 
@@ -504,7 +511,7 @@ void print_gatepinhash()
                 if(gatepinhash[i].type[j] == IO_TYPE)
                 {
                     printf("IO: %s CCs: ", gatepinhash[i].name[j]);
-                    for(k = 0; k < gatepinhash[i].connections_size[j] - 1; k++)
+                    for(k = 0; k < gatepinhash[i].connections_size[j]; k++)
                     {
                         if(gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]] != NULL)
                             printf("%s ", gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]]);
@@ -515,7 +522,7 @@ void print_gatepinhash()
                 else if (gatepinhash[i].type[j] == WIRE)
                 {
                     printf("WIRE: %s CCs: ", gatepinhash[i].name[j]);
-                    for(k = 0; k < gatepinhash[i].connections_size[j] - 1; k++)
+                    for(k = 0; k < gatepinhash[i].connections_size[j]; k++)
                     {
                         if(gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]] != NULL)
                             printf("%s ", gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]]);
@@ -847,9 +854,9 @@ int main(int argc, char **argv)
 
     for(i = 0; i < HASH_SIZE; i++)
     {
-        for(j = 0; j < gatepinhash[i].hashdepth - 1; j++)
+        for(j = 0; j < GP_HASHDEPTH; j++)
         {
-            if(gatepinhash[i].name[j] != NULL)
+            if(gatepinhash[i].hashpresent[j] != 0)
             {
                 if(gatepinhash[i].type[j] == IO_TYPE)
                 {

@@ -19,21 +19,23 @@
 
 struct gatepins
 {
-    char **name;
+    char *name[GP_HASHDEPTH];
 
-    int hashdepth;
+    //int hashdepth;
 
     // connections //
-    int **pinConn; // hash key //
-    int **pinConnDepth;  // depth that pins located //
-    int *connections_size;
+    int *pinConn[GP_HASHDEPTH]; // hash key //
+    int *pinConnDepth[GP_HASHDEPTH];  // depth that pins located //
+    int connections_size[GP_HASHDEPTH];
 
     // parent component //
     int parentComponent[GP_HASHDEPTH];
     int parentComponentDepth[GP_HASHDEPTH];
 
-    int *type;   /* what type this pin is --> 0: input / output
+    int type[GP_HASHDEPTH];   /* what type this pin is --> 0: input / output
                                              1: wire */
+
+    int hashpresent[GP_HASHDEPTH];
 };
 typedef struct gatepins gatePins;
 
