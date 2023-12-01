@@ -31,6 +31,10 @@ void Gatepins_init()
             //gatepinhash[i].pinConnDepth[j] = (int*) my_calloc(1, sizeof(int));
 
             gatepinhash[i].connections_size[j] = 1;
+
+            gatepinhash[i].parentComponent[j] = -1;
+
+            gatepinhash[i].parentComponentDepth[j] = -1;
         }
     }
 }
@@ -166,6 +170,33 @@ void Gatepin_reload(char *source_pin, char *connection_pin)
 }
 
 
+void gatepins_complete_parent()
+{
+    int i, j, k;
+    char *comp_name;
+    int chash, cdepth;
+
+    for (i = 0; i < HASH_SIZE; i++)
+    {
+        for (j = 0; j < gatepinhash[i].hashdepth - 1; j++)
+        {
+            if(gatepinhash[i].name[j] != NULL && gatepinhash[i].type[j] == WIRE)
+            {
+                for (k = strlen(gatepinhash[i].name[j]); gatepinhash[i].name[j][k] != '/'; k--);
+
+                comp_name = (char *) calloc(k+1, sizeof(char));
+                strncpy(comp_name, gatepinhash[i].name[j], k);
+            }
+            get_comphash_indices(comp_name, &chash, &cdepth);
+            if(cdepth != -1)
+            {
+                gatepinhash[i].parentComponent[j] = chash;
+                gatepinhash[i].parentComponentDepth[j] = cdepth;
+            }
+        }
+    }
+}
+
 
 unsigned int hash_function(const char *str, unsigned int num_buckets) 
 {
@@ -291,8 +322,7 @@ void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth)
 
 void lib_add_pins (char *cell_name, char *pin_name)
 {
-    int i, j;
-    unsigned int key;
+    int i;
     int lhash, ldepth;
 
     if(cell_name == NULL)

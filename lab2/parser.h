@@ -38,6 +38,13 @@ enum lib_parse
     FUNCTION
 };
 
+enum proccess_lib_pins_IO
+{
+    BEGIN_IO,
+    GET_COMP_NAME_IO,
+    PIN_IO
+};
+
 enum proccess_lib_pins
 {
     BEGIN,
@@ -50,6 +57,9 @@ enum DoorState processEvent(enum DoorState currentState, char *event);
 enum DoorState2 processEvent2(enum DoorState2 currentState, char *event);
 
 enum lib_parse proccesLib(enum lib_parse currentState, char *event);
+
+enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO currentState, char *event);
+
 
 enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, char *event);
 

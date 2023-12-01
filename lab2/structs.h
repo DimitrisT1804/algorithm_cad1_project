@@ -5,6 +5,7 @@
 // #include "globals.h"
 
 #define HASH_SIZE 10000
+#define GP_HASHDEPTH 100
 #define IO_TYPE 0
 #define WIRE 1
 
@@ -28,8 +29,8 @@ struct gatepins
     int *connections_size;
 
     // parent component //
-    int *parentComponent;
-    int *parentComponentDepth;
+    int parentComponent[GP_HASHDEPTH];
+    int parentComponentDepth[GP_HASHDEPTH];
 
     int *type;   /* what type this pin is --> 0: input / output
                                              1: wire */
@@ -81,6 +82,8 @@ void Gatepins_add(char *pin_name, int pin_type);
 void get_gatepin_indices(char *pin_name, int *ghash, int *ghashdepth);
 
 void Gatepin_reload(char *source_pin, char *connection_pin);
+
+void gatepins_complete_parent();
 
 unsigned int hash_function(const char *str, unsigned int num_buckets);
 

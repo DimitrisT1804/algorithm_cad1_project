@@ -9,7 +9,7 @@
         I need to parse one time to count the sizes
 
         I need to parse one more time to store the parent comp on each pin,
-        and to store pins in libhash
+        and to store pins in libhash (done)
         Make all structs with haspresent instead of string == NULL
         Make gatepinhash with static HASHDEPTH instead of memory allocation
 
@@ -18,3 +18,17 @@
     CAUTION: the maximum length size is 10000
 
     Maybe on lpffir there are 402 cells, NOT 487
+
+30/11:
+    working all structs
+    all structs has all the values
+    i fixed a problem that some pins and components kept in name '\n' in the end
+    i created a new function in gatepinhash that when parsing finishes it adds all 
+    parent components in the field in gatepinhash
+    i parsed a second time the input to store all pins of cells
+
+    ToDo:
+        Find a way to check the values of each struct correct
+        Parse one more time input to initialize the structs sizes
+        Make gatepinhash struct with HASHDEPTH instead of dynamically
+        transport all this in TCL SHELL

@@ -73,7 +73,7 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
             j = 0; 
             for (i = 0; i < strlen(event); i++) // remove brackets from pin //
             {
-                if(event[i] != '(' && event[i] != ')')
+                if(event[i] != '(' && event[i] != ')' && event[i] != '\n')
                 {
                     event[j++] = event[i]; 
                 }
@@ -183,9 +183,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
     static int cell_type = -1;
 
     static char *out_pin;
-    static char *out_pin_final;
     static char *con_pin;
-    static char *con_pin_final;
 
     //printf("Event is %s\n", event);
     switch (currentState) 
@@ -272,7 +270,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
             j = 0; 
             for (i = 0; i < strlen(event); i++) // remove brackets from pin //
             {
-                if(event[i] != '(' && event[i] != ')')
+                if(event[i] != '(' && event[i] != ')' && event[i] != '\n')
                 {
                     event[j++] = event[i]; 
                 }
@@ -311,7 +309,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
             }
             for (i = 0; i < strlen(event); i++) // remove brackets from pin //
             {
-                if(event[i] != '(' && event[i] != ')')
+                if(event[i] != '(' && event[i] != ')' && event[i] != '\n')
                 {
                     event[j++] = event[i]; 
                 }
@@ -351,6 +349,72 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
     }
 }
 
+/* Proccess Top-Level I/O CCs to find pins for library cells that does not exists on the components CCs*/
+enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO currentState, char *event)
+{
+    int i, j;
+    int chash, cdepth;
+    int lhash, ldepth;
+    static char *comp_name;
+    static char *cell_name;
+
+    //printf("Event is %s\n", event);
+    switch (currentState) 
+    {
+        case BEGIN_IO:
+            if(strcmp(event, "CCs:") == 0)
+            {
+                return GET_COMP_NAME_IO;
+            }
+            else
+            {
+                return BEGIN_IO;
+            }
+
+        case GET_COMP_NAME_IO:
+            if(strcmp(event, "IO:") == 0 || strncmp(event, "#", 1) == 0 || strncmp(event, "\n", 1) == 0)
+                return BEGIN_IO;
+
+            comp_name = (char *) calloc(strlen(event) + 1, sizeof(char));
+            strcpy(comp_name, event);
+
+            printf("COMP_NAME is %s\n", comp_name);
+            
+            get_comphash_indices(comp_name, &chash, &cdepth);
+            if(cdepth == -1)
+            {
+                printf("ERROR: There is not this component!\n");
+            }
+            else
+            {
+                lhash = comphash[chash].lib_type[cdepth];   // get cell pos in libhash //
+                ldepth = comphash[chash].lib_type_depth[cdepth];
+                cell_name = (char *) calloc(strlen(libhash[lhash].name[ldepth])+1, sizeof(char));
+                strcpy(cell_name, libhash[lhash].name[ldepth]);
+            }
+
+            return PIN_IO;
+
+        case PIN_IO:
+            j = 0; 
+            for (i = 0; i < strlen(event); i++) // remove brackets from pin //
+            {
+                if(event[i] != '(' && event[i] != ')' && event[i] != '\n')
+                {
+                    event[j++] = event[i]; 
+                }
+            }
+            event[j] = '\0';
+
+            lib_add_pins(cell_name, event);
+
+            return GET_COMP_NAME_IO;
+
+        default:
+            return currentState;
+    }
+}
+
 
 enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, char *event) 
 {
@@ -377,16 +441,6 @@ enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, ch
             if(strcmp(event, "Component:") == 0)
                 return BEGIN;
 
-            // for(i = 0; i < strlen(event); i++)
-            // {
-            //     if(event[i] == '/')
-            //     {
-            //         i = i+1;
-            //         cell_name = (char *) calloc(strlen( (event+i)) + 1, sizeof(char));
-            //         strcpy(cell_name, (event+i));
-            //         break;
-            //     }
-            // }
             comp_name = (char *) calloc(strlen(event) + 1, sizeof(char));
             strcpy(comp_name, event);
 
@@ -408,7 +462,6 @@ enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, ch
             return PIN;
 
         case PIN:
-            //printf("Name is %s\n", event);
             j = 0; 
             for (i = 0; i < strlen(event); i++) // remove brackets from pin //
             {
@@ -450,6 +503,7 @@ void print_gatepinhash()
                         if(gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]] != NULL)
                             printf("%s ", gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]]);
                     }
+                    //printf(" with parent: %s", comphash[gatepinhash[i].parentComponent[j]].name[gatepinhash[i].parentComponentDepth[j]]);
                     printf("\n");
                 }
                 else if (gatepinhash[i].type[j] == WIRE)
@@ -460,6 +514,7 @@ void print_gatepinhash()
                         if(gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]] != NULL)
                             printf("%s ", gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]]);
                     }
+                    printf("with parent: %s", comphash[gatepinhash[i].parentComponent[j]].name[gatepinhash[i].parentComponentDepth[j]]);
                     printf("\n");
                 }
             }
@@ -647,6 +702,7 @@ int main(int argc, char **argv)
     enum DoorState2 currentState2 = START;
     enum lib_parse currentState3 = WAIT;
     enum proccess_lib_pins currentState4 = BEGIN;
+    enum proccess_lib_pins currentState5 = BEGIN_IO;
 
     input_file = argv[1];
 
@@ -723,13 +779,20 @@ int main(int argc, char **argv)
 
     while(fgets(line, sizeof(line)+1, filename) != NULL)
     {
+
+        test = strstr(line, "# Top-Level I/O CCs:");
+        if(test != NULL)
+        {
+            printf("Test is %s\n", test);
+            flag = 4;  // set the flag that the following line has IO //
+        }
         j = 0;
         test = strstr(line, "Components CCs:");
         //target_line = ftell(filename);  // keep track of this line //
         if(test != NULL)
         {
             printf("Test is %s\n", test);
-            flag = 4;  // set the flag that the following line has IO //
+            flag = 5;  // set the flag that the following line has IO //
         }
 
         while(j < strlen(line))
@@ -750,7 +813,13 @@ int main(int argc, char **argv)
             //printf("The word is %s\n", word);
             pos = 0;
             if(flag == 4)
+            {
+                currentState5 = proccess_lib_pins_IO(currentState5, word);
+            }
+            else if (flag == 5)
+            {  
                 currentState4 = proccess_lib_pins(currentState4, word);
+            }
 
             while (line[i] == ' ') 
             {
@@ -759,6 +828,8 @@ int main(int argc, char **argv)
             j = i;
         }
     }
+
+    gatepins_complete_parent(); // it fills the parent positions in each pin //
 
     #ifdef DEBUG
     print_gatepinhash();
