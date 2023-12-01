@@ -66,6 +66,7 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
             size_event = strlen(event);
             connection_pin = my_calloc(strlen(event) + 1, sizeof(char));
             strcpy(connection_pin, event);
+            // free(connection_pin);
 
             return CONNECTIONS;
 
@@ -202,6 +203,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
             printf("Comp name is %s\n", event);
             comp_name = (char *) calloc(sizeof(event)+1, sizeof(char));
             strcpy(comp_name, event);
+            free(comp_name);
 
             return CELL_TYPE;
 
@@ -263,6 +265,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
         case OUTPUT_PIN_1:
             out_pin = (char *) my_calloc (strlen(event) + 1, sizeof(char));
             strcpy(out_pin, event);
+            // free(out_pin);
 
             return OUTPUT_PIN_2;
 
@@ -294,6 +297,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
                 return COMPONENT_2;
             con_pin = (char *) my_calloc(strlen(event) + 1, sizeof(char));
             strcpy(con_pin, event);
+            // free(con_pin);
             //printf("check %s\n", event);
 
             return CONNECTED_PINS_2;
@@ -381,6 +385,7 @@ enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO current
             printf("COMP_NAME is %s\n", comp_name);
             
             get_comphash_indices(comp_name, &chash, &cdepth);
+            free(comp_name);
             if(cdepth == -1)
             {
                 printf("ERROR: There is not this component!\n");
@@ -458,6 +463,7 @@ enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, ch
                 cell_name = (char *) calloc(strlen(libhash[lhash].name[ldepth])+1, sizeof(char));
                 strcpy(cell_name, libhash[lhash].name[ldepth]);
             }
+            free(comp_name);
 
             return PIN;
 
@@ -869,7 +875,8 @@ int main(int argc, char **argv)
 
     printf("comps are %d\n", count);
 
-    Gatepins_free();
+    //Gatepins_free();
+    structs_free();
     fclose(filename);
 
     return 0;

@@ -49,6 +49,8 @@ struct library
 
     char *function[LIB_HASHDEPTH];
 
+    int hashpresent[LIB_HASHDEPTH];
+
 };
 typedef struct library Lib;
 
@@ -99,6 +101,8 @@ void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth);
 
 void lib_add_pins (char *cell_name, char *pin_name);
 
+void libhash_free();
+
 /* Compohash functions */
 
 void comphash_init();
@@ -107,4 +111,9 @@ void comphash_add(char *comp_name, char *cell_name, int cell_type, char *func_ex
 
 void get_comphash_indices(char *comp_name, int *chash, int *chashdepth);
 
+void comphash_free();
+
+
 void structs_init();
+
+void structs_free();
