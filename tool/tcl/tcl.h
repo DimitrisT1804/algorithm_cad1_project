@@ -14,6 +14,7 @@
 #define ANSI_COLOR_RED     "\x1b[31m"   // define color codes to print TCL messages //
 #define ANSI_COLOR_RESET   "\x1b[0m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
 
 /* Global array that stores all custom, system and TCL commands for tab-completion */
 static const char *commands[] = 
@@ -53,10 +54,11 @@ static const char *commands[] =
     "env", "linsert", "platform::shell", "tcl_pkgPath", "zlib",
     "eof", "list", "proc", "tcl_platform",
     "error", "llength", "puts", "tcl_precision",
-    "errorCode", "lmap", "pwd", "tcl_rcFileName",
+    "errorCode", "lmap", "pwd", "tcl_rcFileName", 
 
     // custom commands //
-    "read_design", "list_IOs", 
+    "read_design", "list_IOs", "list_components", "report_component_function", 
+    "report_component_type", "list_component_CCS",
     
     NULL    // should terminate with NULL //
 

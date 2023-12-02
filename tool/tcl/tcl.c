@@ -100,6 +100,11 @@ int list_IO(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const*
     Tcl_Obj *currPin, *result_pins;
 
     result_pins = Tcl_NewListObj(0, NULL);
+    if(gatepinhash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
 
     for (i = 0; i < HASH_SIZE; i++)
     {
@@ -118,8 +123,212 @@ int list_IO(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const*
     }
     Tcl_SetObjResult(interp, result_pins);
 
-    // const char *resultString = Tcl_GetString(result_pins);
-    // printf("Result List: %s\n", resultString);
+    return TCL_OK;
+}
+
+int list_components(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i, j;
+    Tcl_Obj *currComp, *result_comps;
+
+    result_comps = Tcl_NewListObj(0, NULL);
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    for (i = 0; i < COMPHASH_SIZE; i++)
+    {
+        for(j = 0; j < COMP_HASHDEPTH; j++)
+        {
+            if(comphash[i].hashpresent[j] != 0)
+            {
+                currComp = Tcl_NewStringObj(comphash[i].name[j], strlen(comphash[i].name[j]));
+
+                Tcl_ListObjAppendElement(interp, result_comps, currComp);
+            }
+        }
+    }
+    Tcl_SetObjResult(interp, result_comps);
+
+    return TCL_OK;
+}
+
+int report_component_function(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int chash, cdepth;
+    int lhash, ldepth;
+    Tcl_Obj *function_obj;
+    char *currComp = NULL;
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "component");
+        return TCL_ERROR;
+    }
+
+    currComp = Tcl_GetString(objv[1]);
+
+    if(currComp == NULL)
+    {
+        return TCL_ERROR;
+    }
+
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    get_comphash_indices(currComp, &chash, &cdepth);
+    if(cdepth == -1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Component NOT found" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+    lhash = comphash[chash].lib_type[cdepth];
+    ldepth = comphash[chash].lib_type_depth[cdepth];
+
+    function_obj =  Tcl_NewStringObj(libhash[lhash].function[ldepth], -1);
+
+    Tcl_SetObjResult(interp, function_obj);
+
+    return TCL_OK;
+}
+
+int report_component_type(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int chash, cdepth;
+    int lhash, ldepth;
+    // Tcl_Obj *cell_type;
+    int cell_type;
+    char *currComp = NULL;
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "component");
+        return TCL_ERROR;
+    }
+
+    currComp = Tcl_GetString(objv[1]);
+
+    if(currComp == NULL)
+    {
+        return TCL_ERROR;
+    }
+
+    // cell_type = Tcl_NewListObj(0, NULL);
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    get_comphash_indices(currComp, &chash, &cdepth);
+    if(cdepth == -1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Component NOT found" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+    lhash = comphash[chash].lib_type[cdepth];
+    ldepth = comphash[chash].lib_type_depth[cdepth];
+
+    // cell_type =  Tcl_NewStringObj(libhash[lhash].name[ldepth], -1);
+    cell_type = libhash[lhash].cell_type[ldepth];
+
+    if(cell_type == COMBINATIONAL)
+    {
+        Tcl_SetObjResult(interp, Tcl_NewStringObj("Combinational", -1) );
+    }
+    else if(cell_type == SEQUENTIAL)
+    {
+        Tcl_SetObjResult(interp, Tcl_NewStringObj("Sequential", -1));
+    }
+    else
+    {
+        return TCL_ERROR;
+    }
+
+    // libhash[lhash].function[ldepth];
+    //Tcl_ListObjAppendElement(interp, cell_type, function_obj);
+
+    // Tcl_SetObjResult(interp, cell_type);
+
+    return TCL_OK;
+}
+
+int list_component_CCS(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i, j;
+    int chash, cdepth;
+    int lhash, ldepth;
+    int ghash, gdepth;
+    int gconhash, gcondepth;
+    Tcl_Obj *pin_connections, *pin_con_name;
+    char *currComp = NULL;
+    char *currPin = NULL;
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "component");
+        return TCL_ERROR;
+    }
+
+    currComp = Tcl_GetString(objv[1]);
+
+    if(currComp == NULL)
+    {
+        return TCL_ERROR;
+    }
+
+    pin_connections = Tcl_NewListObj(0, NULL);
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    get_comphash_indices(currComp, &chash, &cdepth);
+    if(cdepth == -1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Component NOT found" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+    lhash = comphash[chash].lib_type[cdepth];
+    ldepth = comphash[chash].lib_type_depth[cdepth];
+
+    for(i = 0; i < libhash[lhash].pin_count[ldepth]; i++)
+    {
+        currPin = (char *) my_calloc(strlen(currComp) + strlen(libhash[lhash].pin_names[ldepth][i]) + 1, sizeof(char));
+        strcpy(currPin, currComp);
+        strcat(currPin, libhash[lhash].pin_names[ldepth][i]);
+
+        get_gatepin_indices(currPin, &ghash, &gdepth);
+        if(gdepth == -1)
+        {
+            printf(ANSI_COLOR_RED "ERROR: gatepin NOT found" ANSI_COLOR_RESET);
+            return TCL_ERROR;
+        }
+        free(currPin);
+        if(gatepinhash[ghash].connections_size[gdepth] != 0)
+        {
+            for(j = 0; j < gatepinhash[ghash].connections_size[gdepth]; j++)
+            {
+                gconhash = gatepinhash[ghash].pinConn[gdepth][j];
+                gcondepth = gatepinhash[ghash].pinConnDepth[gdepth][j];
+
+                pin_con_name = Tcl_NewStringObj(gatepinhash[gconhash].name[gcondepth], strlen(gatepinhash[gconhash].name[gcondepth]));
+                Tcl_ListObjAppendElement(interp, pin_connections, pin_con_name);
+            }
+        }
+    }
+    // libhash[lhash].function[ldepth];
+    //Tcl_ListObjAppendElement(interp, pin_connections, function_obj);
+
+    Tcl_SetObjResult(interp, pin_connections);
+    // free(currComp);
+    // free(currPin);
 
     return TCL_OK;
 }
@@ -146,6 +355,10 @@ int main(int argc, char *argv[])
 
     Tcl_CreateObjCommand(interp, "read_design", read_design, NULL, NULL);
     Tcl_CreateObjCommand(interp, "list_IOs", list_IO, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "list_components", list_components, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "report_component_function", report_component_function, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "report_component_type", report_component_type, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "list_component_CCS", list_component_CCS, NULL, NULL);
 
     while (1)
     {
@@ -181,8 +394,12 @@ int main(int argc, char *argv[])
         if (strcmp(command, "quit") == 0)
         {
             Tcl_DeleteInterp(interp);
-            // Gatepins_free();
-            structs_free();
+            if(gatepinhash != NULL)
+            {
+                structs_free();
+            }
+            printf(ANSI_COLOR_BLUE "EDA TOOL EXITING\n" ANSI_COLOR_RESET);
+            Tcl_Finalize();
 
             return EXIT_SUCCESS;
         }

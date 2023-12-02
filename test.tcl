@@ -1,2 +1,4 @@
-read_design lab2/c17.practicalformat
+read_design practical_formats/c5315.practicalformat
 list_IOs
+list_components
+list_component_CCS c5315/g15640__1617
