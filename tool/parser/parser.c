@@ -1,6 +1,6 @@
 // lab 2 //
 #include "parser.h"
-#define LAB2
+// #define LAB2
 #define DEBUG
 #define LINE_MAX 15000   // suppose maximum line length //
 
@@ -589,32 +589,41 @@ void print_comphash()
 #ifndef LAB2
 void call_parser(char *input_file)
 {
+    // char *input_file = NULL;
     FILE *filename;
     char line[LINE_MAX];
+    // char *line = NULL;
     char *test;
     int flag = 0;
     int i = 0;
     char word[50] = {'\0'};
     int pos = 0;
     int j = 0;
+    long int target_line = 0; 
+    size_t line_size = 0;
 
     enum DoorState currentState = START;
     enum DoorState2 currentState2 = START;
     enum lib_parse currentState3 = WAIT;
+    enum proccess_lib_pins currentState4 = BEGIN;
+    enum proccess_lib_pins currentState5 = BEGIN_IO;
+
+    //input_file = argv[1];
+
 
     filename = fopen(input_file, "r");  // open file only for reading //
 
     if(filename == NULL)
     {
         printf("Cannot open file\n");
-        return; // cannot open this file //
+        return;  // cannot open this file //
     }
 
     // initialize structs //
-    Gatepins_init();
-    Lib_init();
+    structs_init();
 
     while(fgets(line, sizeof(line)+1, filename) != NULL)
+    //while( (getline(&line, &line_size, filename) ) != -1)
     {
         //line[sizeof(line)+1] = '\0';
         j = 0;
@@ -633,6 +642,7 @@ void call_parser(char *input_file)
         }
 
         test = strstr(line, "Components CCs:");
+        target_line = ftell(filename);  // keep track of this line //
         if(test != NULL)
         {
             printf("Test is %s\n", test);
@@ -670,17 +680,75 @@ void call_parser(char *input_file)
             j = i;
         }
     }
+    fseek(filename, 0, SEEK_SET);
 
+    while(fgets(line, sizeof(line) + 1, filename) != NULL)
+    {
+
+        test = strstr(line, "# Top-Level I/O CCs:");
+        if(test != NULL)
+        {
+            printf("Test is %s\n", test);
+            flag = 4;  // set the flag that the following line has IO //
+        }
+        j = 0;
+        test = strstr(line, "Components CCs:");
+        //target_line = ftell(filename);  // keep track of this line //
+        if(test != NULL)
+        {
+            printf("Test is %s\n", test);
+            flag = 5;  // set the flag that the following line has IO //
+        }
+
+        while(j < strlen(line))
+        {
+            for(i = j; i < strlen(line)+1; i++)
+            {
+                if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
+                {
+                    word[pos] = '\0';
+                    break;
+                }
+                else
+                {
+                    word[pos] = line[i];
+                    pos++ ;
+                }
+            }
+            //printf("The word is %s\n", word);
+            pos = 0;
+            if(flag == 4)
+            {
+                currentState5 = proccess_lib_pins_IO(currentState5, word);
+            }
+            else if (flag == 5)
+            {  
+                currentState4 = proccess_lib_pins(currentState4, word);
+            }
+
+            while (line[i] == ' ') 
+            {
+                i++;
+            }
+            j = i;
+        }
+    }
+
+    gatepins_complete_parent(); // it fills the parent positions in each pin //
+
+    #ifdef DEBUG
     print_gatepinhash();
     print_libhash();
+    print_comphash();
+    #endif
 
-    int count = 0, count_2 = 0;
+    int count = 0;
 
     for(i = 0; i < HASH_SIZE; i++)
     {
-        for(j = 0; j < gatepinhash[i].hashdepth - 1; j++)
+        for(j = 0; j < GP_HASHDEPTH; j++)
         {
-            if(gatepinhash[i].name[j] != NULL)
+            if(gatepinhash[i].hashpresent[j] != 0)
             {
                 if(gatepinhash[i].type[j] == IO_TYPE)
                 {
@@ -690,9 +758,24 @@ void call_parser(char *input_file)
             }
         }
     }
-    printf("Count is %d and count_2 is %d\n", count, count_2);
+    printf("IO pins are %d\n", count);
 
-    // Gatepins_free();
+    count = 0;
+    for(i = 0; i < COMPHASH_SIZE; i++)
+    {
+        for(j = 0; j < COMP_HASHDEPTH; j++)
+        {
+            if(comphash[i].hashpresent[j] == 1)
+            {
+                count++;
+            }
+        }
+    }
+
+    printf("comps are %d\n", count);
+
+    // structs_free();
+    // free(line);
     fclose(filename);
 }
 #endif
@@ -890,7 +973,6 @@ int main(int argc, char **argv)
     fclose(filename);
 
     return 0;
-
 }
 
 #endif

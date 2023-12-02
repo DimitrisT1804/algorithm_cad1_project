@@ -7,14 +7,14 @@ arguments=("c17.practicalformat" "c432.practicalformat" "c499.practicalformat"
 "PID.practicalformat")
 
 for arg in "${arguments[@]}"; do
-    # Run hw2 with the current argument
+    # Run hw2 with the current argument using valgrind
     echo -e "--------- Input file is $arg ---------\n"
-    output=$(../hw2 "$arg")
+    valgrind_output=$(valgrind --leak-check=full --show-leak-kinds=all ../hw2 "$arg" 2>&1)
 
     # Capture the IO pin number from the output
-    io_pin=$(echo "$output" | grep -oP 'IO pins are \K\d+')
+    io_pin=$(echo "$valgrind_output" | grep -oP 'IO pins are \K\d+')
 
-    comp_num=$(echo "$output" | grep -oP 'comps are \K\d+')
+    comp_num=$(echo "$valgrind_output" | grep -oP 'comps are \K\d+')
 
     # Check the exit status
     exit_status=$?
@@ -32,5 +32,3 @@ for arg in "${arguments[@]}"; do
     # Sleep for a while before the next iteration
     sleep 1
 done
-
-

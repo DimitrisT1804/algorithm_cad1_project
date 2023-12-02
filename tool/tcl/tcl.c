@@ -75,6 +75,55 @@ void help_command()
     printf("\n");
 }
 
+int read_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    char *filename;
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "filename");
+        return TCL_ERROR;
+    }
+    
+    filename = Tcl_GetString(objv[1]);
+
+    printf("The filename is %s\n", filename);
+
+    // call the parser //
+    call_parser(filename);
+
+    return TCL_OK;
+}
+
+int list_IO(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i, j;
+    Tcl_Obj *currPin, *result_pins;
+
+    result_pins = Tcl_NewListObj(0, NULL);
+
+    for (i = 0; i < HASH_SIZE; i++)
+    {
+        for(j = 0; j < GP_HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] != 0)
+            {
+                if(gatepinhash[i].type[j] == IO_TYPE)
+                {
+                    currPin = Tcl_NewStringObj(gatepinhash[i].name[j], strlen(gatepinhash[i].name[j]));
+
+                    Tcl_ListObjAppendElement(interp, result_pins, currPin);
+                }
+            }
+        }
+    }
+    Tcl_SetObjResult(interp, result_pins);
+
+    // const char *resultString = Tcl_GetString(result_pins);
+    // printf("Result List: %s\n", resultString);
+
+    return TCL_OK;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -94,6 +143,9 @@ int main(int argc, char *argv[])
     rl_attempted_completion_function = custom_completer;
     rl_completion_append_character = '\0';  // should not apply ' ' in the end of word //
     using_history(); // initialise history functions //
+
+    Tcl_CreateObjCommand(interp, "read_design", read_design, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "list_IOs", list_IO, NULL, NULL);
 
     while (1)
     {
@@ -128,6 +180,10 @@ int main(int argc, char *argv[])
         // handle two basic commands: history and quit //
         if (strcmp(command, "quit") == 0)
         {
+            Tcl_DeleteInterp(interp);
+            // Gatepins_free();
+            structs_free();
+
             return EXIT_SUCCESS;
         }
         else if (strcmp(command, "history") == 0)
@@ -165,6 +221,7 @@ int main(int argc, char *argv[])
             if (Tcl_Eval(interp, command) == TCL_ERROR)
             {
                 printf(ANSI_COLOR_RED "%s\n" ANSI_COLOR_RESET, Tcl_GetStringResult(interp));
+                //Tcl_Free(Tcl_GetObjResult(interp));
             }
             else
             {
