@@ -32,3 +32,12 @@
         Parse one more time input to initialize the structs sizes
         Make gatepinhash struct with HASHDEPTH instead of dynamically
         transport all this in TCL SHELL
+
+02/11:
+    Everything works fine
+    All functions are correct for every design
+
+    ToDo:
+       Parse one more time input to initialize the structs sizes 
+       check valgrind again for memory leaks
+       check each result of function to do all printf in TCL

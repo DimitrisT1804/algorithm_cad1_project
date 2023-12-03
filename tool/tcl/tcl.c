@@ -83,6 +83,12 @@ int read_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *co
         Tcl_WrongNumArgs(interp, 1, objv, "filename");
         return TCL_ERROR;
     }
+
+    if(gatepinhash != NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Already a design has been loaded!\nYou can call ""clear_design"" to clear current design!" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
     
     filename = Tcl_GetString(objv[1]);
 
@@ -333,6 +339,90 @@ int list_component_CCS(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_
     return TCL_OK;
 }
 
+int list_IO_CCS(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i;
+    int ghash, gdepth;
+    int gconhash, gcondepth;
+    Tcl_Obj *pin_connections, *result_pin;
+    char *currPin = NULL;
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "component");
+        return TCL_ERROR;
+    }
+
+    currPin = Tcl_GetString(objv[1]);
+
+    if(currPin == NULL)
+    {
+        return TCL_ERROR;
+    }
+
+    pin_connections = Tcl_NewListObj(0, NULL);
+    if(gatepinhash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    get_gatepin_indices(currPin, &ghash, &gdepth);
+    if(gdepth == -1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Input pin does not exist!" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    if( (gatepinhash[ghash].type[gdepth] != IO_TYPE))
+    {
+        printf(ANSI_COLOR_RED "ERROR: Given pin is not an IO pin" ANSI_COLOR_RESET);
+        return TCL_ERROR;  
+    }
+    else if((gatepinhash[ghash].connections_size[gdepth]) == 0)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Given pin has not connections" ANSI_COLOR_RESET);
+        return TCL_ERROR;   
+    }
+
+    for(i = 0; i < gatepinhash[ghash].connections_size[gdepth]; i++)
+    {
+        gconhash = gatepinhash[ghash].pinConn[gdepth][i];
+        gcondepth = gatepinhash[ghash].pinConnDepth[gdepth][i];
+
+        result_pin = Tcl_NewStringObj(gatepinhash[gconhash].name[gcondepth], strlen(gatepinhash[gconhash].name[gcondepth]));
+        Tcl_ListObjAppendElement(interp, pin_connections, result_pin);
+    }
+
+    Tcl_SetObjResult(interp, pin_connections);
+
+
+    return TCL_OK;
+}
+
+int clear_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    if(objc != 1)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "");
+        return TCL_ERROR;
+    }
+
+    if(gatepinhash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded, nothing to clear!" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+    structs_free();
+    gatepinhash = NULL;
+    comphash = NULL;
+    libhash = NULL;
+
+    printf(ANSI_COLOR_GREEN "Design succesfully cleared!" ANSI_COLOR_RESET);
+
+    return TCL_OK;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -359,6 +449,8 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "report_component_function", report_component_function, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_component_type", report_component_type, NULL, NULL);
     Tcl_CreateObjCommand(interp, "list_component_CCS", list_component_CCS, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "list_IO_CCS", list_IO_CCS, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "clear_design", clear_design, NULL, NULL);
 
     while (1)
     {
