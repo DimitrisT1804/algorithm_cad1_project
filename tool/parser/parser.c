@@ -4,6 +4,119 @@
 #define DEBUG
 #define LINE_MAX 15000   // suppose maximum line length //
 
+
+enum DoorState2 countIOS(enum DoorState2 currentState, char *event) 
+{
+    switch (currentState) 
+    {
+        case START2:
+            if(strcmp(event, "IO:") == 0)
+            {
+                return NAME2;
+            }
+            else
+            {
+                return START2;
+            }
+
+        case NAME2:
+            gatepinhash_size++;
+            return CCS;
+
+        case CCS:
+            //printf("Name is %s\n", event);
+            return CONNECTIONS_COMP;
+
+        case CONNECTIONS_COMP:
+            if(strcmp(event, "\n") == 0 || strcmp(event, " ") == 0)
+                return START2;
+
+            gatepinhash_size++;
+            return CONNECTIONS;
+
+        case CONNECTIONS:       // if there are no connections we should not take it !!!!!
+            if(strcmp(event, "IO:") == 0)
+            {
+                return NAME2;
+            }
+            else if (strncmp(event, "#", 1) == 0)
+            {
+                return START2;
+            }
+            else
+            {
+                return CONNECTIONS_COMP;
+            }
+
+        default:
+            return currentState;
+    }
+}
+
+enum lib_parse count_components_CCS(enum lib_parse currentState, char *event) 
+{
+    static int ghash, ghashdepth;
+    int conhash, conhashdepth;
+    int i, j;
+    static char name_of_cell[LINE_MAX];
+    static char cell_type_name[LINE_MAX];
+    static char *comp_name;
+    static int cell_type = -1;
+
+    static char *out_pin;
+    static char *con_pin;
+
+    //printf("Event is %s\n", event);
+    switch (currentState) 
+    {
+        case WAIT:
+            if(strcmp(event, "Component:") == 0)
+            {
+                comphash_size++;
+                return WAIT_CCS;
+            }
+            else
+            {
+                return WAIT;
+            }
+
+        case WAIT_CCS:
+            if (strcmp(event, "CCs:") == 0)
+            {
+                return OUTPUT_PIN_1;
+            }
+            else
+            {
+                return WAIT_CCS;
+            }
+
+        case OUTPUT_PIN_1:
+            gatepinhash_size++;
+            return OUTPUT_PIN_2;
+
+        case OUTPUT_PIN_2:
+            
+            return CONNECTED_PINS;
+
+        case CONNECTED_PINS:
+            if(strcmp(event, "Component:") == 0)
+                return WAIT;
+
+            gatepinhash_size++;
+
+            return CONNECTED_PINS_2;
+            
+
+
+        case CONNECTED_PINS_2:
+
+            return CONNECTED_PINS;
+
+        default:
+            return currentState;
+    }
+}
+
 // Function to process events and transition between states
 enum DoorState processEvent(enum DoorState currentState, char *event) 
 {
@@ -609,6 +722,8 @@ void call_parser(char *input_file)
     enum proccess_lib_pins currentState5 = BEGIN_IO;
 
     //input_file = argv[1];
+    gatepinhash_size = 0;
+    comphash_size = 0;
 
 
     filename = fopen(input_file, "r");  // open file only for reading //
@@ -621,6 +736,59 @@ void call_parser(char *input_file)
 
     // initialize structs //
     structs_init();
+
+    while(fgets(line, sizeof(line)+1, filename) != NULL)
+    //while( (getline(&line, &line_size, filename) ) != -1)
+    {
+        //line[sizeof(line)+1] = '\0';
+        j = 0;
+        test = strstr(line, "Top-Level I/O CCs:");
+        if(test != NULL)
+        {
+            printf("Test is %s\n", test);
+            flag = 1;  // set the flag that the following line has IO //
+        }
+
+        test = strstr(line, "Components CCs:");
+        target_line = ftell(filename);  // keep track of this line //
+        if(test != NULL)
+        {
+            printf("Test is %s\n", test);
+            flag = 3;  // set the flag that the following line has IO //
+        }
+
+        while(j < strlen(line))
+        {
+            for(i = j; i < strlen(line)+1; i++)
+            {
+                if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
+                {
+                    word[pos] = '\0';
+                    break;
+                }
+                else
+                {
+                    word[pos] = line[i];
+                    pos++ ;
+                }
+            }
+            //printf("The word is %s\n", word);
+            pos = 0;
+            if(flag == 1)
+                currentState2 = countIOS(currentState2, word);
+            else if (flag == 3)
+                currentState2 = count_components_CCS(currentState2, word);
+            // else if (flag == 3)
+            //     currentState3 = proccesLib(currentState3, word);
+
+            while (line[i] == ' ') 
+            {
+                i++;
+            }
+            j = i;
+        }
+    }
+    fseek(filename, 0, SEEK_SET);
 
     while(fgets(line, sizeof(line)+1, filename) != NULL)
     //while( (getline(&line, &line_size, filename) ) != -1)
@@ -743,6 +911,7 @@ void call_parser(char *input_file)
     #endif
 
     int count = 0;
+    int count2 = 0;
 
     for(i = 0; i < HASH_SIZE; i++)
     {
@@ -754,11 +923,11 @@ void call_parser(char *input_file)
                 {
                     count++ ;
                 }
-
+                count2++;
             }
         }
     }
-    printf("IO pins are %d\n", count);
+    printf("IO pins are %d all pins are %d\n", count, count2);
 
     count = 0;
     for(i = 0; i < COMPHASH_SIZE; i++)
@@ -773,6 +942,7 @@ void call_parser(char *input_file)
     }
 
     printf("comps are %d\n", count);
+    printf("IO pins size is %d and compsize is %d\n", gatepinhash_size, comphash_size);
 
     // structs_free();
     // free(line);

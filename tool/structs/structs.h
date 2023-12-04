@@ -71,10 +71,12 @@ typedef struct components Components;
 
 
 gatePins *gatepinhash;
+int gatepinhash_size;
 
 Lib *libhash; 
 
 Components *comphash;
+int comphash_size;
 
 /* gatepinhash functions*/
 void Gatepins_init();

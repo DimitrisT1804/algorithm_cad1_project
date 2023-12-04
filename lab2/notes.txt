@@ -15,7 +15,7 @@
 
 
 
-    CAUTION: the maximum length size is 10000
+    CAUTION: the maximum length size is 15000
 
     Maybe on lpffir there are 402 cells, NOT 487
 
