@@ -1,7 +1,7 @@
 // lab 2 //
 #include "parser.h"
 // #define LAB2
-#define DEBUG
+// #define DEBUG
 #define LINE_MAX 15000   // suppose maximum line length //
 
 
@@ -133,7 +133,9 @@ enum DoorState processEvent(enum DoorState currentState, char *event)
             }
 
         case NAME:
+            #ifdef DEBUG
             printf("Name is %s\n", event);
+            #endif
             Gatepins_add(event, IO_TYPE);
             
             return START;
@@ -165,7 +167,9 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
             }
 
         case NAME2:
+            #ifdef DEBUG
             printf("Name is %s\n", event);
+            #endif
             strcpy(IO_pin, event);
             return CCS;
 
@@ -209,14 +213,18 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
             }
             else
             {
+                #ifdef DEBUG
                 printf("Connections is %s\n", connection_pin);
+                #endif
                 get_gatepin_indices(connection_pin, &ghash, &ghashdepth);
                 if(ghashdepth == -1)    // it does not exist in hash //
                 {
                     Gatepins_add(connection_pin, WIRE);
                     //get_gatepin_indices(event, &ghash, &ghashdepth);
                 }
+                #ifdef DEBUG
                 printf("Event is %s IOPin is %s and connection_pins is %s\n", event, IO_pin, connection_pin);
+                #endif
                 Gatepin_reload(IO_pin, connection_pin);
 
                 free(connection_pin);
@@ -316,7 +324,9 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
             }
 
         case COMP_NAME:
+            #ifdef DEBUG
             printf("Comp name is %s\n", event);
+            #endif
             comp_name = (char *) calloc(strlen(event)+1, sizeof(char));
             strcpy(comp_name, event);
             // free(comp_name);
@@ -334,7 +344,9 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
             }
 
         case CELL_NAME:
+            #ifdef DEBUG
             printf("Cell Name is %s\n", event);
+            #endif
             strcpy(name_of_cell, event);
             return CELL_TIMING_TYPE;
 
@@ -502,7 +514,9 @@ enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO current
             comp_name = (char *) calloc(strlen(event) + 1, sizeof(char));
             strcpy(comp_name, event);
 
+            #ifdef DEBUG
             printf("COMP_NAME is %s\n", comp_name);
+            #endif
             
             get_comphash_indices(comp_name, &chash, &cdepth);
             free(comp_name);
@@ -569,7 +583,9 @@ enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, ch
             comp_name = (char *) calloc(strlen(event) + 1, sizeof(char));
             strcpy(comp_name, event);
 
+            #ifdef DEBUG
             printf("COMP_NAME is %s\n", comp_name);
+            #endif
             
             get_comphash_indices(comp_name, &chash, &cdepth);
             if(cdepth == -1)
@@ -745,7 +761,7 @@ void call_parser(char *input_file)
         test = strstr(line, "Top-Level I/O CCs:");
         if(test != NULL)
         {
-            printf("Test is %s\n", test);
+            //printf("Test is %s\n", test);
             flag = 1;  // set the flag that the following line has IO //
         }
 
@@ -753,7 +769,7 @@ void call_parser(char *input_file)
         target_line = ftell(filename);  // keep track of this line //
         if(test != NULL)
         {
-            printf("Test is %s\n", test);
+            //printf("Test is %s\n", test);
             flag = 3;  // set the flag that the following line has IO //
         }
 
@@ -798,14 +814,14 @@ void call_parser(char *input_file)
         test = strstr(line, "Top-Level I/O Ports:");
         if(test != NULL)
         {
-            printf("Test is %s\n", test);
+            //printf("Test is %s\n", test);
             flag = 1;  // set the flag that the following line has IO //
         }
 
         test = strstr(line, "Top-Level I/O CCs:");
         if(test != NULL)
         {
-            printf("Test is %s\n", test);
+            //printf("Test is %s\n", test);
             flag = 2;  // set the flag that the following line has IO //
         }
 
@@ -813,7 +829,7 @@ void call_parser(char *input_file)
         target_line = ftell(filename);  // keep track of this line //
         if(test != NULL)
         {
-            printf("Test is %s\n", test);
+            //printf("Test is %s\n", test);
             flag = 3;  // set the flag that the following line has IO //
         }
 
@@ -856,7 +872,7 @@ void call_parser(char *input_file)
         test = strstr(line, "# Top-Level I/O CCs:");
         if(test != NULL)
         {
-            printf("Test is %s\n", test);
+            //printf("Test is %s\n", test);
             flag = 4;  // set the flag that the following line has IO //
         }
         j = 0;
@@ -864,7 +880,7 @@ void call_parser(char *input_file)
         //target_line = ftell(filename);  // keep track of this line //
         if(test != NULL)
         {
-            printf("Test is %s\n", test);
+            //printf("Test is %s\n", test);
             flag = 5;  // set the flag that the following line has IO //
         }
 

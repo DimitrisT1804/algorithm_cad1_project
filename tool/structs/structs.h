@@ -16,6 +16,7 @@
 
 #define COMPHASH_SIZE 4000
 #define COMP_HASHDEPTH 30
+// #define DEBUG
 
 struct gatepins
 {

@@ -110,7 +110,9 @@ void Gatepins_add(char *pin_name, int pin_type)
     // gatepinhash[key].hashdepth++ ;  // add one pos in hashdepth //
     gatepinhash[key].hashpresent[i] = 1;
 
+    #ifdef DEBUG
     printf("Gatepin inserted succesfully\n");
+    #endif
  }
 
 void get_gatepin_indices(char *pin_name, int *ghash, int *ghashdepth)
@@ -281,7 +283,9 @@ void Lib_add(char *cell_name, int cell_type, char *func_expr)
     libhash[key].hashpresent[i] = 1;
 
     //libhash[key].hashdepth++ ;  // add depth in hash table //
+    #ifdef DEBUG
     printf("Cell inserted succesfully on libhash\n");
+    #endif
 }
 
 // void lib_add_function(char *cell_name, char *func_expr)
@@ -444,7 +448,9 @@ void comphash_add(char *comp_name, char *cell_name, int cell_type, char *func_ex
     strcpy(comphash[key].name[i], comp_name);
 
     comphash[key].hashpresent[i] = 1;
+    #ifdef DEBUG
     printf("Comp inserted succesfully\n");
+    #endif
 
     get_libhash_indices(cell_name, &lhash, &ldepth);
     if(ldepth != -1)

@@ -92,7 +92,9 @@ int read_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *co
     
     filename = Tcl_GetString(objv[1]);
 
+    #ifdef DEBUG
     printf("The filename is %s\n", filename);
+    #endif
 
     // call the parser //
     call_parser(filename);
@@ -327,11 +329,13 @@ int list_component_CCS(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_
                 pin_con_name = Tcl_NewStringObj(gatepinhash[gconhash].name[gcondepth], strlen(gatepinhash[gconhash].name[gcondepth]));
                 Tcl_ListObjAppendElement(interp, pin_connections, pin_con_name);
             }
+            break;
         }
     }
     // libhash[lhash].function[ldepth];
     //Tcl_ListObjAppendElement(interp, pin_connections, function_obj);
 
+    printf(ANSI_COLOR_BLUE "Successors of pin %s are: " ANSI_COLOR_RESET , gatepinhash[ghash].name[gdepth]);
     Tcl_SetObjResult(interp, pin_connections);
     // free(currComp);
     // free(currPin);
