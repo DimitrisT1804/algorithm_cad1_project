@@ -74,3 +74,5 @@ void call_parser(char *input_file);
 
 void print_comphash();
 
+void print_cells();
+

@@ -9,7 +9,7 @@
 #define IO_TYPE 0
 #define WIRE 1
 
-#define LIBHASH_SIZE 2000
+// #define LIBHASH_SIZE 2000
 #define LIB_HASHDEPTH 0
 #define COMBINATIONAL 1
 #define SEQUENTIAL 2
@@ -76,6 +76,9 @@ gatePins *gatepinhash;
 int gatepinhash_size;
 
 Lib *libhash; 
+int libhash_size;
+char **libarray;
+int libarray_size;
 
 Components *comphash;
 int comphash_size;
@@ -108,6 +111,8 @@ void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth);
 void lib_add_pins (char *cell_name, char *pin_name);
 
 void libhash_free();
+
+void add_cell(char *cell_name);
 
 /* Compohash functions */
 

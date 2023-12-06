@@ -73,12 +73,23 @@ enum lib_parse count_components_CCS(enum lib_parse currentState, char *event)
             if(strcmp(event, "Component:") == 0)
             {
                 comphash_size++;
-                return WAIT_CCS;
+                return CELL_TYPE;
             }
             else
             {
                 return WAIT;
             }
+
+        case CELL_TYPE:
+            if(strcmp(event, "Cell_Type:") == 0)
+            {
+                return CELL_NAME;
+            }
+            return CELL_TYPE;
+        
+        case CELL_NAME:
+            add_cell(event);
+            return WAIT_CCS;
 
         case WAIT_CCS:
             if (strcmp(event, "CCs:") == 0)
@@ -669,7 +680,7 @@ void print_libhash()
 {
     int i, j, k;
 
-    for (i = 0; i < LIBHASH_SIZE; i++)
+    for (i = 0; i < libhash_size; i++)
     {
         for (j = 0; j < HASHDEPTH; j++)
         {
@@ -715,6 +726,20 @@ void print_comphash()
     }
 }
 
+void print_cells()
+{
+    int i, j;
+
+    for(i = 0; i < libarray_size; i++)
+    {
+        if(libarray[i] != NULL)
+        {
+            printf("Cell is %s\n", libarray[i]);
+        }
+    }
+    printf("Size is %d\n", libarray_size);
+}
+
 #ifndef LAB2
 void call_parser(char *input_file)
 {
@@ -737,11 +762,6 @@ void call_parser(char *input_file)
     enum proccess_lib_pins currentState4 = BEGIN;
     enum proccess_lib_pins currentState5 = BEGIN_IO;
 
-    //input_file = argv[1];
-    gatepinhash_size = 0;
-    comphash_size = 0;
-
-
     filename = fopen(input_file, "r");  // open file only for reading //
 
     if(filename == NULL)
@@ -751,6 +771,9 @@ void call_parser(char *input_file)
     }
 
     // initialize structs //
+    comphash_size = 0;
+    libhash_size = 0;
+    gatepinhash_size = 0;
     
 
     while(fgets(line, sizeof(line)+1, filename) != NULL)
@@ -806,7 +829,9 @@ void call_parser(char *input_file)
     }
     fseek(filename, 0, SEEK_SET);
     comphash_size++;
+    libhash_size++;
     structs_init();
+
 
     while(fgets(line, sizeof(line)+1, filename) != NULL)
     //while( (getline(&line, &line_size, filename) ) != -1)
@@ -926,6 +951,7 @@ void call_parser(char *input_file)
     print_gatepinhash();
     print_libhash();
     print_comphash();
+    print_cells();
     #endif
 
     int count = 0;
@@ -939,7 +965,7 @@ void call_parser(char *input_file)
             {
                 if(gatepinhash[i].type[j] == IO_TYPE)
                 {
-                    count++ ;
+                    count++;
                 }
                 count2++;
             }

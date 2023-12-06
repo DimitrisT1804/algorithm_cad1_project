@@ -191,7 +191,7 @@ void gatepins_complete_parent()
             {
                 for (k = strlen(gatepinhash[i].name[j]); gatepinhash[i].name[j][k] != '/'; k--)
                 {
-                    
+
                 }
                 //if(k > 0)
                 //{
@@ -230,9 +230,9 @@ unsigned int hash_function(const char *str, unsigned int num_buckets)
 void Lib_init()
 {
     int i, j;
-    libhash = (Lib*) my_calloc(LIBHASH_SIZE, sizeof(Lib));
+    libhash = (Lib*) my_calloc(libhash_size, sizeof(Lib));
 
-    for(i = 0; i < LIBHASH_SIZE; i++)
+    for(i = 0; i < libhash_size; i++)
     {
         // libhash[i].pin_names = (char**) my_calloc(1, sizeof(char*));
 
@@ -262,7 +262,7 @@ void Lib_add(char *cell_name, int cell_type, char *func_expr)
     if(cell_name == NULL)
         return;
 
-    key = hash_function(cell_name, LIBHASH_SIZE);
+    key = hash_function(cell_name, libhash_size);
 
     //libhash[key].name = (char **) my_realloc(libhash[key].name, sizeof(char*) * (libhash[key].hashdepth + 1) );
 
@@ -308,7 +308,7 @@ void Lib_add(char *cell_name, int cell_type, char *func_expr)
 //         return;
 //     }
 
-//     key = hash_function(cell_name, LIBHASH_SIZE);
+//     key = hash_function(cell_name, libhash_size);
 
 //     for (i = 0; i < LIB_HASHDEPTH; i++)
 //     {
@@ -323,7 +323,7 @@ void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth)
 {
     int i;
     unsigned int key;
-    key = hash_function(cell_name, LIBHASH_SIZE);
+    key = hash_function(cell_name, libhash_size);
     *lhash = key;
 
     *lhashdepth = -1;
@@ -383,7 +383,7 @@ void libhash_free()
 {
     int i, j, k;
 
-    for(i = 0; i < LIBHASH_SIZE; i++)
+    for(i = 0; i < libhash_size; i++)
     {   
         for(j = 0; j < HASHDEPTH; j++) // what is the value of hashdepth? 
         {
@@ -406,6 +406,29 @@ void libhash_free()
         // free(libhash[i].pin_names);
     }
     free(libhash);
+}
+
+void add_cell(char *cell_name)
+{
+    int i, j;
+
+    for(i = 0; i < libarray_size; i++)
+    {
+        if(libarray[i] != NULL)
+        {
+            if (strcmp(cell_name, libarray[i]) == 0)
+            {
+                return;
+            }
+        }
+    }
+    libarray = (char **) my_realloc(libarray, sizeof(char *) * (libarray_size+1));
+
+    libarray[i] = (char *) my_calloc(strlen(cell_name) + 1, sizeof(char));
+    strcpy (libarray[i], cell_name);
+    libarray_size++;
+
+    libhash_size++;
 }
 
 void comphash_init()
