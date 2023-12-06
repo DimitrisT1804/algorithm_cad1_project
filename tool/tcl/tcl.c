@@ -114,9 +114,9 @@ int list_IO(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const*
         return TCL_ERROR;
     }
 
-    for (i = 0; i < HASH_SIZE; i++)
+    for (i = 0; i < gatepinhash_size; i++)
     {
-        for(j = 0; j < GP_HASHDEPTH; j++)
+        for(j = 0; j < HASHDEPTH; j++)
         {
             if(gatepinhash[i].hashpresent[j] != 0)
             {
@@ -146,9 +146,9 @@ int list_components(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj
         return TCL_ERROR;
     }
 
-    for (i = 0; i < COMPHASH_SIZE; i++)
+    for (i = 0; i < comphash_size; i++)
     {
-        for(j = 0; j < COMP_HASHDEPTH; j++)
+        for(j = 0; j < HASHDEPTH; j++)
         {
             if(comphash[i].hashpresent[j] != 0)
             {
@@ -198,6 +198,7 @@ int report_component_function(ClientData clientdata, Tcl_Interp *interp, int obj
     lhash = comphash[chash].lib_type[cdepth];
     ldepth = comphash[chash].lib_type_depth[cdepth];
 
+    printf(ANSI_COLOR_BLUE "Cell is %s with function " ANSI_COLOR_RESET, libhash[lhash].name[ldepth]);
     function_obj =  Tcl_NewStringObj(libhash[lhash].function[ldepth], -1);
 
     Tcl_SetObjResult(interp, function_obj);
@@ -397,6 +398,7 @@ int list_IO_CCS(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *co
         result_pin = Tcl_NewStringObj(gatepinhash[gconhash].name[gcondepth], strlen(gatepinhash[gconhash].name[gcondepth]));
         Tcl_ListObjAppendElement(interp, pin_connections, result_pin);
     }
+    printf(ANSI_COLOR_BLUE "Successors of IO pin %s are: " ANSI_COLOR_RESET , gatepinhash[ghash].name[gdepth]);
 
     Tcl_SetObjResult(interp, pin_connections);
 

@@ -7,9 +7,9 @@
 void Gatepins_init()
 {
     int i, j;
-    gatepinhash = (gatePins*) my_calloc(HASH_SIZE, sizeof(gatePins)); // size of 10 positions //
+    gatepinhash = (gatePins*) my_calloc(gatepinhash_size, sizeof(gatePins)); // size of 10 positions //
 
-    for(i = 0; i < HASH_SIZE; i++)
+    for(i = 0; i < gatepinhash_size; i++)
     {   
         //gatepinhash[i].hashdepth = 1;
         // gatepinhash[i].name = (char **) my_calloc(1, sizeof(char*));
@@ -24,7 +24,7 @@ void Gatepins_init()
         // gatepinhash[i].pinConn = NULL;
         // gatepinhash[i].pinConnDepth = NULL;
 
-        for(j = 0; j < GP_HASHDEPTH; j++) // what is the value of hashdepth
+        for(j = 0; j < HASHDEPTH; j++) // what is the value of hashdepth
         {
             gatepinhash[i].name[j] = NULL;
 
@@ -50,9 +50,9 @@ void Gatepins_free()
 {
     int i, j;
 
-    for(i = 0; i < HASH_SIZE; i++)
+    for(i = 0; i < gatepinhash_size; i++)
     {   
-        for(j = 0; j < GP_HASHDEPTH; j++) // what is the value of hashdepth? 
+        for(j = 0; j < HASHDEPTH; j++) // what is the value of hashdepth? 
         {
             if(gatepinhash[i].name[j] != NULL)
             {
@@ -76,11 +76,11 @@ void Gatepins_add(char *pin_name, int pin_type)
     if(pin_name == NULL)
         return;
 
-    key = hash_function(pin_name, HASH_SIZE);
+    key = hash_function(pin_name, gatepinhash_size);
 
 
     // gatepinhash[key].name = (char **) my_realloc(gatepinhash[key].name, sizeof(char*) * (gatepinhash[key].hashdepth + 1));    // allocate memory for new pin //
-    for(i = 0; i < GP_HASHDEPTH; i++)
+    for(i = 0; i < HASHDEPTH; i++)
     {
         if(gatepinhash[key].hashpresent[i] == 0)    // empty //
             break;
@@ -119,12 +119,12 @@ void get_gatepin_indices(char *pin_name, int *ghash, int *ghashdepth)
 {
     int i;
     unsigned int key;
-    key = hash_function(pin_name, HASH_SIZE);
+    key = hash_function(pin_name, gatepinhash_size);
     *ghash = key;
 
     *ghashdepth = -1;
 
-    for(i = 0; i < GP_HASHDEPTH; i++)
+    for(i = 0; i < HASHDEPTH; i++)
     {
         if(gatepinhash[*ghash].name[i] != NULL)
         {
@@ -183,13 +183,16 @@ void gatepins_complete_parent()
     char *comp_name = NULL;
     int chash, cdepth;
 
-    for (i = 0; i < HASH_SIZE; i++)
+    for (i = 0; i < gatepinhash_size; i++)
     {
-        for (j = 0; j < GP_HASHDEPTH; j++)
+        for (j = 0; j < HASHDEPTH; j++)
         {
             if(gatepinhash[i].hashpresent[j] != 0  && gatepinhash[i].type[j] == WIRE)
             {
-                for (k = strlen(gatepinhash[i].name[j]); gatepinhash[i].name[j][k] != '/'; k--);
+                for (k = strlen(gatepinhash[i].name[j]); gatepinhash[i].name[j][k] != '/'; k--)
+                {
+                    
+                }
                 //if(k > 0)
                 //{
                     comp_name = (char *) calloc(k+1, sizeof(char));
@@ -236,7 +239,7 @@ void Lib_init()
         //libhash[i].cell_type = (int *) my_calloc(1, sizeof(int));
 
 
-        for(j = 0; j < LIB_HASHDEPTH; j++)
+        for(j = 0; j < HASHDEPTH; j++)
         {
             libhash[i].name[j] = NULL;
             libhash[i].function[j] = NULL;
@@ -263,7 +266,7 @@ void Lib_add(char *cell_name, int cell_type, char *func_expr)
 
     //libhash[key].name = (char **) my_realloc(libhash[key].name, sizeof(char*) * (libhash[key].hashdepth + 1) );
 
-    for (i = 0; i < LIB_HASHDEPTH; i++)
+    for (i = 0; i < HASHDEPTH; i++)
     {
         if(libhash[key].hashpresent[i] == 0)
             break;
@@ -325,7 +328,7 @@ void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth)
 
     *lhashdepth = -1;
 
-    for(i = 0; i < LIB_HASHDEPTH; i++)
+    for(i = 0; i < HASHDEPTH; i++)
     {
         if(libhash[*lhash].hashpresent[i] != 0)
         {
@@ -382,7 +385,7 @@ void libhash_free()
 
     for(i = 0; i < LIBHASH_SIZE; i++)
     {   
-        for(j = 0; j < LIB_HASHDEPTH; j++) // what is the value of hashdepth? 
+        for(j = 0; j < HASHDEPTH; j++) // what is the value of hashdepth? 
         {
             if(libhash[i].hashpresent[j] != 0)
             {
@@ -409,10 +412,10 @@ void comphash_init()
 {
     int i, j;
 
-    comphash = (Components*) my_calloc(COMPHASH_SIZE, sizeof(Components));
-    for (i = 0; i < COMPHASH_SIZE; i++)
+    comphash = (Components*) my_calloc(comphash_size, sizeof(Components));
+    for (i = 0; i < comphash_size; i++)
     {
-        for (j = 0; j < COMP_HASHDEPTH; j++)
+        for (j = 0; j < HASHDEPTH; j++)
         {
             comphash[i].name[j] = NULL;
             comphash[i].lib_type[j] = -1;
@@ -430,15 +433,15 @@ void comphash_add(char *comp_name, char *cell_name, int cell_type, char *func_ex
 
     if (comp_name == NULL)
         return;
-    key = hash_function(comp_name, COMPHASH_SIZE);
+    key = hash_function(comp_name, comphash_size);
 
-    for (i = 0; i < COMP_HASHDEPTH; i++)
+    for (i = 0; i < HASHDEPTH; i++)
     {
         if(comphash[key].hashpresent[i] == 0) // it is empty //
             break;
     }
     
-    if(i == COMP_HASHDEPTH)
+    if(i == HASHDEPTH)
     {
         printf("No space!\n");
         return; // no space available //
@@ -473,12 +476,12 @@ void get_comphash_indices(char *comp_name, int *chash, int *chashdepth)
     int i;
     unsigned int key;
 
-    key = hash_function(comp_name, COMPHASH_SIZE);
+    key = hash_function(comp_name, comphash_size);
     *chash = key;
 
     *chashdepth = -1;
 
-    for (i = 0; i < COMP_HASHDEPTH; i++)
+    for (i = 0; i < HASHDEPTH; i++)
     {
         if(comphash[key].name[i] != NULL)
         {
@@ -495,9 +498,9 @@ void comphash_free()
 {
     int i, j;
 
-    for(i = 0; i < COMPHASH_SIZE; i++)
+    for(i = 0; i < comphash_size; i++)
     {   
-        for(j = 0; j < COMP_HASHDEPTH; j++) // what is the value of hashdepth? 
+        for(j = 0; j < HASHDEPTH; j++) // what is the value of hashdepth? 
         {
             if(comphash[i].hashpresent[j] != 0)
             {

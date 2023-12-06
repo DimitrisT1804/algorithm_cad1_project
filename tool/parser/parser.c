@@ -628,9 +628,9 @@ void print_gatepinhash()
 {
     int i, j, k;
 
-    for (i = 0; i < HASH_SIZE; i++)
+    for (i = 0; i < gatepinhash_size; i++)
     {
-        for(j = 0; j < GP_HASHDEPTH; j++)
+        for(j = 0; j < HASHDEPTH; j++)
         {
             if(gatepinhash[i].hashpresent[j] != 0)
             {
@@ -671,7 +671,7 @@ void print_libhash()
 
     for (i = 0; i < LIBHASH_SIZE; i++)
     {
-        for (j = 0; j < LIB_HASHDEPTH; j++)
+        for (j = 0; j < HASHDEPTH; j++)
         {
             if(libhash[i].name[j] != NULL)
             {
@@ -697,9 +697,9 @@ void print_comphash()
 {
     int i, j;
 
-    for (i = 0; i < COMPHASH_SIZE; i++)
+    for (i = 0; i < comphash_size; i++)
     {
-        for (j = 0; j < COMP_HASHDEPTH; j++)
+        for (j = 0; j < HASHDEPTH; j++)
         {
             if(comphash[i].hashpresent[j] == 1)
             {
@@ -751,7 +751,7 @@ void call_parser(char *input_file)
     }
 
     // initialize structs //
-    structs_init();
+    
 
     while(fgets(line, sizeof(line)+1, filename) != NULL)
     //while( (getline(&line, &line_size, filename) ) != -1)
@@ -805,6 +805,8 @@ void call_parser(char *input_file)
         }
     }
     fseek(filename, 0, SEEK_SET);
+    comphash_size++;
+    structs_init();
 
     while(fgets(line, sizeof(line)+1, filename) != NULL)
     //while( (getline(&line, &line_size, filename) ) != -1)
@@ -929,9 +931,9 @@ void call_parser(char *input_file)
     int count = 0;
     int count2 = 0;
 
-    for(i = 0; i < HASH_SIZE; i++)
+    for(i = 0; i < gatepinhash_size; i++)
     {
-        for(j = 0; j < GP_HASHDEPTH; j++)
+        for(j = 0; j < HASHDEPTH; j++)
         {
             if(gatepinhash[i].hashpresent[j] != 0)
             {
@@ -946,9 +948,9 @@ void call_parser(char *input_file)
     printf("IO pins are %d all pins are %d\n", count, count2);
 
     count = 0;
-    for(i = 0; i < COMPHASH_SIZE; i++)
+    for(i = 0; i < comphash_size; i++)
     {
-        for(j = 0; j < COMP_HASHDEPTH; j++)
+        for(j = 0; j < HASHDEPTH; j++)
         {
             if(comphash[i].hashpresent[j] == 1)
             {
@@ -1124,9 +1126,9 @@ int main(int argc, char **argv)
 
     int count = 0;
 
-    for(i = 0; i < HASH_SIZE; i++)
+    for(i = 0; i < gatepinhash_size; i++)
     {
-        for(j = 0; j < GP_HASHDEPTH; j++)
+        for(j = 0; j < HASHDEPTH; j++)
         {
             if(gatepinhash[i].hashpresent[j] != 0)
             {
@@ -1141,9 +1143,9 @@ int main(int argc, char **argv)
     printf("IO pins are %d\n", count);
 
     count = 0;
-    for(i = 0; i < COMPHASH_SIZE; i++)
+    for(i = 0; i < comphash_size; i++)
     {
-        for(j = 0; j < COMP_HASHDEPTH; j++)
+        for(j = 0; j < HASHDEPTH; j++)
         {
             if(comphash[i].hashpresent[j] == 1)
             {
