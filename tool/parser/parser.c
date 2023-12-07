@@ -55,18 +55,6 @@ enum DoorState2 countIOS(enum DoorState2 currentState, char *event)
 
 enum lib_parse count_components_CCS(enum lib_parse currentState, char *event) 
 {
-    static int ghash, ghashdepth;
-    int conhash, conhashdepth;
-    int i, j;
-    static char name_of_cell[LINE_MAX];
-    static char cell_type_name[LINE_MAX];
-    static char *comp_name;
-    static int cell_type = -1;
-
-    static char *out_pin;
-    static char *con_pin;
-
-    //printf("Event is %s\n", event);
     switch (currentState) 
     {
         case WAIT:
@@ -728,7 +716,7 @@ void print_comphash()
 
 void print_cells()
 {
-    int i, j;
+    int i;
 
     for(i = 0; i < libarray_size; i++)
     {

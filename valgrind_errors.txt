@@ -1,293 +1,166 @@
-==12651== 
-==12651== HEAP SUMMARY:
-==12651==     in use at exit: 944,693 bytes in 289 blocks
-==12651==   total heap usage: 118,076 allocs, 117,787 frees, 51,080,280 bytes allocated
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 75 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498957B: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4928C86: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489C3E6: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 76 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x491DD07: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4928C95: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489C3E6: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 77 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x491DD49: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4928C95: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489C3E6: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 78 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498A61E: Tcl_GetThreadData (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49AE5BA: Tcl_InitNotifier (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4969A84: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489C3E6: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 79 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4965201: Tcl_CreateNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4966C27: TclGetNamespaceForQualName (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4966DB3: Tcl_FindNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4923E03: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489CBB6: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 80 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4914AF1: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x493EBA3: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4915C2F: Tcl_DictObjPut (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4923EE9: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489CBBE: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 81 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4965201: Tcl_CreateNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4966C27: TclGetNamespaceForQualName (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4966DB3: Tcl_FindNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4923E03: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489CBC6: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 82 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4965201: Tcl_CreateNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4966C27: TclGetNamespaceForQualName (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4966DB3: Tcl_FindNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4923E03: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489CBD6: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 83 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4914AF1: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x493EBA3: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4915C2F: Tcl_DictObjPut (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4923EE9: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x493FEA0: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489CBDE: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 84 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA6AE: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489CBE6: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 85 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4965201: Tcl_CreateNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4966C27: TclGetNamespaceForQualName (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489E3C7: Tcl_CreateObjCommand (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA75A: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489CBE6: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 86 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x493F3BB: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x493ECCF: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49981B4: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4997758: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4998B92: Tcl_ObjSetVar2 (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x492721B: TclSetupEnv (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489CE73: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 87 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498AE9E: TclpRealloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA52B: Tcl_Realloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x499533B: Tcl_DStringSetLength (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x491E5E0: Tcl_ExternalToUtfDString (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49271B5: TclSetupEnv (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489CE73: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 88 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498A61E: Tcl_GetThreadData (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49AE0DE: TclpGetPwUid (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49AD5D4: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489CF77: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 89 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4965201: Tcl_CreateNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4966C27: TclGetNamespaceForQualName (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4966DB3: Tcl_FindNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4923FC0: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49BDC38: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49B0099: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49AF8AC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489CFCF: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 90 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4965201: Tcl_CreateNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49B052B: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49B1BFC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49B182F: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49BC13C: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49B00A1: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49AF8AC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489CFCF: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 91 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4981057: Tcl_NewStringObj (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4970C60: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48A177A: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48A1366: Tcl_EvalEx (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48A24F9: Tcl_Eval (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49B00BD: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49AF8AC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489CFCF: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 92 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49615A7: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x496B042: Tcl_GetString (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x497D87C: Tcl_GetStringResult (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48A2504: Tcl_Eval (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10ED86: main (tcl.c:423)
-==12651== 
-==12651== 16,384 bytes in 1 blocks are possibly lost in loss record 93 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x497D803: Tcl_SetResult (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x497D868: Tcl_GetStringResult (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48A2504: Tcl_Eval (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10ED86: main (tcl.c:423)
-==12651== 
-==12651== 38,400 bytes in 1 blocks are possibly lost in loss record 95 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B050: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x496AC0C: Tcl_NewObj (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489C425: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 38,400 bytes in 1 blocks are possibly lost in loss record 96 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B050: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4981005: Tcl_NewStringObj (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4998A74: Tcl_SetVar2Ex (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4998A0A: Tcl_SetVar2 (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x49AD5A4: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x489CF77: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E942: main (tcl.c:331)
-==12651== 
-==12651== 49,152 bytes in 3 blocks are possibly lost in loss record 97 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498AE9E: TclpRealloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x495FE25: Tcl_ListObjAppendElement (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E18C: list_components (tcl.c:149)
-==12651==    by 0x48A05F1: TclNRRunCallbacks (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48A1923: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48A1366: Tcl_EvalEx (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48A24F9: Tcl_Eval (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10ED86: main (tcl.c:423)
-==12651== 
-==12651== 98,304 bytes in 6 blocks are possibly lost in loss record 98 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4981057: Tcl_NewStringObj (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E171: list_components (tcl.c:147)
-==12651==    by 0x48A05F1: TclNRRunCallbacks (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48A1923: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48A1366: Tcl_EvalEx (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48A24F9: Tcl_Eval (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10ED86: main (tcl.c:423)
-==12651== 
-==12651== 153,600 bytes in 4 blocks are possibly lost in loss record 99 of 99
-==12651==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12651==    by 0x498B050: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x4981005: Tcl_NewStringObj (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10E171: list_components (tcl.c:147)
-==12651==    by 0x48A05F1: TclNRRunCallbacks (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48A1923: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48A1366: Tcl_EvalEx (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x48A24F9: Tcl_Eval (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
-==12651==    by 0x10ED86: main (tcl.c:423)
-==12651== 
-==12651== LEAK SUMMARY:
-==12651==    definitely lost: 0 bytes in 0 blocks
-==12651==    indirectly lost: 0 bytes in 0 blocks
-==12651==      possibly lost: 689,152 bytes in 34 blocks
-==12651==    still reachable: 255,541 bytes in 255 blocks
-==12651==         suppressed: 0 bytes in 0 blocks
-==12651== Reachable blocks (those to which a pointer was found) are not shown.
-==12651== To see them, rerun with: --leak-check=full --show-leak-kinds=all
-==12651== 
-==12651== For lists of detected and suppressed errors, rerun with: -s
-==12651== ERROR SUMMARY: 24 errors from 24 contexts (suppressed: 0 from 0)
+==29820== 
+==29820== HEAP SUMMARY:
+==29820==     in use at exit: 944,857 bytes in 321 blocks
+==29820==   total heap usage: 118,371 allocs, 118,050 frees, 9,905,123 bytes allocated
+==29820== 
+==29820== 16,384 bytes in 1 blocks are possibly lost in loss record 79 of 93
+==29820==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29820==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x491DD49: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4928C95: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x489C3E6: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x1104FA: main (tcl.c:441)
+==29820== 
+==29820== 16,384 bytes in 1 blocks are possibly lost in loss record 80 of 93
+==29820==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29820==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4965201: Tcl_CreateNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4966C27: TclGetNamespaceForQualName (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4966DB3: Tcl_FindNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4923E03: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x489CBB6: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x1104FA: main (tcl.c:441)
+==29820== 
+==29820== 16,384 bytes in 1 blocks are possibly lost in loss record 81 of 93
+==29820==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29820==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4914AF1: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x493EBA3: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4915C2F: Tcl_DictObjPut (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4923EE9: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x489CBBE: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x1104FA: main (tcl.c:441)
+==29820== 
+==29820== 16,384 bytes in 1 blocks are possibly lost in loss record 82 of 93
+==29820==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29820==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4914AF1: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x493EBA3: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4915C2F: Tcl_DictObjPut (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4923EE9: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x493FEA0: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x489CBDE: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x1104FA: main (tcl.c:441)
+==29820== 
+==29820== 16,384 bytes in 1 blocks are possibly lost in loss record 83 of 93
+==29820==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29820==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x498A61E: Tcl_GetThreadData (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x49AE0DE: TclpGetPwUid (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x49AD5D4: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x489CF77: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x1104FA: main (tcl.c:441)
+==29820== 
+==29820== 16,384 bytes in 1 blocks are possibly lost in loss record 84 of 93
+==29820==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29820==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4965201: Tcl_CreateNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4966C27: TclGetNamespaceForQualName (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4966DB3: Tcl_FindNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4923FC0: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x49BDC38: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x49B0099: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x49AF8AC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x489CFCF: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820== 
+==29820== 16,384 bytes in 1 blocks are possibly lost in loss record 85 of 93
+==29820==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29820==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4965201: Tcl_CreateNamespace (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x49B052B: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x49B1BFC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x49B182F: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x49BC13C: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x49B00A1: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x49AF8AC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x489CFCF: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820== 
+==29820== 16,384 bytes in 1 blocks are possibly lost in loss record 86 of 93
+==29820==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29820==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4981057: Tcl_NewStringObj (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4970C60: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A177A: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A1366: Tcl_EvalEx (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A24F9: Tcl_Eval (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x49B00BD: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x49AF8AC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x489CFCF: Tcl_CreateInterp (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820== 
+==29820== 16,384 bytes in 1 blocks are possibly lost in loss record 87 of 93
+==29820==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29820==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x498AE9E: TclpRealloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x495FE25: Tcl_ListObjAppendElement (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x10F72B: list_IO (tcl.c:127)
+==29820==    by 0x48A05F1: TclNRRunCallbacks (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A1923: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A1366: Tcl_EvalEx (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A24F9: Tcl_Eval (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x110993: main (tcl.c:536)
+==29820== 
+==29820== 49,152 bytes in 3 blocks are possibly lost in loss record 91 of 93
+==29820==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29820==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x498AE9E: TclpRealloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x495FE25: Tcl_ListObjAppendElement (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x10F8A4: list_components (tcl.c:157)
+==29820==    by 0x48A05F1: TclNRRunCallbacks (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A1923: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A1366: Tcl_EvalEx (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A24F9: Tcl_Eval (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x110993: main (tcl.c:536)
+==29820== 
+==29820== 114,688 bytes in 7 blocks are possibly lost in loss record 92 of 93
+==29820==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29820==    by 0x498B5DC: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x498ACD9: TclpAlloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48AA48B: Tcl_Alloc (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4981057: Tcl_NewStringObj (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x10F889: list_components (tcl.c:155)
+==29820==    by 0x48A05F1: TclNRRunCallbacks (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A1923: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A1366: Tcl_EvalEx (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A24F9: Tcl_Eval (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x110993: main (tcl.c:536)
+==29820== 
+==29820== 153,600 bytes in 4 blocks are possibly lost in loss record 93 of 93
+==29820==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29820==    by 0x498B050: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x4981005: Tcl_NewStringObj (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x10F889: list_components (tcl.c:155)
+==29820==    by 0x48A05F1: TclNRRunCallbacks (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A1923: ??? (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A1366: Tcl_EvalEx (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x48A24F9: Tcl_Eval (in /usr/lib/x86_64-linux-gnu/libtcl8.6.so)
+==29820==    by 0x110993: main (tcl.c:536)
+==29820== 
+==29820== LEAK SUMMARY:
+==29820==    definitely lost: 0 bytes in 0 blocks
+==29820==    indirectly lost: 0 bytes in 0 blocks
+==29820==      possibly lost: 464,896 bytes in 23 blocks
+==29820==    still reachable: 479,961 bytes in 298 blocks
+==29820==         suppressed: 0 bytes in 0 blocks
+==29820== Reachable blocks (those to which a pointer was found) are not shown.
+==29820== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==29820== 
+==29820== For lists of detected and suppressed errors, rerun with: -s
+==29820== ERROR SUMMARY: 12 errors from 12 contexts (suppressed: 0 from 0)

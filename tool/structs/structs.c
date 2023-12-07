@@ -410,7 +410,7 @@ void libhash_free()
 
 void add_cell(char *cell_name)
 {
-    int i, j;
+    int i;
 
     for(i = 0; i < libarray_size; i++)
     {
