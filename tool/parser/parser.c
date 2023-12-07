@@ -738,7 +738,7 @@ void call_parser(char *input_file)
     char *test;
     int flag = 0;
     int i = 0;
-    char word[50] = {'\0'};
+    char word[LINE_MAX] = {'\0'};
     int pos = 0;
     int j = 0;
     long int target_line = 0; 
@@ -860,7 +860,7 @@ void call_parser(char *input_file)
                 else
                 {
                     word[pos] = line[i];
-                    pos++ ;
+                    pos++;
                 }
             }
             //printf("The word is %s\n", word);

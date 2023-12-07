@@ -1,6 +1,6 @@
 CXX = gcc
 CXXFLAGS = -Wall -g
-LDFLAGS = -lm -ltcl -lreadline
+LDFLAGS = -lm -ltcl -lreadline 
 SRC_DIRS = structs parser tcl
 SRC_FILES = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
 OBJ_FILES = $(SRC_FILES:.c=.o)
