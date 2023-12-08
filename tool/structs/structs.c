@@ -1,9 +1,11 @@
-// Structs to store design //
+// Structs to store design components gatepins and library info //
+/* There are three structs, one for gatepins which stores connections
+of each pin, type, and in which component it exists */
+
 #include "structs.h"
 
-
-// gatePins *gatepinhash = NULL;
-
+/* #################### Gatepins_init() #################### */
+/* This function just initialize all fields of gatepin hash */
 void Gatepins_init()
 {
     int i, j;
@@ -11,55 +13,34 @@ void Gatepins_init()
 
     for(i = 0; i < gatepinhash_size; i++)
     {   
-        //gatepinhash[i].hashdepth = 1;
-        // gatepinhash[i].name = (char **) my_calloc(1, sizeof(char*));
-        // gatepinhash[i].type = (int *) my_calloc(1, sizeof(int));   // init for 1 pos //
-        // gatepinhash[i].connections_size = (int*) my_calloc(1, sizeof(int));
-        // gatepinhash[i].pinConn = (int**) my_calloc(1, sizeof(int*));
-        // gatepinhash[i].pinConnDepth = (int**) my_calloc(1, sizeof(int*));
-
-        // gatepinhash[i].name = NULL;
-        // gatepinhash[i].type = NULL;   // init for 1 pos //
-        // gatepinhash[i].connections_size = NULL;
-        // gatepinhash[i].pinConn = NULL;
-        // gatepinhash[i].pinConnDepth = NULL;
-
         for(j = 0; j < HASHDEPTH; j++) // what is the value of hashdepth
         {
             gatepinhash[i].name[j] = NULL;
-
-            // gatepinhash[i].parentComponent[j] = 0;
-            // gatepinhash[i].parentComponentDepth[j] = 0;
-
-            gatepinhash[i].type[j] = -1;   // init type //
-
             gatepinhash[i].pinConn[j] = NULL;    // no need i do this in add //
             gatepinhash[i].pinConnDepth[j] = NULL;
 
+            gatepinhash[i].type[j] = -1;   // init type //
             gatepinhash[i].connections_size[j] = 1;
-
             gatepinhash[i].parentComponent[j] = -1;
             gatepinhash[i].parentComponentDepth[j] = -1;
-
             gatepinhash[i].hashpresent[j] = 0;
         }
     }
 }
 
+/* #################### Gatepins_free() #################### */
+/* This function free all fields of this struct */
 void Gatepins_free()
 {
     int i, j;
 
     for(i = 0; i < gatepinhash_size; i++)
     {   
-        for(j = 0; j < HASHDEPTH; j++) // what is the value of hashdepth? 
+        for(j = 0; j < HASHDEPTH; j++) 
         {
             if(gatepinhash[i].name[j] != NULL)
             {
                 free(gatepinhash[i].name[j]);
-
-                // gatepinhash[i].parentComponent[j] = 0;
-                // gatepinhash[i].parentComponentDepth[j] = 0;
                 free (gatepinhash[i].pinConn[j]);
                 free (gatepinhash[i].pinConnDepth[j]);
             }
@@ -68,6 +49,8 @@ void Gatepins_free()
     free(gatepinhash);
 }
 
+/* ##### Gatepins_add(char *pin_name, int pin_type) ##### */
+/* This function adds in gatepinhash a pin (its name and the type) */
 void Gatepins_add(char *pin_name, int pin_type)
 {
     int i;
@@ -76,53 +59,41 @@ void Gatepins_add(char *pin_name, int pin_type)
     if(pin_name == NULL)
         return;
 
-    key = hash_function(pin_name, gatepinhash_size);
+    key = hash_function(pin_name, gatepinhash_size); // hash again string to get same key //
 
-
-    // gatepinhash[key].name = (char **) my_realloc(gatepinhash[key].name, sizeof(char*) * (gatepinhash[key].hashdepth + 1));    // allocate memory for new pin //
     for(i = 0; i < HASHDEPTH; i++)
     {
         if(gatepinhash[key].hashpresent[i] == 0)    // empty //
             break;
     }
-    // i = gatepinhash[key].hashdepth - 1;
     gatepinhash[key].name[i] = (char *) my_calloc(1, (strlen(pin_name) + 1) );
 
     strcpy(gatepinhash[key].name[i], pin_name);
-    // gatepinhash[key].type = (int *) my_realloc(gatepinhash[key].type, sizeof(int) * gatepinhash[key].hashdepth);
-    // gatepinhash[key].type[i] = 1;
 
-    /* Realloc for size of pointer array pinConn and pinConnDepth */
-    // gatepinhash[key].pinConn = (int**) my_realloc(gatepinhash[key].pinConn, sizeof(int*) * (gatepinhash[key].hashdepth + 1));
-    // gatepinhash[key].pinConnDepth = (int**) my_realloc(gatepinhash[key].pinConnDepth, sizeof(int*) * (gatepinhash[key].hashdepth + 1));
-    
     /* Calloc for the new pin size for each connections, 1 for begin and go on*/
     gatepinhash[key].pinConn[i] = (int *) my_calloc(1, sizeof(int));
     gatepinhash[key].pinConnDepth[i] = (int *) my_calloc(1, sizeof(int));
 
-
-    // gatepinhash[key].connections_size = (int*) my_realloc(gatepinhash[key].connections_size, sizeof(int) * gatepinhash[key].hashdepth + 1);
     gatepinhash[key].connections_size[i] = 0;
-
-    // gatepinhash[key].type = (int*) my_realloc(gatepinhash[key].type, sizeof(int) * gatepinhash[key].hashdepth + 1);
     gatepinhash[key].type[i] = pin_type;
-
-    // gatepinhash[key].hashdepth++ ;  // add one pos in hashdepth //
     gatepinhash[key].hashpresent[i] = 1;
 
     #ifdef DEBUG
     printf("Gatepin inserted succesfully\n");
     #endif
- }
+}
 
+/* ## get_gatepin_indices(char *pin_name, int *ghash, int *ghashdepth) ### */
+/* This function search gatepinhash for this pin and returns value 
+   of position in ghash and ghashdepth. If it does not find it 
+   it returns ghashdepth = -1 */
 void get_gatepin_indices(char *pin_name, int *ghash, int *ghashdepth)
 {
     int i;
     unsigned int key;
     key = hash_function(pin_name, gatepinhash_size);
     *ghash = key;
-
-    *ghashdepth = -1;
+    *ghashdepth = -1;   // add this value if it does not find pin //
 
     for(i = 0; i < HASHDEPTH; i++)
     {
@@ -137,8 +108,10 @@ void get_gatepin_indices(char *pin_name, int *ghash, int *ghashdepth)
     }
 }
 
-/* Reload pins with their connections */
-void Gatepin_reload(char *source_pin, char *connection_pin)
+/* #### gatepin_add_CCs(char *source_pin, char *connection_pin) #### */
+/* This function adds connections for each gatepin. It keeps an array
+   of gatepinhash and gatepinhashdepth which are positions in gatepinhash */
+void gatepin_add_CCs(char *source_pin, char *connection_pin)
 {
     int source_hash, source_hash_depth;
     int connection_hash, connection_hash_depth;
@@ -150,12 +123,9 @@ void Gatepin_reload(char *source_pin, char *connection_pin)
     get_gatepin_indices(source_pin, &source_hash, &source_hash_depth);
     get_gatepin_indices(connection_pin, &connection_hash, &connection_hash_depth);
 
-    // free(source_pin);
-    // free(connection_pin);
-
     if(source_hash_depth == -1 || connection_hash_depth == -1)
     {
-        printf("The pins does not exist!\n");
+        printf("Source or Connection pin does not exists!\n");
         return;
     }
 
@@ -164,7 +134,6 @@ void Gatepin_reload(char *source_pin, char *connection_pin)
         printf("Invalid pointer\n");
     }
 
-    //gatepinhash[source_hash].pinConn = my_realloc(gatepinhash[source_hash].pinConn, sizeof(int*) * gatepinhash[source_hash].hashdepth);
     gatepinhash[source_hash].pinConn[source_hash_depth] = (int*) my_realloc(gatepinhash[source_hash].pinConn[source_hash_depth], sizeof(int) * (gatepinhash[source_hash].connections_size[source_hash_depth] + 1));
     gatepinhash[source_hash].pinConnDepth[source_hash_depth] = (int*) my_realloc(gatepinhash[source_hash].pinConnDepth[source_hash_depth], sizeof(int) * (gatepinhash[source_hash].connections_size[source_hash_depth] + 1));
     
@@ -176,7 +145,13 @@ void Gatepin_reload(char *source_pin, char *connection_pin)
     gatepinhash[source_hash].connections_size[source_hash_depth]++;
 }
 
-
+/* ################ gatepins_complete_parent() ################ */
+/* This function adds the component that his pin belongs. This function
+   runs when all structs are full, so it searches in gatepinhash it
+   gets the pin name and it keeps the component name and then finds it
+   in comphash and adds it as parent on gatepinhash
+   For Example: gatepin is PID/U1288/Q we just keep PID/U1288 search
+   it on comphash and get chash and cdepth and add it on gatepinhash*/
 void gatepins_complete_parent()
 {
     int i, j, k;
@@ -193,21 +168,17 @@ void gatepins_complete_parent()
                 {
 
                 }
-                //if(k > 0)
-                //{
-                    comp_name = (char *) calloc(k+1, sizeof(char));
-                    strncpy(comp_name, gatepinhash[i].name[j], k);
-                    get_comphash_indices(comp_name, &chash, &cdepth);
-                    
-                    free(comp_name);
-                    if(cdepth != -1)
-                    {
-                        gatepinhash[i].parentComponent[j] = chash;
-                        gatepinhash[i].parentComponentDepth[j] = cdepth;
-                    }
-                //}
+                comp_name = (char *) calloc(k+1, sizeof(char));
+                strncpy(comp_name, gatepinhash[i].name[j], k);
+                get_comphash_indices(comp_name, &chash, &cdepth);
+                
+                free(comp_name);
+                if(cdepth != -1)
+                {
+                    gatepinhash[i].parentComponent[j] = chash;
+                    gatepinhash[i].parentComponentDepth[j] = cdepth;
+                }
             }
-            // free(comp_name);
         }
     }
 }

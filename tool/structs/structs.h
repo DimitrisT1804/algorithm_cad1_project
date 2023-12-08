@@ -14,8 +14,6 @@ struct gatepins
 {
     char *name[HASHDEPTH];
 
-    //int hashdepth;
-
     // connections //
     int *pinConn[HASHDEPTH]; // hash key //
     int *pinConnDepth[HASHDEPTH];  // depth that pins located //
@@ -83,7 +81,7 @@ void Gatepins_add(char *pin_name, int pin_type);
 
 void get_gatepin_indices(char *pin_name, int *ghash, int *ghashdepth);
 
-void Gatepin_reload(char *source_pin, char *connection_pin);
+void gatepin_add_CCs(char *source_pin, char *connection_pin);
 
 void gatepins_complete_parent();
 
@@ -114,7 +112,6 @@ void comphash_add(char *comp_name, char *cell_name, int cell_type, char *func_ex
 void get_comphash_indices(char *comp_name, int *chash, int *chashdepth);
 
 void comphash_free();
-
 
 void structs_init();
 

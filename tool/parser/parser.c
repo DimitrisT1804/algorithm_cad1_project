@@ -224,7 +224,7 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
                 #ifdef DEBUG
                 printf("Event is %s IOPin is %s and connection_pins is %s\n", event, IO_pin, connection_pin);
                 #endif
-                Gatepin_reload(IO_pin, connection_pin);
+                gatepin_add_CCs(IO_pin, connection_pin);
 
                 free(connection_pin);
                 return CONNECTIONS_COMP;
@@ -456,7 +456,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
                 Gatepins_add(con_pin, WIRE);
                 //get_gatepin_indices(out_pin_final, &conhash, &conhashdepth); // find new ghash and ghashdepth //
             }
-            Gatepin_reload(out_pin, con_pin);
+            gatepin_add_CCs(out_pin, con_pin);
             free(con_pin);
 
             return CONNECTED_PINS;
