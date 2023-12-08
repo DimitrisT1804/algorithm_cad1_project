@@ -2,22 +2,13 @@
 #include <stdio.h>
 #include <string.h>
 #include "../parser/custom_functions.h"
-// #include "globals.h"
 
-// #define HASH_SIZE 10000
-#define GP_HASHDEPTH 0
+#define HASHDEPTH 10
 #define IO_TYPE 0
 #define WIRE 1
-
-// #define LIBHASH_SIZE 2000
-#define LIB_HASHDEPTH 0
 #define COMBINATIONAL 1
 #define SEQUENTIAL 2
-
-// #define COMPHASH_SIZE 4000
-#define COMP_HASHDEPTH 0
 // #define DEBUG
-#define HASHDEPTH 10
 
 struct gatepins
 {

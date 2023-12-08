@@ -78,6 +78,7 @@ void help_command()
 int read_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
 {
     char *filename;
+    int parser_result = 0;
     if(objc != 2)
     {
         Tcl_WrongNumArgs(interp, 1, objv, "filename");
@@ -97,7 +98,15 @@ int read_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *co
     #endif
 
     // call the parser //
-    call_parser(filename);
+    parser_result = call_parser(filename);
+    if (parser_result == -1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Cannot open file %s" ANSI_COLOR_RESET, filename);
+    }
+    else if (parser_result == -2)
+    {
+        printf(ANSI_COLOR_RED "ERROR: File %s has not the correct format!\n" ANSI_COLOR_RESET, filename);
+    }
 
     return TCL_OK;
 }

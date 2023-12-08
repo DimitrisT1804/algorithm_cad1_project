@@ -70,7 +70,7 @@ void print_gatepinhash();
 
 void print_libhash();
 
-void call_parser(char *input_file);
+int call_parser(char *input_file);
 
 void print_comphash();
 

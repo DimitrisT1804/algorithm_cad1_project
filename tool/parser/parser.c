@@ -729,20 +729,21 @@ void print_cells()
 }
 
 #ifndef LAB2
-void call_parser(char *input_file)
+int call_parser(char *input_file)
 {
     // char *input_file = NULL;
     FILE *filename;
-    char line[LINE_MAX];
-    // char *line = NULL;
+    // char line[LINE_MAX];
+    char *line = NULL;
     char *test;
     int flag = 0;
     int i = 0;
     char word[LINE_MAX] = {'\0'};
     int pos = 0;
     int j = 0;
-    long int target_line = 0; 
     size_t line_size = 0;
+    int read_length = 0;
+    int correct_format = 0;
 
     enum DoorState currentState = START;
     enum DoorState2 currentState2 = START;
@@ -755,7 +756,7 @@ void call_parser(char *input_file)
     if(filename == NULL)
     {
         printf("Cannot open file\n");
-        return;  // cannot open this file //
+        return -1;  // cannot open this file //
     }
 
     // initialize structs //
@@ -764,8 +765,8 @@ void call_parser(char *input_file)
     gatepinhash_size = 0;
     
 
-    while(fgets(line, sizeof(line)+1, filename) != NULL)
-    //while( (getline(&line, &line_size, filename) ) != -1)
+    //while(fgets(line, sizeof(line)+1, filename) != NULL)
+    while((read_length = (getline(&line, &line_size, filename) ) )!= -1)
     {
         //line[sizeof(line)+1] = '\0';
         j = 0;
@@ -774,19 +775,19 @@ void call_parser(char *input_file)
         {
             //printf("Test is %s\n", test);
             flag = 1;  // set the flag that the following line has IO //
+            correct_format = 1;
         }
 
         test = strstr(line, "Components CCs:");
-        target_line = ftell(filename);  // keep track of this line //
         if(test != NULL)
         {
             //printf("Test is %s\n", test);
             flag = 3;  // set the flag that the following line has IO //
         }
 
-        while(j < strlen(line))
+        while(j < read_length)
         {
-            for(i = j; i < strlen(line)+1; i++)
+            for(i = j; i < read_length+1; i++)
             {
                 if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
                 {
@@ -814,15 +815,24 @@ void call_parser(char *input_file)
             }
             j = i;
         }
+        free(line);
+        line = NULL;
     }
+    if(correct_format == 0)
+    {
+        return -2;
+    }
+
     fseek(filename, 0, SEEK_SET);
+    free(line);
+    line = NULL;
     comphash_size++;
     libhash_size++;
     structs_init();
 
 
-    while(fgets(line, sizeof(line)+1, filename) != NULL)
-    //while( (getline(&line, &line_size, filename) ) != -1)
+    //while(fgets(line, sizeof(line)+1, filename) != NULL)
+    while((read_length = (getline(&line, &line_size, filename) ) )!= -1)
     {
         //line[sizeof(line)+1] = '\0';
         j = 0;
@@ -841,16 +851,15 @@ void call_parser(char *input_file)
         }
 
         test = strstr(line, "Components CCs:");
-        target_line = ftell(filename);  // keep track of this line //
         if(test != NULL)
         {
             //printf("Test is %s\n", test);
             flag = 3;  // set the flag that the following line has IO //
         }
 
-        while(j < strlen(line))
+        while(j < read_length)
         {
-            for(i = j; i < strlen(line)+1; i++)
+            for(i = j; i < read_length+1; i++)
             {
                 if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
                 {
@@ -878,10 +887,17 @@ void call_parser(char *input_file)
             }
             j = i;
         }
+        // line = NULL;
+        free(line);
+        line = NULL;
     }
     fseek(filename, 0, SEEK_SET);
+    free(line);
+    line = NULL;
+    
 
-    while(fgets(line, sizeof(line) + 1, filename) != NULL)
+    // while(fgets(line, sizeof(line) + 1, filename) != NULL)
+    while((read_length = (getline(&line, &line_size, filename) ) )!= -1)
     {
 
         test = strstr(line, "# Top-Level I/O CCs:");
@@ -899,9 +915,9 @@ void call_parser(char *input_file)
             flag = 5;  // set the flag that the following line has IO //
         }
 
-        while(j < strlen(line))
+        while(j < read_length)
         {
-            for(i = j; i < strlen(line)+1; i++)
+            for(i = j; i < read_length+1; i++)
             {
                 if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
                 {
@@ -931,7 +947,11 @@ void call_parser(char *input_file)
             }
             j = i;
         }
+        free(line);
+        line = NULL;
     }
+    free(line);
+    line = NULL;
 
     gatepins_complete_parent(); // it fills the parent positions in each pin //
 
@@ -979,6 +999,8 @@ void call_parser(char *input_file)
     // structs_free();
     // free(line);
     fclose(filename);
+
+    return 0;   // exit succesfully //
 }
 #endif
 
@@ -1176,5 +1198,6 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
 
 #endif
