@@ -32,17 +32,17 @@ typedef struct gatepins gatePins;
 
 struct library
 {
-    char *name[HASHDEPTH];
+    char *name[HASHDEPTH]; // names of cells //
 
-    int cell_type[HASHDEPTH];
+    int cell_type[HASHDEPTH]; // type of each cell (Combinational or Sequential) //
 
-    char **pin_names[HASHDEPTH];
+    char **pin_names[HASHDEPTH]; // names of pins for each cell //
 
-    int pin_count[HASHDEPTH];
+    int pin_count[HASHDEPTH]; // count of pins for each cell //
 
-    char *function[HASHDEPTH];
+    char *function[HASHDEPTH]; // boolean function for each cell //
 
-    int hashpresent[HASHDEPTH];
+    int hashpresent[HASHDEPTH]; // flag indicating presence in the hash table //
 
 };
 typedef struct library Lib;
@@ -66,7 +66,7 @@ int gatepinhash_size;
 
 Lib *libhash; 
 int libhash_size;
-char **libarray;
+char **libarray; // array to store cells temporarily to count them //
 int libarray_size;
 
 Components *comphash;
@@ -104,7 +104,6 @@ void libhash_free();
 void add_cell(char *cell_name);
 
 /* Compohash functions */
-
 void comphash_init();
 
 void comphash_add(char *comp_name, char *cell_name, int cell_type, char *func_expr);
