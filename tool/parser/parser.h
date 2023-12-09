@@ -1,21 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include <limits.h>
 #include "../structs/structs.h"
 
-// Enumerate the possible states
-enum DoorState 
+enum IO_STATES 
 {
     START,
-    IO,
-    NAME
+    IO_NAME
 };
 
-enum DoorState2 
+enum IO_STATES_CCS
 {
-    START2,
-    NAME2,
+    WAIT_IO,
+    NAME_IO,
     CCS,
     CONNECTIONS_COMP,
     CONNECTIONS
@@ -52,19 +49,20 @@ enum proccess_lib_pins
     PIN
 };
 
-enum DoorState2 countIOS(enum DoorState2 currentState, char *event);
+enum IO_STATES_CCS countIOS(enum IO_STATES_CCS currentState, char *event);
 
 enum lib_parse count_components_CCS(enum lib_parse currentState, char *event);
 
-enum DoorState processEvent(enum DoorState currentState, char *event);
+enum IO_STATES proccessIOS(enum IO_STATES currentState, char *event);
 
-enum DoorState2 processEvent2(enum DoorState2 currentState, char *event);
+enum IO_STATES_CCS proccessIOS_CCS(enum IO_STATES_CCS currentState, char *event);
 
 enum lib_parse proccesLib(enum lib_parse currentState, char *event);
 
 enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO currentState, char *event);
 
 enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, char *event);
+
 
 void print_gatepinhash();
 

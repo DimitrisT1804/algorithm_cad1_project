@@ -4,44 +4,46 @@
 // #define DEBUG
 #define LINE_MAX 15000   // suppose maximum line length //
 
-
-enum DoorState2 countIOS(enum DoorState2 currentState, char *event) 
+/* #### countIOS(enum IO_STATES_CCS currentState, char *event) #### */
+/* This function handles the counting of input/output (IO) states based on
+   the current state and the provided event. It implements a FSM to
+   transition between states based on specific conditions. */
+enum IO_STATES_CCS countIOS(enum IO_STATES_CCS currentState, char *event) 
 {
     switch (currentState) 
     {
-        case START2:
+        case WAIT_IO:
             if(strcmp(event, "IO:") == 0)
             {
-                return NAME2;
+                return NAME_IO;
             }
             else
             {
-                return START2;
+                return WAIT_IO;
             }
 
-        case NAME2:
+        case NAME_IO:
             gatepinhash_size++;
             return CCS;
 
         case CCS:
-            //printf("Name is %s\n", event);
             return CONNECTIONS_COMP;
 
         case CONNECTIONS_COMP:
             if(strcmp(event, "\n") == 0 || strcmp(event, " ") == 0)
-                return START2;
+                return WAIT_IO;
 
-            gatepinhash_size++;
+            gatepinhash_size++; // increase size of gatepinhash //
             return CONNECTIONS;
 
-        case CONNECTIONS:       // if there are no connections we should not take it !!!!!
+        case CONNECTIONS: // if there are no connections ignore it //
             if(strcmp(event, "IO:") == 0)
             {
-                return NAME2;
+                return NAME_IO;
             }
             else if (strncmp(event, "#", 1) == 0)
             {
-                return START2;
+                return WAIT_IO;
             }
             else
             {
@@ -53,6 +55,9 @@ enum DoorState2 countIOS(enum DoorState2 currentState, char *event)
     }
 }
 
+/* ## count_components_CCS(enum lib_parse currentState, char *event) ## */
+/* This function parses the last part of the file and it counts components
+   cells and more gatepins to initialize the gatepinhash libhash and comphash */
 enum lib_parse count_components_CCS(enum lib_parse currentState, char *event) 
 {
     switch (currentState) 
@@ -76,7 +81,7 @@ enum lib_parse count_components_CCS(enum lib_parse currentState, char *event)
             return CELL_TYPE;
         
         case CELL_NAME:
-            add_cell(event);
+            add_cell(event); // add cell temporarily array //
             return WAIT_CCS;
 
         case WAIT_CCS:
@@ -105,8 +110,6 @@ enum lib_parse count_components_CCS(enum lib_parse currentState, char *event)
 
             return CONNECTED_PINS_2;
             
-
-
         case CONNECTED_PINS_2:
 
             return CONNECTED_PINS;
@@ -116,26 +119,28 @@ enum lib_parse count_components_CCS(enum lib_parse currentState, char *event)
     }
 }
 
-// Function to process events and transition between states
-enum DoorState processEvent(enum DoorState currentState, char *event) 
+/* ## proccessIOS(enum IO_STATES currentState, char *event) ## */
+/* This function is a FSM that parses first part of file to get all
+   all IOs and add it in gatepinhash */
+enum IO_STATES proccessIOS(enum IO_STATES currentState, char *event) 
 {
     switch (currentState) 
     {
-        case START:
+        case START: // wait for word IO //
             if(strcmp(event, "IO:") == 0)
             {
-                return NAME;
+                return IO_NAME;
             }
             else
             {
                 return START;
             }
 
-        case NAME:
+        case IO_NAME: // get name of IO //
             #ifdef DEBUG
             printf("Name is %s\n", event);
             #endif
-            Gatepins_add(event, IO_TYPE);
+            Gatepins_add(event, IO_TYPE); // add it as IO //
             
             return START;
 
@@ -144,7 +149,10 @@ enum DoorState processEvent(enum DoorState currentState, char *event)
     }
 }
 
-enum DoorState2 processEvent2(enum DoorState2 currentState, char *event) 
+/* ## proccessIOS_CCS(enum IO_STATES_CCS currentState, char *event) ## */
+/* This function is a FSM that parses second section of file to get all
+   all CCs of IOs and add them in gatepinhash */
+enum IO_STATES_CCS proccessIOS_CCS(enum IO_STATES_CCS currentState, char *event) 
 {
     int i, j;
     int ghash, ghashdepth;
@@ -152,41 +160,38 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
     static char *connection_pin;
     static int size_event;
 
-    //printf("Event is %s\n", event);
     switch (currentState) 
     {
-        case START2:
+        case WAIT_IO: // wait for word IO //
             if(strcmp(event, "IO:") == 0)
             {
-                return NAME2;
+                return NAME_IO;
             }
             else
             {
-                return START2;
+                return WAIT_IO;
             }
 
-        case NAME2:
+        case NAME_IO: // get name of IO //
             #ifdef DEBUG
             printf("Name is %s\n", event);
             #endif
             strcpy(IO_pin, event);
             return CCS;
 
-        case CCS:
-            //printf("Name is %s\n", event);
+        case CCS: // just wait for word CCs //
             return CONNECTIONS_COMP;
 
-        case CONNECTIONS_COMP:
+        case CONNECTIONS_COMP: // get first part of successor gatepin //
             if(strcmp(event, "\n") == 0 || strcmp(event, " ") == 0)
-                return START2;
+                return WAIT_IO;
             size_event = strlen(event);
             connection_pin = my_calloc(strlen(event) + 1, sizeof(char));
             strcpy(connection_pin, event);
-            // free(connection_pin);
 
             return CONNECTIONS;
 
-        case CONNECTIONS:       // if there are no connections we should not take it !!!!!
+        case CONNECTIONS: // get connection pin etc. (/A) //
             j = 0; 
             for (i = 0; i < strlen(event); i++) // remove brackets from pin //
             {
@@ -198,19 +203,18 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
             event[j] = '\0';
 
             connection_pin = (char *) my_realloc(connection_pin, 1 * (size_event + strlen(event) + 2));
-            // strcat(connection_pin, " ");
             strcat(connection_pin, event);  // concut strings together to create connection pin //
-            if(strcmp(event, "IO:") == 0)
+            if(strcmp(event, "IO:") == 0) // if next word is IO there are no more CCs for this pin //
             {
                 free(connection_pin);
-                return NAME2;
+                return NAME_IO;
             }
-            else if (strncmp(event, "#", 1) == 0)
+            else if (strncmp(event, "#", 1) == 0) // if it reads '#' it is in the end of this section //
             {
                 free(connection_pin);
-                return START2;
+                return WAIT_IO;
             }
-            else
+            else // else add this gatepin on gatepinhash (if it does not exists) and complete CCs //
             {
                 #ifdef DEBUG
                 printf("Connections is %s\n", connection_pin);
@@ -219,7 +223,6 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
                 if(ghashdepth == -1)    // it does not exist in hash //
                 {
                     Gatepins_add(connection_pin, WIRE);
-                    //get_gatepin_indices(event, &ghash, &ghashdepth);
                 }
                 #ifdef DEBUG
                 printf("Event is %s IOPin is %s and connection_pins is %s\n", event, IO_pin, connection_pin);
@@ -229,72 +232,12 @@ enum DoorState2 processEvent2(enum DoorState2 currentState, char *event)
                 free(connection_pin);
                 return CONNECTIONS_COMP;
             }
-            // free(connection_pin);
 
         default:
             return currentState;
     }
 }
 
-// enum lib_parse proccesLib(enum lib_parse currentState, char *event) 
-// {
-//     int lhash, lhashdepth;
-//     static char name_of_cell[LINE_MAX];
-//     static char cell_type_name[LINE_MAX];
-//     static int cell_type = -1;
-
-//     //printf("Event is %s\n", event);
-//     switch (currentState) 
-//     {
-//         case WAIT:
-//             if(strcmp(event, "Cell_Type:") == 0)
-//             {
-//                 return CELL_NAME;
-//             }
-//             else
-//             {
-//                 return WAIT;
-//             }
-
-//         case CELL_NAME:
-//             printf("Cell Name is %s\n", event);
-//             strcpy(name_of_cell, event);
-//             return CELL_TIMING_TYPE;
-
-//         case CELL_TIMING_TYPE:
-//             if(strcmp(event, "Cell_Timing_Type:") == 0)
-//             {
-//                 return GET_CELL_TYPE;
-//             }
-//             else
-//             {
-//                return CELL_TIMING_TYPE;
-//             }
-
-//         case GET_CELL_TYPE:
-//             // if(strcmp(event, "\n") == 0 || strcmp(event, " ") == 0)
-//             //     return WAIT;
-//             strcpy(cell_type_name, event);
-
-//             get_libhash_indices(name_of_cell, &lhash, &lhashdepth);
-//             if(lhashdepth == -1)    // does not exist! //
-//             {
-//                 if(strcmp(cell_type_name, "Combinational") == 0)
-//                 {
-//                     cell_type = COMBINATIONAL;
-//                 }
-//                 else if(strcmp(cell_type_name, "Sequential") == 0)
-//                 {
-//                     cell_type = SEQUENTIAL;
-//                 }
-//                 Lib_add(name_of_cell, cell_type);
-//             }
-//             return WAIT;
-
-//         default:
-//             return currentState;
-//     }
-// }
 
 enum lib_parse proccesLib(enum lib_parse currentState, char *event) 
 {
@@ -309,7 +252,6 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
     static char *out_pin;
     static char *con_pin;
 
-    //printf("Event is %s\n", event);
     switch (currentState) 
     {
         case WAIT:
@@ -328,7 +270,6 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
             #endif
             comp_name = (char *) calloc(strlen(event)+1, sizeof(char));
             strcpy(comp_name, event);
-            // free(comp_name);
 
             return CELL_TYPE;
 
@@ -361,22 +302,15 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
 
         case GET_CELL_TYPE:
             strcpy(cell_type_name, event);
+            if(strcmp(cell_type_name, "Combinational") == 0)
+            {
+                cell_type = COMBINATIONAL;
+            }
+            else if(strcmp(cell_type_name, "Sequential") == 0)
+            {
+                cell_type = SEQUENTIAL;
+            }
 
-            // get_libhash_indices(name_of_cell, &lhash, &lhashdepth);
-            // if(lhashdepth == -1)    // does not exist! //
-            // {
-                if(strcmp(cell_type_name, "Combinational") == 0)
-                {
-                    cell_type = COMBINATIONAL;
-                }
-                else if(strcmp(cell_type_name, "Sequential") == 0)
-                {
-                    cell_type = SEQUENTIAL;
-                }
-            //     Lib_add(name_of_cell, cell_type);
-            // }
-            // comphash_add(comp_name, name_of_cell, cell_type);
-            // return WAIT;
             return WAIT_CCS;
 
         case WAIT_CCS:
@@ -392,7 +326,6 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
         case OUTPUT_PIN_1:
             out_pin = (char *) my_calloc (strlen(event) + 1, sizeof(char));
             strcpy(out_pin, event);
-            // free(out_pin);
 
             return OUTPUT_PIN_2;
 
@@ -414,7 +347,6 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
             if(ghashdepth == -1)
             {
                 Gatepins_add(out_pin, WIRE);
-                //get_gatepin_indices(out_pin_final, &ghash, &ghashdepth); // find new ghash and ghashdepth //
             }
             
             return CONNECTED_PINS;
@@ -424,8 +356,6 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
                 return COMPONENT_2;
             con_pin = (char *) my_calloc(strlen(event) + 1, sizeof(char));
             strcpy(con_pin, event);
-            // free(con_pin);
-            //printf("check %s\n", event);
 
             return CONNECTED_PINS_2;
             
@@ -433,7 +363,6 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
 
         case CONNECTED_PINS_2:
             j = 0; 
-            //printf("get %s\n", event);
             if(event[0] != '(')
             {
                 printf("THIS IS ERROR\n");
@@ -454,7 +383,6 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
             if(conhashdepth == -1)
             {
                 Gatepins_add(con_pin, WIRE);
-                //get_gatepin_indices(out_pin_final, &conhash, &conhashdepth); // find new ghash and ghashdepth //
             }
             gatepin_add_CCs(out_pin, con_pin);
             free(con_pin);
@@ -472,11 +400,10 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
             }
 
         case FUNCTION:
-            // lib_add_function(name_of_cell, event);
             comphash_add(comp_name, name_of_cell, cell_type, event);
             free(comp_name);
             free(out_pin);
-            // free(con_pin);
+
             return WAIT;
 
         default:
@@ -493,7 +420,6 @@ enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO current
     static char *comp_name;
     static char *cell_name;
 
-    //printf("Event is %s\n", event);
     switch (currentState) 
     {
         case BEGIN_IO:
@@ -562,7 +488,6 @@ enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, ch
     static char *comp_name;
     static char *cell_name;
 
-    //printf("Event is %s\n", event);
     switch (currentState) 
     {
         case BEGIN:
@@ -633,9 +558,6 @@ void print_gatepinhash()
         {
             if(gatepinhash[i].hashpresent[j] != 0)
             {
-                //printf("The bucket %d on depth %d is %s of type %d\n", i, j, gatepinhash[i].name[j], gatepinhash[i].type[j]);
-                
-                //if(strncmp(gatepinhash[i].name[j], "N", 1) == 0 || strncmp(gatepinhash[i].name[j], "clk", 3) == 0) 
                 if(gatepinhash[i].type[j] == IO_TYPE)
                 {
                     printf("IO: %s CCs: ", gatepinhash[i].name[j]);
@@ -644,7 +566,6 @@ void print_gatepinhash()
                         if(gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]] != NULL)
                             printf("%s ", gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]]);
                     }
-                    //printf(" with parent: %s", comphash[gatepinhash[i].parentComponent[j]].name[gatepinhash[i].parentComponentDepth[j]]);
                     printf("\n");
                 }
                 else if (gatepinhash[i].type[j] == WIRE)
@@ -659,7 +580,6 @@ void print_gatepinhash()
                     printf("\n");
                 }
             }
-            //printf("-----------------------\n\n");
         }
     }
 }
@@ -702,12 +622,6 @@ void print_comphash()
         {
             if(comphash[i].hashpresent[j] == 1)
             {
-                // if(comphash[i].cell_type[j] == 1)
-                //     printf("Cell is %s and type is Combinational\n", comphash[i].name[j]);
-                // else if (comphash[i].cell_type[j] == 2)
-                //     printf("Cell is %s and type is Sequential\n", comphash[i].name[j]);
-                // else
-                //     printf("ERROR TYPE\n");
                 printf("Component is %s\n", comphash[i].name[j]);
             }
         }
@@ -731,9 +645,7 @@ void print_cells()
 #ifndef LAB2
 int call_parser(char *input_file)
 {
-    // char *input_file = NULL;
     FILE *filename;
-    // char line[LINE_MAX];
     char *line = NULL;
     char *test;
     int flag = 0;
@@ -745,8 +657,8 @@ int call_parser(char *input_file)
     int read_length = 0;
     int correct_format = 0;
 
-    enum DoorState currentState = START;
-    enum DoorState2 currentState2 = START;
+    enum IO_STATES currentState = START;
+    enum IO_STATES_CCS currentState2 = START;
     enum lib_parse currentState3 = WAIT;
     enum proccess_lib_pins currentState4 = BEGIN;
     enum proccess_lib_pins currentState5 = BEGIN_IO;
@@ -773,7 +685,6 @@ int call_parser(char *input_file)
         test = strstr(line, "Top-Level I/O CCs:");
         if(test != NULL)
         {
-            //printf("Test is %s\n", test);
             flag = 1;  // set the flag that the following line has IO //
             correct_format = 1;
         }
@@ -781,7 +692,6 @@ int call_parser(char *input_file)
         test = strstr(line, "Components CCs:");
         if(test != NULL)
         {
-            //printf("Test is %s\n", test);
             flag = 3;  // set the flag that the following line has IO //
         }
 
@@ -800,14 +710,11 @@ int call_parser(char *input_file)
                     pos++ ;
                 }
             }
-            //printf("The word is %s\n", word);
             pos = 0;
             if(flag == 1)
                 currentState2 = countIOS(currentState2, word);
             else if (flag == 3)
                 currentState2 = count_components_CCS(currentState2, word);
-            // else if (flag == 3)
-            //     currentState3 = proccesLib(currentState3, word);
 
             while (line[i] == ' ') 
             {
@@ -831,29 +738,24 @@ int call_parser(char *input_file)
     structs_init();
 
 
-    //while(fgets(line, sizeof(line)+1, filename) != NULL)
     while((read_length = (getline(&line, &line_size, filename) ) )!= -1)
     {
-        //line[sizeof(line)+1] = '\0';
         j = 0;
         test = strstr(line, "Top-Level I/O Ports:");
         if(test != NULL)
         {
-            //printf("Test is %s\n", test);
             flag = 1;  // set the flag that the following line has IO //
         }
 
         test = strstr(line, "Top-Level I/O CCs:");
         if(test != NULL)
         {
-            //printf("Test is %s\n", test);
             flag = 2;  // set the flag that the following line has IO //
         }
 
         test = strstr(line, "Components CCs:");
         if(test != NULL)
         {
-            //printf("Test is %s\n", test);
             flag = 3;  // set the flag that the following line has IO //
         }
 
@@ -872,12 +774,11 @@ int call_parser(char *input_file)
                     pos++;
                 }
             }
-            //printf("The word is %s\n", word);
             pos = 0;
             if(flag == 1)
-                currentState = processEvent(currentState, word);
+                currentState = proccessIOS(currentState, word);
             else if (flag == 2)
-                currentState2 = processEvent2(currentState2, word);
+                currentState2 = proccessIOS_CCS(currentState2, word);
             else if (flag == 3)
                 currentState3 = proccesLib(currentState3, word);
 
@@ -887,7 +788,6 @@ int call_parser(char *input_file)
             }
             j = i;
         }
-        // line = NULL;
         free(line);
         line = NULL;
     }
@@ -896,22 +796,18 @@ int call_parser(char *input_file)
     line = NULL;
     
 
-    // while(fgets(line, sizeof(line) + 1, filename) != NULL)
     while((read_length = (getline(&line, &line_size, filename) ) )!= -1)
     {
 
         test = strstr(line, "# Top-Level I/O CCs:");
         if(test != NULL)
         {
-            //printf("Test is %s\n", test);
             flag = 4;  // set the flag that the following line has IO //
         }
         j = 0;
         test = strstr(line, "Components CCs:");
-        //target_line = ftell(filename);  // keep track of this line //
         if(test != NULL)
         {
-            //printf("Test is %s\n", test);
             flag = 5;  // set the flag that the following line has IO //
         }
 
@@ -930,7 +826,6 @@ int call_parser(char *input_file)
                     pos++ ;
                 }
             }
-            //printf("The word is %s\n", word);
             pos = 0;
             if(flag == 4)
             {
@@ -996,8 +891,6 @@ int call_parser(char *input_file)
     printf("comps are %d\n", count);
     printf("IO pins size is %d and compsize is %d\n", gatepinhash_size, comphash_size);
 
-    // structs_free();
-    // free(line);
     fclose(filename);
 
     return 0;   // exit succesfully //
@@ -1020,8 +913,8 @@ int main(int argc, char **argv)
     long int target_line = 0; 
     size_t line_size = 0;
 
-    enum DoorState currentState = START;
-    enum DoorState2 currentState2 = START;
+    enum IO_STATES currentState = START;
+    enum IO_STATES_CCS currentState2 = START;
     enum lib_parse currentState3 = WAIT;
     enum proccess_lib_pins currentState4 = BEGIN;
     enum proccess_lib_pins currentState5 = BEGIN_IO;
@@ -1087,7 +980,7 @@ int main(int argc, char **argv)
             if(flag == 1)
                 currentState = processEvent(currentState, word);
             else if (flag == 2)
-                currentState2 = processEvent2(currentState2, word);
+                currentState2 = proccessIOS_CCS(currentState2, word);
             else if (flag == 3)
                 currentState3 = proccesLib(currentState3, word);
 
