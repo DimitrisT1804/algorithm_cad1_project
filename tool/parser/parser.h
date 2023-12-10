@@ -50,27 +50,16 @@ enum proccess_lib_pins
 };
 
 enum IO_STATES_CCS countIOS(enum IO_STATES_CCS currentState, char *event);
-
 enum lib_parse count_components_CCS(enum lib_parse currentState, char *event);
-
 enum IO_STATES proccessIOS(enum IO_STATES currentState, char *event);
-
 enum IO_STATES_CCS proccessIOS_CCS(enum IO_STATES_CCS currentState, char *event);
-
-enum lib_parse proccesLib(enum lib_parse currentState, char *event);
-
+enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event);
 enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO currentState, char *event);
-
 enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, char *event);
 
-
 void print_gatepinhash();
-
 void print_libhash();
-
 int call_parser(char *input_file);
-
 void print_comphash();
-
 void print_cells();
 

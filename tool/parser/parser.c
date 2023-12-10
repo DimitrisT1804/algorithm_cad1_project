@@ -2,7 +2,7 @@
 #include "parser.h"
 // #define LAB2
 // #define DEBUG
-#define LINE_MAX 15000   // suppose maximum line length //
+// #define LINE_MAX 15000   // suppose maximum line length //
 
 /* #### countIOS(enum IO_STATES_CCS currentState, char *event) #### */
 /* This function handles the counting of input/output (IO) states based on
@@ -238,23 +238,24 @@ enum IO_STATES_CCS proccessIOS_CCS(enum IO_STATES_CCS currentState, char *event)
     }
 }
 
-
-enum lib_parse proccesLib(enum lib_parse currentState, char *event) 
+/* ## enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event) ## */
+/* This function is a FSM that parses second section of file to get
+   all CCs of IOs and add them in gatepinhash */
+enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event)
 {
     static int ghash, ghashdepth;
-    int conhash, conhashdepth;
+    int conhash, conhashdepth; // hash and depth for CCs //
     int i, j;
-    static char name_of_cell[LINE_MAX];
+    static char name_of_cell[LINE_MAX]; // static in order to keep value on iterations //
     static char cell_type_name[LINE_MAX];
     static char *comp_name;
     static int cell_type = -1;
-
     static char *out_pin;
     static char *con_pin;
 
     switch (currentState) 
     {
-        case WAIT:
+        case WAIT: // wait for word Component: //
             if(strcmp(event, "Component:") == 0)
             {
                 return COMP_NAME;
@@ -264,7 +265,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
                 return WAIT;
             }
 
-        case COMP_NAME:
+        case COMP_NAME: // keep name of component //
             #ifdef DEBUG
             printf("Comp name is %s\n", event);
             #endif
@@ -273,7 +274,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
 
             return CELL_TYPE;
 
-        case CELL_TYPE:
+        case CELL_TYPE: // wait for Cell_Type //
             if(strcmp(event, "Cell_Type:") == 0)
             {
                 return CELL_NAME;
@@ -283,14 +284,14 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
                 return CELL_TYPE;
             }
 
-        case CELL_NAME:
+        case CELL_NAME: // get cell name //
             #ifdef DEBUG
             printf("Cell Name is %s\n", event);
             #endif
             strcpy(name_of_cell, event);
             return CELL_TIMING_TYPE;
 
-        case CELL_TIMING_TYPE:
+        case CELL_TIMING_TYPE: // wait for Cell_Timing_Type: //
             if(strcmp(event, "Cell_Timing_Type:") == 0)
             {
                 return GET_CELL_TYPE;
@@ -300,7 +301,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
                return CELL_TIMING_TYPE;
             }
 
-        case GET_CELL_TYPE:
+        case GET_CELL_TYPE: // get cell type //
             strcpy(cell_type_name, event);
             if(strcmp(cell_type_name, "Combinational") == 0)
             {
@@ -313,7 +314,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
 
             return WAIT_CCS;
 
-        case WAIT_CCS:
+        case WAIT_CCS: // Wait for CCs //
             if (strcmp(event, "CCs:") == 0)
             {
                 return OUTPUT_PIN_1;
@@ -323,13 +324,13 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
                 return WAIT_CCS;
             }
 
-        case OUTPUT_PIN_1:
+        case OUTPUT_PIN_1: // keep name of gatepin part 1 //
             out_pin = (char *) my_calloc (strlen(event) + 1, sizeof(char));
             strcpy(out_pin, event);
 
             return OUTPUT_PIN_2;
 
-        case OUTPUT_PIN_2:
+        case OUTPUT_PIN_2: // keep the pin name //
             j = 0; 
             for (i = 0; i < strlen(event); i++) // remove brackets from pin //
             {
@@ -344,14 +345,14 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
             strcat(out_pin, event);
 
             get_gatepin_indices(out_pin, &ghash, &ghashdepth);
-            if(ghashdepth == -1)
+            if(ghashdepth == -1) // if pin does not exists, add it on gatepinhash //
             {
                 Gatepins_add(out_pin, WIRE);
             }
             
             return CONNECTED_PINS;
 
-        case CONNECTED_PINS:
+        case CONNECTED_PINS: // get the CCs of output pin //
             if(strcmp(event, "Component:") == 0)
                 return COMPONENT_2;
             con_pin = (char *) my_calloc(strlen(event) + 1, sizeof(char));
@@ -384,12 +385,12 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
             {
                 Gatepins_add(con_pin, WIRE);
             }
-            gatepin_add_CCs(out_pin, con_pin);
+            gatepin_add_CCs(out_pin, con_pin); // add CCs on prev output pin //
             free(con_pin);
 
             return CONNECTED_PINS;
 
-        case COMPONENT_2:
+        case COMPONENT_2: // wait for second time of word Component //
             if(strcmp(event, "Function:") == 0)
             {
                 return FUNCTION;
@@ -399,8 +400,10 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
                 return COMPONENT_2;
             }
 
-        case FUNCTION:
-            comphash_add(comp_name, name_of_cell, cell_type, event);
+        case FUNCTION: // get function of cell //
+            /* add component on componenthash and inside of this function
+               add also the current cell on libhash if it does not work*/
+            comphash_add(comp_name, name_of_cell, cell_type, event); 
             free(comp_name);
             free(out_pin);
 
@@ -410,7 +413,7 @@ enum lib_parse proccesLib(enum lib_parse currentState, char *event)
             return currentState;
     }
 }
-
+/* ## proccess_lib_pins_IO(enum proccess_lib_pins_IO currentState, char *event) ##*/
 /* Proccess Top-Level I/O CCs to find pins for library cells that does not exists on the components CCs*/
 enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO currentState, char *event)
 {
@@ -422,7 +425,7 @@ enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO current
 
     switch (currentState) 
     {
-        case BEGIN_IO:
+        case BEGIN_IO: // Wait for word CCs //
             if(strcmp(event, "CCs:") == 0)
             {
                 return GET_COMP_NAME_IO;
@@ -432,7 +435,7 @@ enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO current
                 return BEGIN_IO;
             }
 
-        case GET_COMP_NAME_IO:
+        case GET_COMP_NAME_IO: // get comp name of CC pin //
             if(strcmp(event, "IO:") == 0 || strncmp(event, "#", 1) == 0 || strncmp(event, "\n", 1) == 0)
                 return BEGIN_IO;
 
@@ -447,7 +450,7 @@ enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO current
             free(comp_name);
             if(cdepth == -1)
             {
-                printf("ERROR: There is not this component!\n");
+                printf("ERROR: There is not component %s\n", comp_name);
             }
             else
             {
@@ -470,7 +473,7 @@ enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO current
             }
             event[j] = '\0';
 
-            lib_add_pins(cell_name, event);
+            lib_add_pins(cell_name, event); // add pins for current cell //
 
             return GET_COMP_NAME_IO;
 
@@ -479,7 +482,8 @@ enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO current
     }
 }
 
-
+/* ## proccess_lib_pins(enum proccess_lib_pins currentState, char *event) ##*/
+/* Proccess all gatepin CCs to find pins for each cell */
 enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, char *event) 
 {
     int i, j;
@@ -514,7 +518,7 @@ enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, ch
             get_comphash_indices(comp_name, &chash, &cdepth);
             if(cdepth == -1)
             {
-                printf("ERROR: There is not this component!\n");
+                printf("ERROR: There is not component %s\n", comp_name);
             }
             else
             {
@@ -538,7 +542,7 @@ enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, ch
             }
             event[j] = '\0';
 
-            lib_add_pins(cell_name, event);
+            lib_add_pins(cell_name, event); // add pin without brackets on cell //
 
             return GET_COMP_NAME;
 
@@ -547,7 +551,9 @@ enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, ch
     }
 }
 
-
+/* #################### print_gatepinhash() #################### */
+/* This function prints all gatepis from gatepinhash with CCs and 
+   parent component and also if it is WIRE or IO*/
 void print_gatepinhash()
 {
     int i, j, k;
@@ -584,6 +590,9 @@ void print_gatepinhash()
     }
 }
 
+/* ####################### print_libhash() ####################### */
+/* This function prints all cells from libhash it's type and pins
+   of each cell */
 void print_libhash()
 {
     int i, j, k;
@@ -612,6 +621,8 @@ void print_libhash()
     }
 }
 
+/* ####################### print_comphash() ####################### */
+/* This function prints all components from componenthash */
 void print_comphash()
 {
     int i, j;
@@ -628,6 +639,9 @@ void print_comphash()
     }
 }
 
+/* ####################### print_cells() ####################### */
+/* This function prints all cells from libarray to be sure that 
+   all of them are different */
 void print_cells()
 {
     int i;
@@ -642,13 +656,15 @@ void print_cells()
     printf("Size is %d\n", libarray_size);
 }
 
-#ifndef LAB2
+/* ################### call_parser(char *input_file) ################### */
+/* This function calls all the FSMs to parse the file and handle
+   them correct */
 int call_parser(char *input_file)
 {
-    FILE *filename;
+    FILE *filename; 
     char *line = NULL;
-    char *test;
-    int flag = 0;
+    char *find_line;
+    int choose_FSM = 0;
     int i = 0;
     char word[LINE_MAX] = {'\0'};
     int pos = 0;
@@ -676,30 +692,28 @@ int call_parser(char *input_file)
     libhash_size = 0;
     gatepinhash_size = 0;
     
-
-    //while(fgets(line, sizeof(line)+1, filename) != NULL)
+    // read first section of file line by line until it ends //
     while((read_length = (getline(&line, &line_size, filename) ) )!= -1)
     {
-        //line[sizeof(line)+1] = '\0';
         j = 0;
-        test = strstr(line, "Top-Level I/O CCs:");
-        if(test != NULL)
+        find_line = strstr(line, "Top-Level I/O CCs:");
+        if(find_line != NULL)
         {
-            flag = 1;  // set the flag that the following line has IO //
+            choose_FSM = 1;  // set the choose_FSM that the following line has IO //
             correct_format = 1;
         }
 
-        test = strstr(line, "Components CCs:");
-        if(test != NULL)
+        find_line = strstr(line, "Components CCs:");
+        if(find_line != NULL)
         {
-            flag = 3;  // set the flag that the following line has IO //
+            choose_FSM = 3;  // set the choose_FSM that the following line has IO //
         }
 
-        while(j < read_length)
+        while(j < read_length) // proccess line to split it in words //
         {
             for(i = j; i < read_length+1; i++)
             {
-                if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
+                if(line[i] == ' ' || line[i] == '\0' || line[i] == '\v' || line[i] == '\r') // a word ends with this one //
                 {
                     word[pos] = '\0';
                     break;
@@ -711,10 +725,14 @@ int call_parser(char *input_file)
                 }
             }
             pos = 0;
-            if(flag == 1)
+            if(choose_FSM == 1)
+            {
                 currentState2 = countIOS(currentState2, word);
-            else if (flag == 3)
+            }
+            else if (choose_FSM == 3)
+            {
                 currentState2 = count_components_CCS(currentState2, word);
+            }
 
             while (line[i] == ' ') 
             {
@@ -727,43 +745,43 @@ int call_parser(char *input_file)
     }
     if(correct_format == 0)
     {
-        return -2;
+        return -2; // check format of file //
     }
 
-    fseek(filename, 0, SEEK_SET);
+    fseek(filename, 0, SEEK_SET); // reset file descriptor to 0 to reparse file //
     free(line);
-    line = NULL;
-    comphash_size++;
-    libhash_size++;
-    structs_init();
+    line = NULL; // make line NULL for getline function //
+    comphash_size++; // add one to comphash size because hash functions usually does not return 0 //
+    libhash_size++; // add one to libhash size because hash functions usually does not return 0 //
+    structs_init(); // initialize all structs with correct sizes //
 
-
+    // reparse file to store gatepins components and cells //
     while((read_length = (getline(&line, &line_size, filename) ) )!= -1)
     {
         j = 0;
-        test = strstr(line, "Top-Level I/O Ports:");
-        if(test != NULL)
+        find_line = strstr(line, "Top-Level I/O Ports:");
+        if(find_line != NULL)
         {
-            flag = 1;  // set the flag that the following line has IO //
+            choose_FSM = 1;  // set the choose_FSM that the following line has IO //
         }
 
-        test = strstr(line, "Top-Level I/O CCs:");
-        if(test != NULL)
+        find_line = strstr(line, "Top-Level I/O CCs:");
+        if(find_line != NULL)
         {
-            flag = 2;  // set the flag that the following line has IO //
+            choose_FSM = 2;  // set the choose_FSM that the following line has IO //
         }
 
-        test = strstr(line, "Components CCs:");
-        if(test != NULL)
+        find_line = strstr(line, "Components CCs:");
+        if(find_line != NULL)
         {
-            flag = 3;  // set the flag that the following line has IO //
+            choose_FSM = 3;  // set the choose_FSM that the following line has IO //
         }
 
         while(j < read_length)
         {
             for(i = j; i < read_length+1; i++)
             {
-                if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
+                if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' || line[i] == '\r')
                 {
                     word[pos] = '\0';
                     break;
@@ -775,14 +793,20 @@ int call_parser(char *input_file)
                 }
             }
             pos = 0;
-            if(flag == 1)
+            if(choose_FSM == 1)
+            {
                 currentState = proccessIOS(currentState, word);
-            else if (flag == 2)
+            }
+            else if (choose_FSM == 2)
+            {
                 currentState2 = proccessIOS_CCS(currentState2, word);
-            else if (flag == 3)
-                currentState3 = proccesLib(currentState3, word);
+            }
+            else if (choose_FSM == 3)
+            {
+                currentState3 = proccessAllComponentsCCS(currentState3, word);
+            }
 
-            while (line[i] == ' ') 
+            while (line[i] == ' ') // if there are more spaces between words //
             {
                 i++;
             }
@@ -791,31 +815,31 @@ int call_parser(char *input_file)
         free(line);
         line = NULL;
     }
-    fseek(filename, 0, SEEK_SET);
+    fseek(filename, 0, SEEK_SET); // reset file descriptor to 0 to reparse file //
     free(line);
     line = NULL;
     
-
+    // re-parse file to add pin to cells //
     while((read_length = (getline(&line, &line_size, filename) ) )!= -1)
     {
 
-        test = strstr(line, "# Top-Level I/O CCs:");
-        if(test != NULL)
+        find_line = strstr(line, "# Top-Level I/O CCs:");
+        if(find_line != NULL)
         {
-            flag = 4;  // set the flag that the following line has IO //
+            choose_FSM = 4;
         }
         j = 0;
-        test = strstr(line, "Components CCs:");
-        if(test != NULL)
+        find_line = strstr(line, "Components CCs:");
+        if(find_line != NULL)
         {
-            flag = 5;  // set the flag that the following line has IO //
+            choose_FSM = 5;
         }
 
         while(j < read_length)
         {
             for(i = j; i < read_length+1; i++)
             {
-                if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
+                if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' || line[i] == '\r')
                 {
                     word[pos] = '\0';
                     break;
@@ -827,11 +851,11 @@ int call_parser(char *input_file)
                 }
             }
             pos = 0;
-            if(flag == 4)
+            if(choose_FSM == 4)
             {
                 currentState5 = proccess_lib_pins_IO(currentState5, word);
             }
-            else if (flag == 5)
+            else if (choose_FSM == 5)
             {  
                 currentState4 = proccess_lib_pins(currentState4, word);
             }
@@ -848,7 +872,12 @@ int call_parser(char *input_file)
     free(line);
     line = NULL;
 
-    gatepins_complete_parent(); // it fills the parent positions in each pin //
+    /* it fills the parent positions in each pin, now that all
+       gatepins and components are on their hashtables is easier
+       to parse the gatepinhash get from name the comp_name and
+       search on comphash to find hash and hashdept and store
+       it in correct pin */
+    gatepins_complete_parent();
 
     #ifdef DEBUG
     print_gatepinhash();
@@ -857,8 +886,8 @@ int call_parser(char *input_file)
     print_cells();
     #endif
 
-    int count = 0;
-    int count2 = 0;
+    int count = 0;  // count IO_Pins //
+    int count2 = 0; // count all pins //
 
     for(i = 0; i < gatepinhash_size; i++)
     {
@@ -877,7 +906,7 @@ int call_parser(char *input_file)
     printf("IO pins are %d all pins are %d\n", count, count2);
 
     count = 0;
-    for(i = 0; i < comphash_size; i++)
+    for(i = 0; i < comphash_size; i++) // count components //
     {
         for(j = 0; j < HASHDEPTH; j++)
         {
@@ -891,206 +920,7 @@ int call_parser(char *input_file)
     printf("comps are %d\n", count);
     printf("IO pins size is %d and compsize is %d\n", gatepinhash_size, comphash_size);
 
-    fclose(filename);
+    fclose(filename); // close file //
 
     return 0;   // exit succesfully //
 }
-#endif
-
-#ifdef LAB2
-int main(int argc, char **argv)
-{
-    char *input_file = NULL;
-    FILE *filename;
-    char line[LINE_MAX];
-    // char *line = NULL;
-    char *test;
-    int flag = 0;
-    int i = 0;
-    char word[50] = {'\0'};
-    int pos = 0;
-    int j = 0;
-    long int target_line = 0; 
-    size_t line_size = 0;
-
-    enum IO_STATES currentState = START;
-    enum IO_STATES_CCS currentState2 = START;
-    enum lib_parse currentState3 = WAIT;
-    enum proccess_lib_pins currentState4 = BEGIN;
-    enum proccess_lib_pins currentState5 = BEGIN_IO;
-
-    input_file = argv[1];
-
-
-    filename = fopen(input_file, "r");  // open file only for reading //
-
-    if(filename == NULL)
-    {
-        printf("Cannot open file\n");
-        return -1;  // cannot open this file //
-    }
-
-    // initialize structs //
-    structs_init();
-
-    while(fgets(line, sizeof(line)+1, filename) != NULL)
-    //while( (getline(&line, &line_size, filename) ) != -1)
-    {
-        //line[sizeof(line)+1] = '\0';
-        j = 0;
-        test = strstr(line, "Top-Level I/O Ports:");
-        if(test != NULL)
-        {
-            printf("Test is %s\n", test);
-            flag = 1;  // set the flag that the following line has IO //
-        }
-
-        test = strstr(line, "Top-Level I/O CCs:");
-        if(test != NULL)
-        {
-            printf("Test is %s\n", test);
-            flag = 2;  // set the flag that the following line has IO //
-        }
-
-        test = strstr(line, "Components CCs:");
-        target_line = ftell(filename);  // keep track of this line //
-        if(test != NULL)
-        {
-            printf("Test is %s\n", test);
-            flag = 3;  // set the flag that the following line has IO //
-        }
-
-        while(j < strlen(line))
-        {
-            for(i = j; i < strlen(line)+1; i++)
-            {
-                if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
-                {
-                    word[pos] = '\0';
-                    break;
-                }
-                else
-                {
-                    word[pos] = line[i];
-                    pos++ ;
-                }
-            }
-            //printf("The word is %s\n", word);
-            pos = 0;
-            if(flag == 1)
-                currentState = processEvent(currentState, word);
-            else if (flag == 2)
-                currentState2 = proccessIOS_CCS(currentState2, word);
-            else if (flag == 3)
-                currentState3 = proccesLib(currentState3, word);
-
-            while (line[i] == ' ') 
-            {
-                i++;
-            }
-            j = i;
-        }
-    }
-    fseek(filename, 0, SEEK_SET);
-
-    while(fgets(line, sizeof(line) + 1, filename) != NULL)
-    {
-
-        test = strstr(line, "# Top-Level I/O CCs:");
-        if(test != NULL)
-        {
-            printf("Test is %s\n", test);
-            flag = 4;  // set the flag that the following line has IO //
-        }
-        j = 0;
-        test = strstr(line, "Components CCs:");
-        //target_line = ftell(filename);  // keep track of this line //
-        if(test != NULL)
-        {
-            printf("Test is %s\n", test);
-            flag = 5;  // set the flag that the following line has IO //
-        }
-
-        while(j < strlen(line))
-        {
-            for(i = j; i < strlen(line)+1; i++)
-            {
-                if(line[i] == ' ' || line[i] == '\0'|| line[i] == '\v' )
-                {
-                    word[pos] = '\0';
-                    break;
-                }
-                else
-                {
-                    word[pos] = line[i];
-                    pos++ ;
-                }
-            }
-            //printf("The word is %s\n", word);
-            pos = 0;
-            if(flag == 4)
-            {
-                currentState5 = proccess_lib_pins_IO(currentState5, word);
-            }
-            else if (flag == 5)
-            {  
-                currentState4 = proccess_lib_pins(currentState4, word);
-            }
-
-            while (line[i] == ' ') 
-            {
-                i++;
-            }
-            j = i;
-        }
-    }
-
-    gatepins_complete_parent(); // it fills the parent positions in each pin //
-
-    #ifdef DEBUG
-    print_gatepinhash();
-    print_libhash();
-    print_comphash();
-    #endif
-
-    int count = 0;
-
-    for(i = 0; i < gatepinhash_size; i++)
-    {
-        for(j = 0; j < HASHDEPTH; j++)
-        {
-            if(gatepinhash[i].hashpresent[j] != 0)
-            {
-                if(gatepinhash[i].type[j] == IO_TYPE)
-                {
-                    count++ ;
-                }
-
-            }
-        }
-    }
-    printf("IO pins are %d\n", count);
-
-    count = 0;
-    for(i = 0; i < comphash_size; i++)
-    {
-        for(j = 0; j < HASHDEPTH; j++)
-        {
-            if(comphash[i].hashpresent[j] == 1)
-            {
-                count++;
-            }
-        }
-    }
-
-    printf("comps are %d\n", count);
-
-    structs_free();
-    // free(line);
-    fclose(filename);
-
-    return 0;
-}
-
-
-#endif

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 #include "../parser/custom_functions.h"
 
 #define HASHDEPTH 10
