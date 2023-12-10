@@ -1,5 +1,7 @@
 #include "custom_functions.h"
 
+/* custom functions for realloc and malloc to don't check for errors every time we call it */
+
 void* my_realloc(void* ptr, size_t size) 
 {
     ptr = realloc(ptr, size);
@@ -7,7 +9,7 @@ void* my_realloc(void* ptr, size_t size)
     {
         printf("Error on allocation\n");
     }
-    return ptr; // Replace with the actual implementation
+    return ptr;
 }
 
 void* my_calloc(int nmemb, size_t size) 
@@ -18,5 +20,5 @@ void* my_calloc(int nmemb, size_t size)
     {
         printf("Error on allocation\n");
     }
-    return ptr; // Replace with the actual implementation
+    return ptr;
 }

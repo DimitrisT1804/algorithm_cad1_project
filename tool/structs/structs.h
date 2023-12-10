@@ -35,9 +35,9 @@ struct library
     int cell_type[HASHDEPTH]; // type of each cell (Combinational or Sequential) //
     char **pin_names[HASHDEPTH]; // names of pins for each cell //
     int pin_count[HASHDEPTH]; // count of pins for each cell //
-    char *function[HASHDEPTH]; // boolean function for each cell //
+    char **function[HASHDEPTH]; // boolean function for each cell //
+    int out_pins_count[HASHDEPTH];
     int hashpresent[HASHDEPTH]; // flag indicating presence in the hash table //
-
 };
 typedef struct library Lib;
 
@@ -81,6 +81,7 @@ void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth);
 void lib_add_pins (char *cell_name, char *pin_name);
 void libhash_free();
 void add_cell(char *cell_name);
+void lib_add_func(char *cell_name, char *func_expr);
 
 /* Compohash functions */
 void comphash_init();

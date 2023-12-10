@@ -1,12 +1,55 @@
-# HW1 for algorithm Cad 1 #
-# Create a TCL shell that supports tab-completion for custom, system and TCL commands #
+######## CAD_TOOL #########
+
+# HW2 for algorithm Cad 1 #
+# Create a parser that parses practicalformats and store all components gatepins cells and it's connections #
 ----------------------------------------------------------------------------------------
-To compile this one just type: "gcc -Wall -g tcl_shell.c -o tcl_shell -lreadline -ltcl"
-You need to link libraries of Readline and TCL for correct compilation
+
+There are three main hashtables that stores informations about design.
+--------------------------------------------------------------------------------
+# GATEPINHASH #
+char *name[HASHDEPTH];
+int *pinConn[HASHDEPTH]; --> hash key
+int *pinConnDepth[HASHDEPTH];  --> depth that pins located 
+int connections_size[HASHDEPTH];
+int parentComponent[HASHDEPTH];
+int parentComponentDepth[HASHDEPTH];
+int type[HASHDEPTH];   
+int hashpresent[HASHDEPTH];
+--------------------------------------------------------------------------------
+# LIBHASH #
+char *name[HASHDEPTH]; --> names of cells
+int cell_type[HASHDEPTH]; --> type of each cell (Combinational or Sequential)
+char **pin_names[HASHDEPTH]; --> names of pins for each cell
+int pin_count[HASHDEPTH]; --> count of pins for each cell 
+char **function[HASHDEPTH]; --> boolean function for each cell 
+int out_pins_count[HASHDEPTH];
+int hashpresent[HASHDEPTH]; --> flag indicating presence in the hash table
+--------------------------------------------------------------------------------
+# COMPHASH #
+char *name[HASHDEPTH];
+int lib_type[HASHDEPTH];
+int lib_type_depth[HASHDEPTH];
+int hashpresent[HASHDEPTH];
+--------------------------------------------------------------------------------
+
+# AVAILABLE FUNCTION FOR DESIGN #
+1) read_design filename
+2) clear_design
+3) list_components
+4) list_component_CCS <component_name>
+5) list_IOs
+6) list_IO_CCS <IO_name>
+7) report_component_function <component_name>
+8) report_component_type <component_name>
+--------------------------------------------------------------------------------
+
+To compile tool:
+-> make clean
+-> make
 
 Run program and check for memory leaks and memory violations using Valgrind
-ex: "valgrind --leak-check=full ./tcl_shell"
+ex: "valgrind --leak-check=full ./cad_tool"
 
 The result that you get seems to have violations, but if you analyze it
 you can see that there are memory leaks and errors, only in Tcl_CreateInterp
-which is from TCL library and not from my implementation
+and Tcl commands which are from TCL library and not from my implementation.

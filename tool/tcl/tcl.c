@@ -75,6 +75,119 @@ void help_command()
     printf("\n");
 }
 
+int ls_command(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i;
+    char *custom_command = NULL;
+    char *temp = NULL;
+    int total_size = 0;
+    int len = 0;
+
+    if(objc > 3)
+    {
+        Tcl_WrongNumArgs(interp, 1, (Tcl_Obj * const *)objv, "[option] [filename]");
+
+        return TCL_ERROR;
+    }
+
+    custom_command = (char *)my_realloc(custom_command, 1);
+    custom_command[0] = '\0';
+
+    for(i = 0; i < objc; i++)
+    {
+        temp = Tcl_GetStringFromObj(objv[i], NULL);
+        len = strlen(temp);
+        custom_command = (char *) my_realloc(custom_command, total_size + len + 2);
+        if(i >= 1)
+        {
+            strcat(custom_command, " ");
+        }
+        strcat(custom_command, temp);
+        total_size = total_size + len + 2;
+    }
+    system(custom_command);
+
+    free(custom_command);
+
+    return TCL_OK;
+}
+
+int less_command(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i;
+    char *custom_command = NULL;
+    char *temp = NULL;
+    int total_size = 0;
+    int len = 0;
+
+    if(objc > 3)
+    {
+        Tcl_WrongNumArgs(interp, 1, (Tcl_Obj * const *)objv, "[option] [filename]");
+
+        return TCL_ERROR;
+    }
+
+    custom_command = (char *)my_realloc(custom_command, 1);
+    custom_command[0] = '\0';
+
+    for(i = 0; i < objc; i++)
+    {
+        temp = Tcl_GetStringFromObj(objv[i], NULL);
+        len = strlen(temp);
+        custom_command = (char *) my_realloc(custom_command, total_size + len + 2);
+        if(i >= 1)
+        {
+            strcat(custom_command, " ");
+        }
+        strcat(custom_command, temp);
+        total_size = total_size + len + 2;
+    }
+    system(custom_command);
+
+    free(custom_command);
+
+    return TCL_OK;
+}
+
+int man_command(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i;
+    char *custom_command = NULL;
+    char *temp = NULL;
+    int total_size = 0;
+    int len = 0;
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, (Tcl_Obj * const *)objv, "manual");
+
+        return TCL_ERROR;
+    }
+
+
+    custom_command = (char *)my_realloc(custom_command, 1);
+    custom_command[0] = '\0';
+
+
+    for(i = 0; i < objc; i++)
+    {
+        temp = Tcl_GetStringFromObj(objv[i], NULL);
+        len = strlen(temp);
+        custom_command = (char *) my_realloc(custom_command, total_size + len + 2);
+        if(i >= 1)
+        {
+            strcat(custom_command, " ");
+        }
+        strcat(custom_command, temp);
+        total_size = total_size + len + 2;
+    }
+    system(custom_command);
+
+    free(custom_command);
+
+    return TCL_OK;
+}
+
 int read_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
 {
     char *filename;
@@ -176,8 +289,11 @@ int report_component_function(ClientData clientdata, Tcl_Interp *interp, int obj
 {
     int chash, cdepth;
     int lhash, ldepth;
-    Tcl_Obj *function_obj;
+    Tcl_Obj *function_obj, *curr_func;
     char *currComp = NULL;
+    int i;
+
+    function_obj = Tcl_NewListObj(0, NULL);
 
     if(objc != 2)
     {
@@ -208,7 +324,14 @@ int report_component_function(ClientData clientdata, Tcl_Interp *interp, int obj
     ldepth = comphash[chash].lib_type_depth[cdepth];
 
     printf(ANSI_COLOR_BLUE "Cell is %s with function " ANSI_COLOR_RESET, libhash[lhash].name[ldepth]);
-    function_obj =  Tcl_NewStringObj(libhash[lhash].function[ldepth], -1);
+    for(i = 0; i < libhash[lhash].out_pins_count[ldepth]; i++)
+    {
+        if(libhash[lhash].function[ldepth][i] != NULL)
+        {
+            curr_func = Tcl_NewStringObj(libhash[lhash].function[ldepth][i], strlen(libhash[lhash].function[ldepth][i]));
+            Tcl_ListObjAppendElement(interp, function_obj, curr_func);
+        }
+    }
 
     Tcl_SetObjResult(interp, function_obj);
 
@@ -219,7 +342,6 @@ int report_component_type(ClientData clientdata, Tcl_Interp *interp, int objc, T
 {
     int chash, cdepth;
     int lhash, ldepth;
-    // Tcl_Obj *cell_type;
     int cell_type;
     char *currComp = NULL;
 
@@ -236,7 +358,6 @@ int report_component_type(ClientData clientdata, Tcl_Interp *interp, int objc, T
         return TCL_ERROR;
     }
 
-    // cell_type = Tcl_NewListObj(0, NULL);
     if(comphash == NULL)
     {
         printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
@@ -252,7 +373,6 @@ int report_component_type(ClientData clientdata, Tcl_Interp *interp, int objc, T
     lhash = comphash[chash].lib_type[cdepth];
     ldepth = comphash[chash].lib_type_depth[cdepth];
 
-    // cell_type =  Tcl_NewStringObj(libhash[lhash].name[ldepth], -1);
     cell_type = libhash[lhash].cell_type[ldepth];
 
     if(cell_type == COMBINATIONAL)
@@ -267,11 +387,6 @@ int report_component_type(ClientData clientdata, Tcl_Interp *interp, int objc, T
     {
         return TCL_ERROR;
     }
-
-    // libhash[lhash].function[ldepth];
-    //Tcl_ListObjAppendElement(interp, cell_type, function_obj);
-
-    // Tcl_SetObjResult(interp, cell_type);
 
     return TCL_OK;
 }
@@ -342,13 +457,9 @@ int list_component_CCS(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_
             break;
         }
     }
-    // libhash[lhash].function[ldepth];
-    //Tcl_ListObjAppendElement(interp, pin_connections, function_obj);
 
     printf(ANSI_COLOR_BLUE "Successors of pin %s are: " ANSI_COLOR_RESET , gatepinhash[ghash].name[gdepth]);
     Tcl_SetObjResult(interp, pin_connections);
-    // free(currComp);
-    // free(currPin);
 
     return TCL_OK;
 }
@@ -458,6 +569,12 @@ int main(int argc, char *argv[])
     rl_completion_append_character = '\0';  // should not apply ' ' in the end of word //
     using_history(); // initialise history functions //
 
+    /* Create all system calls */
+    Tcl_CreateObjCommand(interp, "ls", ls_command, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "less", less_command, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "man", man_command, NULL, NULL);
+
+    /* Create all custom TCl commands */
     Tcl_CreateObjCommand(interp, "read_design", read_design, NULL, NULL);
     Tcl_CreateObjCommand(interp, "list_IOs", list_IO, NULL, NULL);
     Tcl_CreateObjCommand(interp, "list_components", list_components, NULL, NULL);
@@ -466,6 +583,7 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "list_component_CCS", list_component_CCS, NULL, NULL);
     Tcl_CreateObjCommand(interp, "list_IO_CCS", list_IO_CCS, NULL, NULL);
     Tcl_CreateObjCommand(interp, "clear_design", clear_design, NULL, NULL);
+
 
     while (1)
     {
@@ -522,18 +640,6 @@ int main(int argc, char *argv[])
                     i++;
                 }
             }
-        }
-        else if (strncmp(command, "less", 4) == 0)
-        {
-            system(command);
-        }
-        else if(strncmp(command, "ls", 2) == 0)
-        {
-            system(command);
-        }
-        else if(strncmp(command, "man", 3) == 0)
-        {
-            system(command);
         }
         else if(strncmp(command, "help", 4) == 0)
         {

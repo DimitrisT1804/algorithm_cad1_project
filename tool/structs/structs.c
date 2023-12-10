@@ -218,6 +218,7 @@ void Lib_init()
             libhash[i].pin_count[j] = 0;
             libhash[i].hashpresent[j] = 0;           
             libhash[i].cell_type[j] = -1;
+            libhash[i].out_pins_count[j] = 0;
         }
     }
 }
@@ -230,26 +231,29 @@ void Lib_add(char *cell_name, int cell_type, char *func_expr)
 {
     int i;
     unsigned int key;
+    int lhash, ldepth;
 
     if(cell_name == NULL)
         return;
 
     key = hash_function(cell_name, libhash_size); // rehash cell_name to get pos of it in libhash //
 
-    for (i = 0; i < HASHDEPTH; i++)
+    get_libhash_indices(cell_name, &lhash, &ldepth);
+    if(ldepth == -1)
     {
-        if(libhash[key].hashpresent[i] == 0)
-            break;
+        for (i = 0; i < HASHDEPTH; i++)
+        {
+            if(libhash[key].hashpresent[i] == 0)
+                break;
+        }
+        libhash[key].name[i] = (char *) my_calloc((strlen(cell_name) + 1), sizeof(char));
+        strcpy(libhash[key].name[i], cell_name);
+
+        libhash[key].cell_type[i] = cell_type;
+        libhash[key].hashpresent[i] = 1;
+
+        ldepth = i;
     }
-    libhash[key].name[i] = (char *) my_calloc((strlen(cell_name) + 1), sizeof(char));
-    strcpy(libhash[key].name[i], cell_name);
-
-    libhash[key].function[i] = (char *) my_calloc(strlen(func_expr) + 1, sizeof(char));
-    strcpy(libhash[key].function[i], func_expr);
-
-    libhash[key].cell_type[i] = cell_type;
-    libhash[key].hashpresent[i] = 1;
-
     #ifdef DEBUG
     printf("Cell inserted succesfully on libhash\n");
     #endif
@@ -325,6 +329,33 @@ void lib_add_pins (char *cell_name, char *pin_name)
     strcpy(libhash[lhash].pin_names[ldepth][libhash[lhash].pin_count[ldepth] - 1], pin_name);
 }
 
+/* ######### lib_add_func(char *cell_name, char *func_expr) ######### */
+/* This function adds function to libhash structure for
+   a specified cell. It checks for duplicate functions and ensures that
+   the function information is appropriately stored in the libhash. */
+void lib_add_func(char *cell_name, char *func_expr)
+{
+    int i;
+    int lhash, ldepth;
+
+    get_libhash_indices(cell_name, &lhash, &ldepth);
+    if(ldepth == -1)
+        return;
+    
+    for (i = 0; i < libhash[lhash].out_pins_count[ldepth]; i++)
+    {
+        if ( strcmp(libhash[lhash].function[ldepth][i], func_expr) == 0)
+        {
+            return;
+        } 
+    }
+
+    libhash[lhash].out_pins_count[ldepth]++;
+    libhash[lhash].function[ldepth] = (char **) my_realloc(libhash[lhash].function[ldepth], sizeof(char*) * (libhash[lhash].out_pins_count[ldepth] + 1));
+    libhash[lhash].function[ldepth][i] = (char *) calloc(strlen(func_expr) + 1, sizeof(char)); 
+    strcpy(libhash[lhash].function[ldepth][i], func_expr);
+}
+
 /* ######################### libhash_free() ######################### */
 /* This function frees the memory allocated for the libhash data structure,
    including names, functions, and pin information for each cell */
@@ -339,6 +370,10 @@ void libhash_free()
             if(libhash[i].hashpresent[j] != 0) // Check if the slot is occupied //
             {
                 free(libhash[i].name[j]);
+                for(k = 0; k < libhash[i].out_pins_count[j]; k++)
+                {
+                    free(libhash[i].function[j][k]);
+                }
                 free(libhash[i].function[j]);
 
                 for(k = 0; k < libhash[i].pin_count[j]; k++) // Iterate through each pin in the current cell //

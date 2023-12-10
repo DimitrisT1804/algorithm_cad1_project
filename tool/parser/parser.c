@@ -1,8 +1,6 @@
 // lab 2 //
 #include "parser.h"
-// #define LAB2
 // #define DEBUG
-// #define LINE_MAX 15000   // suppose maximum line length //
 
 /* #### countIOS(enum IO_STATES_CCS currentState, char *event) #### */
 /* This function handles the counting of input/output (IO) states based on
@@ -245,6 +243,7 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
 {
     static int ghash, ghashdepth;
     int conhash, conhashdepth; // hash and depth for CCs //
+    int comphash, compdepth;
     int i, j;
     static char name_of_cell[LINE_MAX]; // static in order to keep value on iterations //
     static char cell_type_name[LINE_MAX];
@@ -269,6 +268,24 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             #ifdef DEBUG
             printf("Comp name is %s\n", event);
             #endif
+            // if(comp_name != NULL)
+            // {
+            //     if(strncmp(comp_name, event, sizeof(event) - 1) == 0)
+            //     {
+            //         return COMPONENT_2;
+            //     }
+            // }
+            if(event[strlen(event)-1] == ',')
+                event[strlen(event)-1] = '\0';
+            // get_libhash_indices(event, &lhash, &lhashdepth);
+            get_comphash_indices(event, &comphash, &compdepth);
+            if(compdepth != -1)
+            {
+                comp_name = (char *) calloc(strlen(event)+1, sizeof(char));
+                strcpy(comp_name, event); 
+                return COMPONENT_2;
+            }
+
             comp_name = (char *) calloc(strlen(event)+1, sizeof(char));
             strcpy(comp_name, event);
 
@@ -404,6 +421,9 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             /* add component on componenthash and inside of this function
                add also the current cell on libhash if it does not work*/
             comphash_add(comp_name, name_of_cell, cell_type, event); 
+            if(event[strlen(event)-1] == '\n')
+                event[strlen(event)-1] = '\0';
+            lib_add_func(name_of_cell, event);
             free(comp_name);
             free(out_pin);
 
@@ -604,9 +624,9 @@ void print_libhash()
             if(libhash[i].name[j] != NULL)
             {
                 if(libhash[i].cell_type[j] == 1)
-                    printf("Cell is %s and type is Combinational with function %s\n", libhash[i].name[j], libhash[i].function[j]);
+                    printf("Cell is %s and type is Combinational with function %s\n", libhash[i].name[j], libhash[i].function[j][0]);
                 else if (libhash[i].cell_type[j] == 2)
-                    printf("Cell is %s and type is Sequential with function %s\n", libhash[i].name[j], libhash[i].function[j]);
+                    printf("Cell is %s and type is Sequential with function %s\n", libhash[i].name[j], libhash[i].function[j][0]);
                 else
                     printf("ERROR TYPE\n");
 
@@ -886,7 +906,7 @@ int call_parser(char *input_file)
     print_cells();
     #endif
 
-    int count = 0;  // count IO_Pins //
+    int count_IOs = 0;  // count IO_Pins //
     int count2 = 0; // count all pins //
 
     for(i = 0; i < gatepinhash_size; i++)
@@ -897,15 +917,17 @@ int call_parser(char *input_file)
             {
                 if(gatepinhash[i].type[j] == IO_TYPE)
                 {
-                    count++;
+                    count_IOs++;
                 }
                 count2++;
             }
         }
     }
-    printf("IO pins are %d all pins are %d\n", count, count2);
+    #ifdef DEBUG
+    printf("IO pins are %d all pins are %d\n", count_IOs, count2);
+    #endif
 
-    count = 0;
+    int count = 0;
     for(i = 0; i < comphash_size; i++) // count components //
     {
         for(j = 0; j < HASHDEPTH; j++)
@@ -916,9 +938,27 @@ int call_parser(char *input_file)
             }
         }
     }
+    int count_cells = 0;
+    for(i = 0; i < libhash_size; i++) // count components //
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(libhash[i].hashpresent[j] == 1)
+            {
+                count_cells++;
+            }
+        }
+    }
 
+    #ifdef DEBUG
     printf("comps are %d\n", count);
     printf("IO pins size is %d and compsize is %d\n", gatepinhash_size, comphash_size);
+    #endif
+
+    printf(ANSI_COLOR_BLUE "####### Summary of Design #######\n" ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_GREEN "Components: %d\n" ANSI_COLOR_RESET, count);
+    printf(ANSI_COLOR_GREEN "IOs: %d\n" ANSI_COLOR_RESET, count_IOs);
+    printf(ANSI_COLOR_GREEN "Cells: %d\n" ANSI_COLOR_RESET, count_cells);
 
     fclose(filename); // close file //
 

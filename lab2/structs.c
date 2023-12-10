@@ -267,8 +267,6 @@ void Lib_add(char *cell_name, int cell_type, char *func_expr)
             break;
     }
 
-    // i = LIB_HASHDEPTH;
-
     libhash[key].name[i] = (char *) my_calloc((strlen(cell_name) + 1), sizeof(char));
     strcpy(libhash[key].name[i], cell_name);
 
@@ -392,11 +390,6 @@ void libhash_free()
             }
             // free(libhash[i].pin_names);
         }
-
-        // free (libhash[i].name);
-        // free (libhash[i].cell_type);
-        // free (libhash[i].pin_count);
-        // free(libhash[i].pin_names);
     }
     free(libhash);
 }
