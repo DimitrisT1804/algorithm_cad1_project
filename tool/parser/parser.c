@@ -275,6 +275,7 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             //         return COMPONENT_2;
             //     }
             // }
+            out_pin = (char *) my_calloc (strlen(event) + 1, sizeof(char));
             if(event[strlen(event)-1] == ',')
                 event[strlen(event)-1] = '\0';
             // get_libhash_indices(event, &lhash, &lhashdepth);
@@ -342,7 +343,7 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             }
 
         case OUTPUT_PIN_1: // keep name of gatepin part 1 //
-            out_pin = (char *) my_calloc (strlen(event) + 1, sizeof(char));
+            out_pin = (char *) my_realloc (out_pin, sizeof(char) * (strlen(event) + 1)); // allocate memory every time to free it in the end //
             strcpy(out_pin, event);
 
             return OUTPUT_PIN_2;
@@ -404,6 +405,7 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             }
             gatepin_add_CCs(out_pin, con_pin); // add CCs on prev output pin //
             free(con_pin);
+            // free(out_pin);
 
             return CONNECTED_PINS;
 
@@ -425,7 +427,8 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
                 event[strlen(event)-1] = '\0';
             lib_add_func(name_of_cell, event);
             free(comp_name);
-            free(out_pin);
+            // if(out_pin != NULL || strcmp(out_pin, "") == 0)
+                free(out_pin);
 
             return WAIT;
 
