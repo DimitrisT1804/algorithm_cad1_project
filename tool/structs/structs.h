@@ -9,7 +9,7 @@
 #define WIRE 1
 #define COMBINATIONAL 1
 #define SEQUENTIAL 2
-// #define DEBUG
+#define DEBUG
 
 struct gatepins
 {

@@ -37,6 +37,8 @@ enum lib_parse
     CONNECTED_PINS,
     CONNECTED_PINS_2,
     COMPONENT_2,
+    PIN_OUT,
+    FUNCTION_WAIT,
     FUNCTION
 };
 

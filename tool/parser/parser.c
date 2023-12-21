@@ -251,6 +251,8 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
     static int cell_type = -1;
     static char *out_pin;
     static char *con_pin;
+    static int new_comp = 0;
+    static char *cell_pin;
 
     switch (currentState) 
     {
@@ -268,6 +270,7 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             #ifdef DEBUG
             printf("Comp name is %s\n", event);
             #endif
+            new_comp = 0;
             // if(comp_name != NULL)
             // {
             //     if(strncmp(comp_name, event, sizeof(event) - 1) == 0)
@@ -283,7 +286,8 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             if(compdepth != -1)
             {
                 comp_name = (char *) calloc(strlen(event)+1, sizeof(char));
-                strcpy(comp_name, event); 
+                strcpy(comp_name, event);
+                new_comp = 1; 
                 return COMPONENT_2;
             }
 
@@ -410,25 +414,49 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             return CONNECTED_PINS;
 
         case COMPONENT_2: // wait for second time of word Component //
-            if(strcmp(event, "Function:") == 0)
+            if(strcmp(event, "Pin:") == 0)
             {
-                return FUNCTION;
+                return PIN_OUT;
             }
             else
             {
                 return COMPONENT_2;
             }
 
+        case PIN_OUT:
+            if(event[strlen(event)-1] == ',')
+                event[strlen(event)-1] = '\0';
+
+            cell_pin = (char *) my_calloc(strlen(event) + 1, sizeof(char));
+            strcpy(cell_pin, event);
+            
+            return FUNCTION_WAIT;
+        
+        case FUNCTION_WAIT:
+            if(strcmp(event, "Function:") == 0)
+            {
+                return FUNCTION;
+            }
+            else
+            {
+                return FUNCTION_WAIT;
+            }
+            
+            
+
         case FUNCTION: // get function of cell //
             /* add component on componenthash and inside of this function
                add also the current cell on libhash if it does not work*/
-            comphash_add(comp_name, name_of_cell, cell_type, event); 
+            if(new_comp == 0)
+            {
+                comphash_add(comp_name, name_of_cell, cell_type, event); 
+            }
             if(event[strlen(event)-1] == '\n')
                 event[strlen(event)-1] = '\0';
             lib_add_func(name_of_cell, event);
+            lib_add_pins(name_of_cell, cell_pin);
             free(comp_name);
-            // if(out_pin != NULL || strcmp(out_pin, "") == 0)
-                free(out_pin);
+            free(out_pin);
 
             return WAIT;
 
@@ -529,7 +557,9 @@ enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, ch
 
         case GET_COMP_NAME:
             if(strcmp(event, "Component:") == 0)
+            {
                 return BEGIN;
+            }
 
             comp_name = (char *) calloc(strlen(event) + 1, sizeof(char));
             strcpy(comp_name, event);

@@ -1,4 +1,4 @@
-text = """three_counters/U85
+three_counters/U85
 three_counters/U59
 three_counters/U84
 three_counters/U87
@@ -136,25 +136,3 @@ three_counters/U83
 three_counters/\counter1_reg[4]
 three_counters/U82
 three_counters/U58
-"""
-
-# Split the text into a list of strings
-strings_list = text.split()
-
-# Check for duplicates
-seen = set()
-duplicates = set()
-
-for string in strings_list:
-    if string in seen:
-        duplicates.add(string)
-    else:
-        seen.add(string)
-
-# Print the result
-if duplicates:
-    print("Duplicate strings found:")
-    for duplicate in duplicates:
-        print(duplicate)
-else:
-    print("No duplicate strings.")
