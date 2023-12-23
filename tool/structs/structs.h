@@ -7,8 +7,11 @@
 #define HASHDEPTH 10
 #define IO_TYPE 0
 #define WIRE 1
+#define PO 2
 #define COMBINATIONAL 1
 #define SEQUENTIAL 2
+#define INPUT 0
+#define OUTPUT 1
 #define DEBUG
 
 struct gatepins
@@ -38,6 +41,7 @@ struct library
     char **function[HASHDEPTH]; // boolean function for each cell //
     int out_pins_count[HASHDEPTH];
     int hashpresent[HASHDEPTH]; // flag indicating presence in the hash table //
+    int *pin_type[HASHDEPTH];
 };
 typedef struct library Lib;
 
@@ -70,6 +74,8 @@ void Gatepins_add(char *pin_name, int pin_type);
 void get_gatepin_indices(char *pin_name, int *ghash, int *ghashdepth);
 void gatepin_add_CCs(char *source_pin, char *connection_pin);
 void gatepins_complete_parent();
+void gatepin_characterize_IOs();
+
 unsigned int hash_function(const char *str, unsigned int num_buckets);
 
 
@@ -78,7 +84,7 @@ void Lib_init();
 void Lib_add(char *cell_name, int cell_type, char *func_expr);
 void lib_add_function(char *cell_name, char *func_expr);
 void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth);
-void lib_add_pins (char *cell_name, char *pin_name);
+void lib_add_pins (char *cell_name, char *pin_name, int pin_type);
 void libhash_free();
 void add_cell(char *cell_name);
 void lib_add_func(char *cell_name, char *func_expr);

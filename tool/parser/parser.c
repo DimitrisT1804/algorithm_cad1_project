@@ -148,7 +148,7 @@ enum IO_STATES proccessIOS(enum IO_STATES currentState, char *event)
 }
 
 /* ## proccessIOS_CCS(enum IO_STATES_CCS currentState, char *event) ## */
-/* This function is a FSM that parses second section of file to get all
+/* This function is a FSM that parses second section of file to get
    all CCs of IOs and add them in gatepinhash */
 enum IO_STATES_CCS proccessIOS_CCS(enum IO_STATES_CCS currentState, char *event) 
 {
@@ -253,6 +253,7 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
     static char *con_pin;
     static int new_comp = 0;
     static char *cell_pin;
+    static int pin_type;
 
     switch (currentState) 
     {
@@ -271,13 +272,6 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             printf("Comp name is %s\n", event);
             #endif
             new_comp = 0;
-            // if(comp_name != NULL)
-            // {
-            //     if(strncmp(comp_name, event, sizeof(event) - 1) == 0)
-            //     {
-            //         return COMPONENT_2;
-            //     }
-            // }
             out_pin = (char *) my_calloc (strlen(event) + 1, sizeof(char));
             if(event[strlen(event)-1] == ',')
                 event[strlen(event)-1] = '\0';
@@ -377,6 +371,14 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
         case CONNECTED_PINS: // get the CCs of output pin //
             if(strcmp(event, "Component:") == 0)
                 return COMPONENT_2;
+            
+            if(strcmp(comp_name, event) == 0)
+            {
+                out_pin = (char *) my_realloc (out_pin, sizeof(char) * (strlen(event) + 1)); // allocate memory every time to free it in the end //
+                strcpy(out_pin, event);
+                
+                return OUTPUT_PIN_2;
+            }
             con_pin = (char *) my_calloc(strlen(event) + 1, sizeof(char));
             strcpy(con_pin, event);
 
@@ -409,17 +411,18 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             }
             gatepin_add_CCs(out_pin, con_pin); // add CCs on prev output pin //
             free(con_pin);
-            // free(out_pin);
 
             return CONNECTED_PINS;
 
         case COMPONENT_2: // wait for second time of word Component //
             if(strcmp(event, "Pin:") == 0)
             {
+                pin_type = OUTPUT;
                 return PIN_OUT;
             }
             else
             {
+                pin_type = INPUT;
                 return COMPONENT_2;
             }
 
@@ -427,8 +430,9 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             if(event[strlen(event)-1] == ',')
                 event[strlen(event)-1] = '\0';
 
-            cell_pin = (char *) my_calloc(strlen(event) + 1, sizeof(char));
-            strcpy(cell_pin, event);
+            cell_pin = (char *) my_calloc(strlen(event) + 2, sizeof(char));
+            strcpy(cell_pin, "/");
+            strcat(cell_pin, event);
             
             return FUNCTION_WAIT;
         
@@ -442,8 +446,6 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
                 return FUNCTION_WAIT;
             }
             
-            
-
         case FUNCTION: // get function of cell //
             /* add component on componenthash and inside of this function
                add also the current cell on libhash if it does not work*/
@@ -454,7 +456,7 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             if(event[strlen(event)-1] == '\n')
                 event[strlen(event)-1] = '\0';
             lib_add_func(name_of_cell, event);
-            lib_add_pins(name_of_cell, cell_pin);
+            lib_add_pins(name_of_cell, cell_pin, pin_type);
             free(comp_name);
             free(out_pin);
 
@@ -524,7 +526,7 @@ enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO current
             }
             event[j] = '\0';
 
-            lib_add_pins(cell_name, event); // add pins for current cell //
+            lib_add_pins(cell_name, event, INPUT); // add pins for current cell //
 
             return GET_COMP_NAME_IO;
 
@@ -595,7 +597,7 @@ enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, ch
             }
             event[j] = '\0';
 
-            lib_add_pins(cell_name, event); // add pin without brackets on cell //
+            lib_add_pins(cell_name, event, INPUT); // add pin without brackets on cell //
 
             return GET_COMP_NAME;
 
@@ -931,6 +933,7 @@ int call_parser(char *input_file)
        search on comphash to find hash and hashdept and store
        it in correct pin */
     gatepins_complete_parent();
+    gatepin_characterize_IOs();
 
     #ifdef DEBUG
     print_gatepinhash();
@@ -948,7 +951,7 @@ int call_parser(char *input_file)
         {
             if(gatepinhash[i].hashpresent[j] != 0)
             {
-                if(gatepinhash[i].type[j] == IO_TYPE)
+                if(gatepinhash[i].type[j] == IO_TYPE || gatepinhash[i].type[j] == PO)
                 {
                     count_IOs++;
                 }

@@ -53,7 +53,7 @@ static const char *commands[] =
 
     // custom commands //
     "read_design", "list_IOs", "list_components", "report_component_function", 
-    "report_component_type", "list_component_CCS", "list_IO_CCS",  "clear_design",
+    "report_component_type", "list_component_CCS", "list_IO_CCS",  "clear_design", "list_cell",
     
     NULL    // should terminate with NULL //
 

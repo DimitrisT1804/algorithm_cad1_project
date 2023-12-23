@@ -242,7 +242,7 @@ int list_IO(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const*
         {
             if(gatepinhash[i].hashpresent[j] != 0)
             {
-                if(gatepinhash[i].type[j] == IO_TYPE)
+                if(gatepinhash[i].type[j] == IO_TYPE || gatepinhash[i].type[j] == PO)
                 {
                     currPin = Tcl_NewStringObj(gatepinhash[i].name[j], strlen(gatepinhash[i].name[j]));
 
@@ -499,7 +499,7 @@ int list_IO_CCS(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *co
         return TCL_ERROR;
     }
 
-    if( (gatepinhash[ghash].type[gdepth] != IO_TYPE))
+    if( (gatepinhash[ghash].type[gdepth] != IO_TYPE) && (gatepinhash[ghash].type[gdepth] != PO))
     {
         printf(ANSI_COLOR_RED "ERROR: Given pin is not an IO pin" ANSI_COLOR_RESET);
         return TCL_ERROR;  
@@ -549,12 +549,74 @@ int clear_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
     return TCL_OK;
 }
 
+int list_cell(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i;
+    int lhash, ldepth;
+    char *currCell = NULL;
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "component");
+        return TCL_ERROR;
+    }
+
+    currCell = Tcl_GetString(objv[1]);
+
+    if(currCell == NULL)
+    {
+        return TCL_ERROR;
+    }
+
+    if(gatepinhash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    get_libhash_indices(currCell, &lhash, &ldepth);
+    if(ldepth == -1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Cell %s does not exists!" ANSI_COLOR_RESET, currCell);
+        return TCL_ERROR;
+    }
+
+    printf(ANSI_COLOR_BLUE"------------- INFO CELL: %s -------------\n" ANSI_COLOR_RESET, currCell);
+    if(libhash[lhash].cell_type[ldepth] == COMBINATIONAL)
+    {
+        printf(ANSI_COLOR_ORANGE"Cell Type is: Combinational\n" ANSI_COLOR_RESET);
+    }
+    else
+    {
+        printf("Cell Type is: Sequential\n");
+    }
+
+    printf("Pin names are: \n");
+    for(i = 0; i < libhash[lhash].pin_count[ldepth]; i++)
+    {
+        printf(ANSI_COLOR_GREEN "%d) %s " ANSI_COLOR_RESET, i+1, (libhash[lhash].pin_names[ldepth][i] + 1));
+        if(libhash[lhash].pin_type[ldepth][i] == OUTPUT)
+        {
+            printf(ANSI_COLOR_GREEN "output pin with function %s\n" ANSI_COLOR_RESET, libhash[lhash].function[ldepth][i]);
+        }
+        else
+        {
+            printf(ANSI_COLOR_GREEN "input pin\n" ANSI_COLOR_RESET); 
+        }
+    }
+
+    printf(ANSI_COLOR_BLUE "---------------------------------------------\n" ANSI_COLOR_RESET);
+
+    return TCL_OK;
+}
+
 
 int main(int argc, char *argv[])
 {
     char *text = NULL; // readline result //
     char *textexpansion; // readline result history expanded //
     int expansionresult;
+    int kati = 0;
 
     Tcl_Interp *interp;
 
@@ -583,6 +645,7 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "list_component_CCS", list_component_CCS, NULL, NULL);
     Tcl_CreateObjCommand(interp, "list_IO_CCS", list_IO_CCS, NULL, NULL);
     Tcl_CreateObjCommand(interp, "clear_design", clear_design, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "list_cell", list_cell, NULL, NULL);
 
 
     while (1)

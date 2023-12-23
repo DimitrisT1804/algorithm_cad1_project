@@ -183,6 +183,66 @@ void gatepins_complete_parent()
     }
 }
 
+void gatepin_characterize_IOs()
+{
+    int i, j, k, pos = 0;
+    char *comp_name;
+    char pin_name[10];
+    int chash, cdepth;
+    int lhash, ldepth;
+    int ghash, gdepth;
+
+    for (i = 0; i < gatepinhash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] != 0 && gatepinhash[i].type[j] == IO_TYPE)
+            {
+                ghash = gatepinhash[i].pinConn[j][0];
+                gdepth = gatepinhash[i].pinConnDepth[j][0];
+                for (k = strlen(gatepinhash[ghash].name[gdepth]); gatepinhash[ghash].name[gdepth][k] != '/'; k--)
+                {
+
+                }
+                comp_name = (char *) calloc(k+1, sizeof(char));
+                strncpy(comp_name, gatepinhash[ghash].name[gdepth], k);
+
+                // pin_name = (char *) calloc(sizeof())
+                while(gatepinhash[ghash].name[gdepth][k] != '\0')
+                {
+                    pin_name[pos] = gatepinhash[ghash].name[gdepth][k];
+                    pos++;
+                    k++;
+                }
+                pin_name[pos] = '\0';
+                pos = 0;
+                printf("name is %s\n", pin_name);
+
+                get_comphash_indices(comp_name, &chash, &cdepth);
+
+                free(comp_name);
+                if(cdepth != -1)
+                {
+                    lhash = comphash[chash].lib_type[cdepth];
+                    ldepth = comphash[chash].lib_type_depth[cdepth];
+
+                    for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
+                    {
+                        if(strcmp(pin_name, libhash[lhash].pin_names[ldepth][k]) == 0)
+                        {
+                            if(libhash[lhash].pin_type[ldepth][k] == OUTPUT)
+                            {
+                                gatepinhash[i].type[j] = PO;
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+}
+
 /* #### hash_function(const char *str, unsigned int num_buckets) #### */
 /* This is a hash function that gets as input number of backets of
    one hash and it returns a key */
@@ -219,6 +279,7 @@ void Lib_init()
             libhash[i].hashpresent[j] = 0;           
             libhash[i].cell_type[j] = -1;
             libhash[i].out_pins_count[j] = 0;
+            libhash[i].pin_type[j] = NULL;
         }
     }
 }
@@ -290,7 +351,7 @@ void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth)
 /* This function adds pin information to the libhash data structure for
    a specified cell. It checks for duplicate pin names and ensures that
    the pin information is appropriately stored in the libhash. */
-void lib_add_pins (char *cell_name, char *pin_name)
+void lib_add_pins (char *cell_name, char *pin_name, int pin_type)
 {
     int i;
     int lhash, ldepth;
@@ -307,7 +368,7 @@ void lib_add_pins (char *cell_name, char *pin_name)
         printf("ERROR: There is not this cell\n");
         return;
     }
-    free(cell_name);
+    // free(cell_name);
 
      // Check for duplicate pin names in the specified cell //
     for(i = 0; i < libhash[lhash].pin_count[ldepth]; i++)
@@ -327,6 +388,9 @@ void lib_add_pins (char *cell_name, char *pin_name)
     libhash[lhash].pin_names[ldepth][libhash[lhash].pin_count[ldepth] - 1] = (char *) calloc(strlen(pin_name) + 1, sizeof(char));
 
     strcpy(libhash[lhash].pin_names[ldepth][libhash[lhash].pin_count[ldepth] - 1], pin_name);
+
+    libhash[lhash].pin_type[ldepth] = (int *) realloc(libhash[lhash].pin_type[ldepth], (libhash[lhash].pin_count[ldepth]) * sizeof(int));
+    libhash[lhash].pin_type[ldepth][libhash[lhash].pin_count[ldepth] - 1] = pin_type;
 }
 
 /* ######### lib_add_func(char *cell_name, char *func_expr) ######### */
