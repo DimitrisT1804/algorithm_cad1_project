@@ -822,6 +822,26 @@ int list_components_info(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
         }
     }
 
+    return TCL_OK;
+}
+
+int convert_infix_to_postfix (ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    char *infix = NULL;
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "infix_expression");
+        return TCL_ERROR;
+    }
+
+    infix = Tcl_GetString(objv[1]);
+    if(infix == NULL)
+    {
+        printf("ERROR: Infix is NULL\n");
+        return TCL_ERROR;
+    }
+
+    printf("The postfix is %s\n", parse_infix(infix));
 
     return TCL_OK;
 }
@@ -865,6 +885,7 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "list_cells", list_cells, NULL, NULL);
     Tcl_CreateObjCommand(interp, "list_component_info", list_component_info, NULL, NULL);
     Tcl_CreateObjCommand(interp, "list_components_info", list_components_info, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "convert_infix_to_postfix", convert_infix_to_postfix, NULL, NULL);
 
 
     while (1)

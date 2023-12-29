@@ -10,6 +10,7 @@
 #include <syscall.h>
 
 #include "../parser/parser.h"
+#include "../convert_infix/parse_infix.h"
 
 /* Global array that stores all custom, system and TCL commands for tab-completion */
 static const char *commands[] = 
@@ -54,7 +55,7 @@ static const char *commands[] =
     // custom commands //
     "read_design", "list_IOs", "list_components", "report_component_function", 
     "report_component_type", "list_component_CCS", "list_IO_CCS",  "clear_design", "list_cell",
-    "list_cells", "list_component_info", "list_components_info",
+    "list_cells", "list_component_info", "list_components_info", "convert_infix_to_postfix", 
     
     NULL    // should terminate with NULL //
 
