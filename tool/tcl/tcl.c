@@ -557,7 +557,7 @@ int list_cell(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *cons
 
     if(objc != 2)
     {
-        Tcl_WrongNumArgs(interp, 1, objv, "component");
+        Tcl_WrongNumArgs(interp, 1, objv, "cell");
         return TCL_ERROR;
     }
 
@@ -610,6 +610,222 @@ int list_cell(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *cons
     return TCL_OK;
 }
 
+int list_cells(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i;
+    int lhash, ldepth;
+
+    if(objc != 1)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "no argument");
+        return TCL_ERROR;
+    }
+
+
+    if(gatepinhash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    // get_libhash_indices(currCell, &lhash, &ldepth);
+    // if(ldepth == -1)
+    // {
+    //     printf(ANSI_COLOR_RED "ERROR: Cell %s does not exists!" ANSI_COLOR_RESET, currCell);
+    //     return TCL_ERROR;
+    // }
+
+    for(lhash = 0; lhash < libhash_size; lhash++)
+    {
+        for(ldepth = 0; ldepth < HASHDEPTH; ldepth++)
+        {
+            if(libhash[lhash].hashpresent[ldepth] == 1)
+            {
+                printf(ANSI_COLOR_BLUE"------------- INFO CELL: %s -------------\n" ANSI_COLOR_RESET, libhash[lhash].name[ldepth]);
+                if(libhash[lhash].cell_type[ldepth] == COMBINATIONAL)
+                {
+                    printf(ANSI_COLOR_ORANGE"Cell Type is: Combinational\n" ANSI_COLOR_RESET);
+                }
+                else
+                {
+                    printf("Cell Type is: Sequential\n");
+                }
+
+                printf("Pin names are: \n");
+                for(i = 0; i < libhash[lhash].pin_count[ldepth]; i++)
+                {
+                    printf(ANSI_COLOR_GREEN "%d) %s " ANSI_COLOR_RESET, i+1, (libhash[lhash].pin_names[ldepth][i] + 1));
+                    if(libhash[lhash].pin_type[ldepth][i] == OUTPUT)
+                    {
+                        printf(ANSI_COLOR_GREEN "output pin with function %s\n" ANSI_COLOR_RESET, libhash[lhash].function[ldepth][i]);
+                    }
+                    else
+                    {
+                        printf(ANSI_COLOR_GREEN "input pin\n" ANSI_COLOR_RESET); 
+                    }
+                }
+
+                printf(ANSI_COLOR_BLUE "---------------------------------------------\n\n" ANSI_COLOR_RESET);
+            }
+        }
+    }
+
+
+    return TCL_OK;
+}
+
+int list_component_info(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i, j;
+    int chash, cdepth;
+    int lhash, ldepth;
+    int ghash, gdepth;
+    int gconhash, gcondepth;
+    char *currComp = NULL;
+    char *currPin = NULL;
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "component");
+        return TCL_ERROR;
+    }
+
+    currComp = Tcl_GetString(objv[1]);
+
+    if(currComp == NULL)
+    {
+        return TCL_ERROR;
+    }
+
+    if(gatepinhash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    get_comphash_indices(currComp, &chash, &cdepth);
+    if(cdepth == -1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Component %s does not exists!" ANSI_COLOR_RESET, currComp);
+        return TCL_ERROR;
+    }
+
+    printf(ANSI_COLOR_BLUE"------------- INFO COMPONENT: %s -------------\n" ANSI_COLOR_RESET, currComp);
+
+    lhash = comphash[chash].lib_type[cdepth];
+    ldepth = comphash[chash].lib_type_depth[cdepth];
+    printf(ANSI_COLOR_ORANGE"Component is of type: %s\n" ANSI_COLOR_RESET, libhash[lhash].name[ldepth]);
+
+    for(i = 0; i < libhash[lhash].pin_count[ldepth]; i++)
+    {
+        currPin = (char *) my_calloc(strlen(currComp) + strlen(libhash[lhash].pin_names[ldepth][i]) + 1, sizeof(char));
+        strcpy(currPin, currComp);
+        strcat(currPin, libhash[lhash].pin_names[ldepth][i]);
+
+        get_gatepin_indices(currPin, &ghash, &gdepth);
+        if(gdepth == -1)
+        {
+            printf(ANSI_COLOR_RED "ERROR: gatepin NOT found" ANSI_COLOR_RESET);
+            free(currPin);
+            return TCL_ERROR;
+        }
+        free(currPin);
+        printf(ANSI_COLOR_BLUE "Successors of pin %s are: \n" ANSI_COLOR_RESET, gatepinhash[ghash].name[gdepth]);
+        if(gatepinhash[ghash].connections_size[gdepth] != 0)
+        {
+            for(j = 0; j < gatepinhash[ghash].connections_size[gdepth]; j++)
+            {
+                gconhash = gatepinhash[ghash].pinConn[gdepth][j];
+                gcondepth = gatepinhash[ghash].pinConnDepth[gdepth][j];
+
+                printf(ANSI_COLOR_GREEN "• %s \n" ANSI_COLOR_RESET, gatepinhash[gconhash].name[gcondepth]);
+            }
+            break;
+        }
+    }
+    for(i = 0; i < strlen(currComp) + 44; i++)
+    {
+        printf(ANSI_COLOR_BLUE "-" ANSI_COLOR_RESET);
+    }
+    printf("\n");
+
+    return TCL_OK;
+}
+
+
+int list_components_info(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i, j;
+    int chash, cdepth;
+    int lhash, ldepth;
+    int ghash, gdepth;
+    int gconhash, gcondepth;
+    char *currPin = NULL;
+
+    if(objc != 1)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "no arguments");
+        return TCL_ERROR;
+    }
+
+    if(gatepinhash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    for(chash = 0; chash < comphash_size; chash++)
+    {
+        for(cdepth = 0; cdepth < HASHDEPTH; cdepth++)
+        {
+            if(comphash[chash].hashpresent[cdepth] == 1)
+            {
+                printf(ANSI_COLOR_BLUE"------------- INFO COMPONENT: %s -------------\n" ANSI_COLOR_RESET, comphash[chash].name[cdepth]);
+
+                lhash = comphash[chash].lib_type[cdepth];
+                ldepth = comphash[chash].lib_type_depth[cdepth];
+                printf(ANSI_COLOR_ORANGE"Component is of type: %s\n" ANSI_COLOR_RESET, libhash[lhash].name[ldepth]);
+
+                for(i = 0; i < libhash[lhash].pin_count[ldepth]; i++)
+                {
+                    currPin = (char *) my_calloc(strlen(comphash[chash].name[cdepth]) + strlen(libhash[lhash].pin_names[ldepth][i]) + 1, sizeof(char));
+                    strcpy(currPin, comphash[chash].name[cdepth]);
+                    strcat(currPin, libhash[lhash].pin_names[ldepth][i]);
+
+                    get_gatepin_indices(currPin, &ghash, &gdepth);
+                    if(gdepth == -1)
+                    {
+                        printf(ANSI_COLOR_RED "ERROR: gatepin NOT found" ANSI_COLOR_RESET);
+                        free(currPin);
+                        return TCL_ERROR;
+                    }
+                    free(currPin);
+                    printf(ANSI_COLOR_BLUE "Successors of pin %s are: \n" ANSI_COLOR_RESET, gatepinhash[ghash].name[gdepth]);
+                    if(gatepinhash[ghash].connections_size[gdepth] != 0)
+                    {
+                        for(j = 0; j < gatepinhash[ghash].connections_size[gdepth]; j++)
+                        {
+                            gconhash = gatepinhash[ghash].pinConn[gdepth][j];
+                            gcondepth = gatepinhash[ghash].pinConnDepth[gdepth][j];
+
+                            printf(ANSI_COLOR_GREEN "• %s \n" ANSI_COLOR_RESET, gatepinhash[gconhash].name[gcondepth]);
+                        }
+                        break;
+                    }
+                }
+                for(i = 0; i < strlen(comphash[chash].name[cdepth]) + 44; i++)
+                {
+                    printf(ANSI_COLOR_BLUE "-" ANSI_COLOR_RESET);
+                }
+                printf("\n\n");
+            }
+        }
+    }
+
+
+    return TCL_OK;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -646,6 +862,9 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "list_IO_CCS", list_IO_CCS, NULL, NULL);
     Tcl_CreateObjCommand(interp, "clear_design", clear_design, NULL, NULL);
     Tcl_CreateObjCommand(interp, "list_cell", list_cell, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "list_cells", list_cells, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "list_component_info", list_component_info, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "list_components_info", list_components_info, NULL, NULL);
 
 
     while (1)
