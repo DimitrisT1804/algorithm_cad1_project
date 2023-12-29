@@ -55,7 +55,6 @@ struct components
 };
 typedef struct components Components;
 
-
 gatePins *gatepinhash;
 int gatepinhash_size;
 
