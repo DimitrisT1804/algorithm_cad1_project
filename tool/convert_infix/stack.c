@@ -31,7 +31,9 @@ void push(stack* currStack, char item)
 
     currStack->top++;
     currStack->array[currStack->top] = item;
+    #ifdef DEBUG
     printf("Item %c pushed to stack\n", item);
+    #endif
 }
 
 char pop(stack *currStack)
@@ -54,15 +56,8 @@ char peek(stack *currStack)
     return currStack->array[currStack->top];
 }
 
-// int main() 
-// { 
-//     struct Stack* stack = create_stack(100); 
-  
-//     push(stack, 'A'); 
-//     push(stack, 'B'); 
-//     push(stack, 'C'); 
-  
-//     printf("%c popped from stack\n", pop(stack)); 
-  
-//     return 0; 
-// } 
+void delete_stack (stack *currStack)
+{
+    free(currStack->array);
+    free(currStack);
+}

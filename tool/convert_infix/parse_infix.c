@@ -84,14 +84,7 @@ char* parse_infix(char *infix)
     
     postfix[postfix_pos] = '\0';
 
+    delete_stack(operatorStack);
+
     return postfix;
 }
-
-// int main()
-// {
-//     char infix[] = "!((I0 * !(S)) + (I1 * S) + (I0 * I1)) ";
-
-//     printf("The postfix is %s\n", parse_infix(infix));
-
-//     return 0;
-// }

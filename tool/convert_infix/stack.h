@@ -1,6 +1,7 @@
 //
 #include <stdlib.h>
 #include <stdio.h>
+// #define DEBUG
 
 struct Stack
 {
@@ -24,6 +25,8 @@ char pop(stack *currStack);
 
 
 char peek(stack *currStack);
+
+void delete_stack (stack *currStack);
 
 
 

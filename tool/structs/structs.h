@@ -12,7 +12,7 @@
 #define SEQUENTIAL 2
 #define INPUT 0
 #define OUTPUT 1
-#define DEBUG
+// #define DEBUG
 
 struct gatepins
 {
