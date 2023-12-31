@@ -1,80 +1,24 @@
-# main: simple combinational logic equivalence checker based
-#         on BDD comparison            
-#---------------------------------------------------------------------------
-.SUFFIXES: .o .c .u
+CXX = gcc
+CXXFLAGS = -Wall -g
+LDFLAGS = -lm -ltcl -lreadline -lcudd -lm
+SRC_DIRS = ./ ../convert_infix
+SRC_FILES = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
+OBJ_FILES = $(SRC_FILES:.c=.o)
+TARGET = cudd
 
-CC	= gcc
-RANLIB	= ranlib
+# Main rule
+all: $(TARGET)
 
-EXE	=
-TARGET	= tutorial$(EXE)
-TARGETu = tutorial-u
+# Compile source files into object files
+%.o: %.c
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-#WHERE	= /usr/local/cudd-2.4.1
-WHERE	= ../external_libraries/cudd-source
+# Link object files to create the executable
+$(TARGET): $(OBJ_FILES)
+	$(CXX) $^ -o $@ $(LDFLAGS)
 
-INCLUDE = $(WHERE)/include
-
-LIBS	= $(WHERE)/dddmp/libdddmp.a $(WHERE)/cudd/libcudd.a \
-	$(WHERE)/mtr/libmtr.a $(WHERE)/st/libst.a $(WHERE)/util/libutil.a \
-	$(WHERE)/epd/libepd.a
-
-BLIBS	= -kL$(WHERE)/dddmp -kldddmp -kL$(WHERE)/cudd -klcudd -kL$(WHERE)/mtr \
-	-klmtr -kL$(WHERE)/st -klst -kL$(WHERE)/util -klutil
-
-LINTLIBS = $(WHERE)/llib-ldddmp.a $(WHERE)/cudd/llib-lcudd.ln \
-	$(WHERE)/mtr/llib-lmtr.ln $(WHERE)/st/llib-lst.ln \
-	$(WHERE)/util/llib-lutil.ln
-
-SRC	= cudd.c
-HDR	= $(WHERE)/include/dddmp.h $(WHERE)/include/cudd.h \
-	$(WHERE)/include/cuddInt.h
-
-OBJ	= $(SRC:.c=.o)
-UBJ	= $(SRC:.c=.u)
-
-MFLAG	=
-ICFLAGS = -g -O -Wall
-XCFLAGS = -DHAVE_IEEE_754 -DBSD
-CFLAGS	= $(ICFLAGS) $(MFLAG) $(XCFLAGS)
-DDDEBUG =
-#DDDEBUG = -DDD_STATS -DDD_VERBOSE -DDD_CACHE_PROFILE -DDD_UNIQUE_PROFILE -DDD_DEBUG
-
-LDFLAGS =
-#LDFLAGS = -jmpopt
-#LDFLAGS = -non_shared -om -taso
-
-LINTFLAGS = -u -n -DDD_STATS -DDD_CACHE_PROFILE -DDD_VERBOSE -DDD_DEBUG -DDD_UNIQUE_PROFILE
-
-#------------------------------------------------------
-
-$(TARGET): $(SRC) $(OBJ) $(HDR) $(LIBS) $(MNEMLIB)
-	$(PURE) $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJ) $(LIBS) $(MNEMLIB) -lm
-
-.c.o: $(HDR)
-	$(CC) -c $< -I$(INCLUDE) $(CFLAGS) $(DDDEBUG)
-
-# if the header files change, recompile
-$(OBJ): $(HDR)
-$(UBJ): $(HDR)
-
-.c.u: $(SRC) $(HDR)
-	cc -j -I$(INCLUDE) $(XCFLAGS) $<
-
-lint: $(SRC) $(HDR) $(LINTLIBS)
-	lint $(LINTFLAGS) -I$(INCLUDE) $(SRC) $(LINTLIBS)
-
-tags: $(SRC) $(HDR)
-	ctags $(SRC) $(HDR)
-
-all: $(TARGET) $(TARGETu) lint tags
-
-pixie: $(TARGETu)
-	pixie $(TARGETu)
-
+# Clean compiled files
 clean:
-	rm -f *.o *.u mon.out gmon.out *.pixie *.Addrs *.Counts mnem.* \
-	.pure core *.warnings tutorial
+	rm -f $(OBJ_FILES) $(TARGET)
 
-distclean: clean
-	rm -f $(TARGET) $(TARGETu) *.bak *~ .gdb_history *.qv *.qx
+.PHONY: all clean
