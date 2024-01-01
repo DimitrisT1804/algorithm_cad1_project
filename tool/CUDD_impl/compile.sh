@@ -6,6 +6,7 @@ make all
 # Check if the make command was successful
 if [ $? -eq 0 ]; then
     # Convert the DOT file to PNG
+    ./cudd
     dot -Tpng bdd.dot -o bdd.png
     echo "Conversion from DOT to PNG completed successfully."
 else
