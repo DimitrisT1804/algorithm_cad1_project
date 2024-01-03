@@ -65,7 +65,7 @@ int identify_symbol(char operator)
 }
 
 
-DdNode *generate_bdd(char *infix)
+DdNode *generate_bdd(char *infix, char *cell_name)
 {
     int i;
     int size = 0;
@@ -74,6 +74,7 @@ DdNode *generate_bdd(char *infix)
     int found_operator = 0;
     char *postfix = NULL;
     int string_size = 1;
+    char *out_name = NULL;
 
     postfix = parse_infix(infix);
 
@@ -168,14 +169,6 @@ DdNode *generate_bdd(char *infix)
             var_size++;
         }
 
-        Cudd_Ref(bdd);
-
-        bdd = Cudd_BddToAdd(gbm, bdd);
-
-        FILE *dotFile;
-        dotFile = fopen("bdd.dot", "w");
-        Cudd_DumpDot(gbm, 1, &bdd, (char **) varNames, NULL, dotFile);
-        fclose(dotFile);
         // else if (result == 4)
         // {
         //     if(found_operator)
@@ -191,6 +184,26 @@ DdNode *generate_bdd(char *infix)
         //     var_size++;
         // }
     }
+
+    Cudd_Ref(bdd);
+
+    bdd = Cudd_BddToAdd(gbm, bdd);
+
+    out_name = malloc(sizeof(char) * (strlen(".dot ") + strlen(cell_name) + strlen("bdd_output/ ")) );
+    strcpy(out_name, "bdd_output/");
+    strcat(out_name, cell_name);
+    strcat(out_name, ".dot");
+
+    #ifdef DEBUG
+    printf("The out_name is %s\n", out_name);
+    #endif
+
+    FILE *dotFile;
+    dotFile = fopen(out_name, "w");
+    Cudd_DumpDot(gbm, 1, &bdd, (char **) varNames, NULL, dotFile);
+    fclose(dotFile);
+
+    free(out_name);
 
     return bdd;
 }
@@ -212,7 +225,7 @@ DdNode *generate_bdd(char *infix)
 //     // bdd = Cudd_bddAnd ( gbm , var_a , var_b ) ; 
 //     // bdd = Cudd_bddOr ( gbm , bdd , var_c ) ; 
 
-//     bdd = generate_bdd("(A1*B2*C)+D5");
+//     bdd = generate_bdd("((A*B)+C)");
 //     for(int i = 1; i < 5; i++)
 //     {
 //         //if(varNames[i] != NULL)

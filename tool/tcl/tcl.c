@@ -932,6 +932,8 @@ int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
     char *infix = NULL;
     char *result = NULL;
     char *postfix = NULL;
+    char *command = NULL;
+
     if(objc != 2)
     {
         Tcl_WrongNumArgs(interp, 1, objv, "component_name");
@@ -965,9 +967,28 @@ int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
         infix = strdup(libhash[lhash].function[ldepth][i]);
         size = size + strlen(infix) + 3 + strlen("The BDD of  is ") + strlen(" succesfully generated!");
 
-        generate_bdd(infix);
-        system("dot -Tpng bdd.dot -o bdd.png");
-        system("xdg-open bdd.png");
+        postfix = parse_infix(infix);
+
+        generate_bdd(infix, libhash[lhash].name[ldepth]);
+
+        // system("chmod +r AND3JILTX1.dot");
+
+        command = malloc(strlen("dot -Tpng ") + strlen(libhash[lhash].name[ldepth]) + strlen(".dot -o .png  ") + strlen(libhash[lhash].name[ldepth]) + strlen("bdd_output/") + strlen("bdd_output/"));
+        strcpy(command, "dot -Tpng ");
+        strcat(command, "bdd_output/");
+        strcat(command, libhash[lhash].name[ldepth]);
+        strcat(command, ".dot -o ");
+        strcat(command, "bdd_output/");
+        strcat(command, libhash[lhash].name[ldepth]);
+        strcat(command, ".png");
+        system(command);
+        printf("command is %s\n", command);
+
+        strcpy(command, "xdg-open ");
+        strcat(command, "bdd_output/");
+        strcat(command, libhash[lhash].name[ldepth]);
+        strcat(command, ".png");
+        system(command);
 
         result = my_realloc(result, (size) * sizeof(char));
         if(i == 0)
@@ -984,6 +1005,7 @@ int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
 
         free(infix);
         free(postfix);
+        free(command);
     }
     
     Tcl_SetObjResult(interp, Tcl_NewStringObj(result, -1));

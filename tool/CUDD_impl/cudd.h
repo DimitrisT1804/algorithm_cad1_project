@@ -9,4 +9,4 @@
 
 void print_dd (DdNode *dd, int n, int pr, char *name);
 void write_dd (DdManager *gbm, DdNode *dd, char* filename);
-DdNode *generate_bdd(char *infix);
+DdNode *generate_bdd(char *infix, char *cell_name);
