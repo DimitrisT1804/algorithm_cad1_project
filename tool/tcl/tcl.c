@@ -933,6 +933,7 @@ int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
     char *result = NULL;
     char *postfix = NULL;
     char *command = NULL;
+    char number[5];
 
     if(objc != 2)
     {
@@ -971,15 +972,18 @@ int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
 
         generate_bdd(infix, libhash[lhash].name[ldepth]);
 
-        // system("chmod +r AND3JILTX1.dot");
-
-        command = malloc(strlen("dot -Tpng ") + strlen(libhash[lhash].name[ldepth]) + strlen(".dot -o .png  ") + strlen(libhash[lhash].name[ldepth]) + strlen("bdd_output/") + strlen("bdd_output/"));
+        command = malloc(strlen("dot -Tpng ") + strlen(libhash[lhash].name[ldepth]) + strlen(".dot -o .png  ") + strlen(libhash[lhash].name[ldepth]) + strlen("bdd_output/") + strlen("bdd_output/_ "));
         strcpy(command, "dot -Tpng ");
         strcat(command, "bdd_output/");
         strcat(command, libhash[lhash].name[ldepth]);
         strcat(command, ".dot -o ");
         strcat(command, "bdd_output/");
         strcat(command, libhash[lhash].name[ldepth]);
+        strcat(command, "_");
+
+        snprintf(number, sizeof(number), "%d", i+1);
+        strcat(command, number);
+
         strcat(command, ".png");
         system(command);
         printf("command is %s\n", command);
@@ -987,6 +991,8 @@ int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
         strcpy(command, "xdg-open ");
         strcat(command, "bdd_output/");
         strcat(command, libhash[lhash].name[ldepth]);
+        strcat(command, "_");
+        strcat(command, number);
         strcat(command, ".png");
         system(command);
 

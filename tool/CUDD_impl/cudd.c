@@ -75,6 +75,8 @@ DdNode *generate_bdd(char *infix, char *cell_name)
     char *postfix = NULL;
     int string_size = 1;
     char *out_name = NULL;
+    int var_num = 0;
+    int pos = 0;
 
     postfix = parse_infix(infix);
 
@@ -100,33 +102,52 @@ DdNode *generate_bdd(char *infix, char *cell_name)
     {
         printf("System Failure!\n");
     }
+
+    varNames = (char **) realloc(varNames, sizeof(char *) * (var_num + 1));
+    for(i = 0; i < strlen(infix); i++)
+    {
+        if(identify_symbol(infix[i]) == 0 || identify_symbol(infix[i]) == -1 )
+        {
+            varNames[var_num] = (char *) realloc(varNames[var_num], sizeof(char) * (pos + 2));
+            varNames[var_num][pos] = infix[i];
+            pos++;
+        }
+        else
+        {
+            varNames[var_num][pos] = '\0';
+            printf("Var is %s\n", varNames[var_num]);
+            pos = 0;
+            var_num++;
+            varNames = (char **) realloc(varNames, sizeof(char *) * (var_num + 1));
+        }
+    }
+    size = var_num;
     for(i = 0; i < size; i++)
     {
         vars[i] = Cudd_bddNewVar(gbm);
     }
-    printf("Size is %d\n", size);
 
     for(i = 0; i < strlen(postfix); i++)
     {
         result = identify_symbol(postfix[i]);
 
-        if(result == -1)
-        {
-            // var_size++;
-            string_size--;
-            varNames[string_size][1] = postfix[i];
-            varNames[string_size][2] = '\0';
-            string_size++;
-        }
-        else if (result == 0)
-        {
-            varNames = (char **) realloc(varNames, (string_size+1) * sizeof(char*));
-            varNames[string_size] = (char *) malloc(5 * sizeof(char));
-            varNames[string_size][0] = postfix[i];
-            varNames[string_size][1] = '\0';
-            string_size++;
-        }
-        else if (result == 3)
+        // if(result == -1)
+        // {
+        //     // var_size++;
+        //     string_size--;
+        //     varNames[string_size][1] = postfix[i];
+        //     varNames[string_size][2] = '\0';
+        //     string_size++;
+        // }
+        // else if (result == 0)
+        // {
+        //     varNames = (char **) realloc(varNames, (string_size+1) * sizeof(char*));
+        //     varNames[string_size] = (char *) malloc(5 * sizeof(char));
+        //     varNames[string_size][0] = postfix[i];
+        //     varNames[string_size][1] = '\0';
+        //     string_size++;
+        // }
+        if (result == 3)
         {
             if(found_operator)
             {
