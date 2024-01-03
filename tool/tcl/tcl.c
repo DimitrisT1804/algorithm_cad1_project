@@ -818,7 +818,7 @@ int list_components_info(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
     return TCL_OK;
 }
 
-int convert_infix_to_postfix (ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+int convert_infix_to_postfix(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
 {
     char *infix = NULL;
     char *result = NULL;
@@ -852,7 +852,7 @@ int convert_infix_to_postfix (ClientData clientdata, Tcl_Interp *interp, int obj
     return TCL_OK;
 }
 
-int report_component_postfix_boolean_function (ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+int report_component_postfix_boolean_function(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
 {
     char *component = NULL;
     int chash, cdepth;
@@ -922,6 +922,77 @@ int report_component_postfix_boolean_function (ClientData clientdata, Tcl_Interp
     return TCL_OK;
 }
 
+int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    char *component = NULL;
+    int chash, cdepth;
+    int lhash, ldepth;
+    int i;
+    int size = 0;
+    char *infix = NULL;
+    char *result = NULL;
+    char *postfix = NULL;
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "component_name");
+        return TCL_ERROR;
+    }
+
+    component = Tcl_GetString(objv[1]);
+    if(component == NULL)
+    {
+        printf("ERROR: Infix is NULL\n");
+        return TCL_ERROR;
+    }
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    get_comphash_indices(component, &chash, &cdepth);
+    if(cdepth == -1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Component NOT found" ANSI_COLOR_RESET);
+        return TCL_ERROR; 
+    }
+
+    lhash = comphash[chash].lib_type[cdepth];
+    ldepth = comphash[chash].lib_type_depth[cdepth];
+    result = NULL;
+    for(i = 0; i < libhash[lhash].out_pins_count[ldepth]; i++)
+    {
+        infix = strdup(libhash[lhash].function[ldepth][i]);
+        size = size + strlen(infix) + 3 + strlen("The BDD of  is ") + strlen(" succesfully generated!");
+
+        generate_bdd(infix);
+        system("dot -Tpng bdd.dot -o bdd.png");
+        system("xdg-open bdd.png");
+
+        result = my_realloc(result, (size) * sizeof(char));
+        if(i == 0)
+        {
+            strcpy(result, "The BDD of ");
+        }
+        else
+        {
+            strcat(result, "The BDD of ");
+        }
+
+        strcat(result, infix);
+        strcat(result, " succesfully generated!\n");
+
+        free(infix);
+        free(postfix);
+    }
+    
+    Tcl_SetObjResult(interp, Tcl_NewStringObj(result, -1));
+
+    free(result);
+
+    return TCL_OK;
+}
+
 int main(int argc, char *argv[])
 {
     char *text = NULL; // readline result //
@@ -962,6 +1033,7 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "list_components_info", list_components_info, NULL, NULL);
     Tcl_CreateObjCommand(interp, "convert_infix_to_postfix", convert_infix_to_postfix, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_component_postfix_boolean_function", report_component_postfix_boolean_function, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "report_component_BDD", report_component_BDD, NULL, NULL);
 
 
     while (1)

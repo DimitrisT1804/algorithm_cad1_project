@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "../convert_infix/parse_infix.h"
 
 void print_dd (DdNode *dd, int n, int pr, char *name);

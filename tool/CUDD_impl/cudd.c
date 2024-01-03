@@ -2,7 +2,7 @@
 #include "cudd.h"
 
 DdManager *gbm;
-// const char varNames[10];
+char **varNames;
 
 /**
  * Print a dd summary
@@ -54,6 +54,10 @@ int identify_symbol(char operator)
     {
         return 1;
     }
+    else if(isdigit(operator)) // is number //
+    {
+        return -1;
+    }
     else
     {
         return 0;
@@ -69,11 +73,14 @@ DdNode *generate_bdd(char *infix)
     int var_size = 0;
     int found_operator = 0;
     char *postfix = NULL;
+    int string_size = 1;
 
     postfix = parse_infix(infix);
 
     DdNode *bdd;
     DdNode **vars;
+
+    gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
     bdd = Cudd_bddNewVar(gbm);
 
@@ -102,9 +109,21 @@ DdNode *generate_bdd(char *infix)
     {
         result = identify_symbol(postfix[i]);
 
-        if(result == 0)
+        if(result == -1)
         {
             // var_size++;
+            string_size--;
+            varNames[string_size][1] = postfix[i];
+            varNames[string_size][2] = '\0';
+            string_size++;
+        }
+        else if (result == 0)
+        {
+            varNames = (char **) realloc(varNames, (string_size+1) * sizeof(char*));
+            varNames[string_size] = (char *) malloc(5 * sizeof(char));
+            varNames[string_size][0] = postfix[i];
+            varNames[string_size][1] = '\0';
+            string_size++;
         }
         else if (result == 3)
         {
@@ -134,50 +153,90 @@ DdNode *generate_bdd(char *infix)
             found_operator = 1;
             var_size++;
         }
+        else if (result == 1)
+        {
+            if(found_operator)
+            {
+                bdd = Cudd_bddXor ( gbm , bdd , vars[var_size] );
+            }
+            else
+            {
+                bdd = Cudd_bddXor ( gbm , vars[var_size] , vars[var_size + 1] );
+                var_size++;
+            }
+            found_operator = 1;
+            var_size++;
+        }
+
+        Cudd_Ref(bdd);
+
+        bdd = Cudd_BddToAdd(gbm, bdd);
+
+        FILE *dotFile;
+        dotFile = fopen("bdd.dot", "w");
+        Cudd_DumpDot(gbm, 1, &bdd, (char **) varNames, NULL, dotFile);
+        fclose(dotFile);
+        // else if (result == 4)
+        // {
+        //     if(found_operator)
+        //     {
+        //         bdd = Cudd_Not ( gbm , bdd , vars[var_size] );
+        //     }
+        //     else
+        //     {
+        //         bdd = Cudd_bddOr ( gbm , vars[var_size] , vars[var_size + 1] );
+        //         var_size++;
+        //     }
+        //     found_operator = 1;
+        //     var_size++;
+        // }
     }
 
     return bdd;
 }
 
-int main()
-{
-    printf("Hello world!\n");
+// int main()
+// {
+//     DdNode *bdd;
+//     // DdNode *var_a;
+//     // DdNode *var_b;
+//     // DdNode *var_c;
 
-    DdNode *bdd;
-    // DdNode *var_a;
-    // DdNode *var_b;
-    // DdNode *var_c;
+//     gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
-    gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
-
-    // var_a = Cudd_bddNewVar ( gbm ) ;
-    // var_b = Cudd_bddNewVar ( gbm ) ;
-    // var_c = Cudd_bddNewVar ( gbm ) ;
+//     // var_a = Cudd_bddNewVar ( gbm ) ;
+//     // var_b = Cudd_bddNewVar ( gbm ) ;
+//     // var_c = Cudd_bddNewVar ( gbm ) ;
 
 
-    // bdd = Cudd_bddAnd ( gbm , var_a , var_b ) ; 
-    // bdd = Cudd_bddOr ( gbm , bdd , var_c ) ; 
+//     // bdd = Cudd_bddAnd ( gbm , var_a , var_b ) ; 
+//     // bdd = Cudd_bddOr ( gbm , bdd , var_c ) ; 
 
+//     bdd = generate_bdd("(A1*B2*C)+D5");
+//     for(int i = 1; i < 5; i++)
+//     {
+//         //if(varNames[i] != NULL)
+//             printf("it is %s\n", varNames[i]);
+//     }
     
 
-    bdd = generate_bdd("(A*B*C)+D");
 
-    Cudd_Ref(bdd);
+//     Cudd_Ref(bdd);
 
-    bdd = Cudd_BddToAdd(gbm, bdd);
+//     bdd = Cudd_BddToAdd(gbm, bdd);
 
-    FILE *dotFile;
-    dotFile = fopen("bdd.dot", "w");
-    Cudd_DumpDot(gbm, 1, &bdd, NULL, NULL, dotFile);
-    fclose(dotFile);
+//     FILE *dotFile;
+//     dotFile = fopen("bdd.dot", "w");
+//     Cudd_DumpDot(gbm, 1, &bdd, (char **) varNames, NULL, dotFile);
+//     fclose(dotFile);
 
-    // write_dd(gbm, bdd, "bdd.dot");
+//     // write_dd(gbm, bdd, "bdd.dot");
 
-    print_dd(bdd, 2, 1, "test");
+//     print_dd(bdd, 2, 1, "test");
 
-    Cudd_PrintMinterm(gbm, bdd);
+//     Cudd_PrintMinterm(gbm, bdd);
 
-    Cudd_Quit(gbm);
+//     Cudd_Quit(gbm);
 
-    return 0;
-}
+//     return 0;
+// }
