@@ -68,7 +68,7 @@ int identify_symbol(char operator)
     }
 }
 
-DdNode *generate_bdd(char *infix, char *cell_name)
+void generate_bdd(char *infix, char *cell_name)
 {
     int i;
     int j;
@@ -92,6 +92,9 @@ DdNode *generate_bdd(char *infix, char *cell_name)
     DdNode **vars;
 
     gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
+
+    Cudd_AutodynEnable(gbm, CUDD_REORDER_SYMM_SIFT);
+    Cudd_ReduceHeap(gbm, CUDD_REORDER_SYMM_SIFT, 3000);
 
     bdd = Cudd_bddNewVar(gbm);
 
@@ -314,21 +317,20 @@ DdNode *generate_bdd(char *infix, char *cell_name)
             found_operator = 1;
             var_size++;
         }
-
-        // else if (result == 4)
-        // {
-        //     if(found_operator)
-        //     {
-        //         bdd = Cudd_Not ( gbm , bdd , vars[var_size] );
-        //     }
-        //     else
-        //     {
-        //         bdd = Cudd_bddOr ( gbm , vars[var_size] , vars[var_size + 1] );
-        //         var_size++;
-        //     }
-        //     found_operator = 1;
-        //     var_size++;
-        // }
+        else if (result == 4)
+        {
+            if(found_operator)
+            {
+                bdd = Cudd_Not (bdd);
+            }
+            else
+            {
+                bdd = Cudd_Not (vars[var_size]);
+                // var_size++;
+            }
+            found_operator = 1;
+            var_size++;
+        }
     }
 
     // for(i = 0; i < var_size; i++)
@@ -354,12 +356,14 @@ DdNode *generate_bdd(char *infix, char *cell_name)
 
     FILE *dotFile;
     dotFile = fopen(out_name, "w");
-    Cudd_DumpDot(gbm, 1, &bdd, (char **)varNames, NULL, dotFile);
+    Cudd_DumpDot(gbm, 1, &bdd, varNames, NULL, dotFile);
     fclose(dotFile);
 
     free(out_name);
 
-    return bdd;
+    Cudd_Quit(gbm);
+    gbm = NULL;
+
 }
 
 // int main()

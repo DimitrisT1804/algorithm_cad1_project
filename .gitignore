@@ -1,3 +1,4 @@
 *.o
 perf.data
 perf.data.old
+bdd_output

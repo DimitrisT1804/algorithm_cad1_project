@@ -944,7 +944,7 @@ int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
     component = Tcl_GetString(objv[1]);
     if(component == NULL)
     {
-        printf("ERROR: Infix is NULL\n");
+        printf("ERROR: Component is NULL\n");
         return TCL_ERROR;
     }
     if(comphash == NULL)
@@ -960,8 +960,14 @@ int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
         return TCL_ERROR; 
     }
 
+
     lhash = comphash[chash].lib_type[cdepth];
     ldepth = comphash[chash].lib_type_depth[cdepth];
+    if(libhash[lhash].cell_type[ldepth] == SEQUENTIAL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Component is of type SEQUENTIAL" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
     result = NULL;
     for(i = 0; i < libhash[lhash].out_pins_count[ldepth]; i++)
     {
@@ -1021,6 +1027,74 @@ int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
     return TCL_OK;
 }
 
+int compute_expression_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int size = 0;
+    char *infix = NULL;
+    char *result = NULL;
+    char *postfix = NULL;
+    char *command = NULL;
+    char filename[] = "currDot";
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "expression");
+        return TCL_ERROR;
+    }
+
+    infix = Tcl_GetString(objv[1]);
+    if(infix == NULL)
+    {
+        printf("ERROR: Infix is NULL\n");
+        return TCL_ERROR;
+    }
+
+
+    result = NULL;
+
+    size = size + strlen(infix) + 3 + strlen("The BDD of  is ") + strlen(" succesfully generated!");
+
+    postfix = parse_infix(infix);
+
+    generate_bdd(infix, filename);
+
+    command = malloc(strlen("dot -Tpng ") + strlen(filename) + strlen(".dot -o .png  ") + strlen(filename) + strlen("bdd_output/") + strlen("bdd_output/_ "));
+    strcpy(command, "dot -Tpng ");
+    strcat(command, "bdd_output/");
+    strcat(command, filename);
+    strcat(command, ".dot -o ");
+    strcat(command, "bdd_output/");
+    strcat(command, filename);
+
+    strcat(command, ".png");
+    system(command);
+    printf("command is %s\n", command);
+
+    strcpy(command, "xdg-open ");
+    strcat(command, "bdd_output/");
+    strcat(command, filename);
+    strcat(command, ".png");
+    system(command);
+
+    result = my_realloc(result, (size) * sizeof(char));
+
+    strcpy(result, "The BDD of ");
+
+
+    strcat(result, infix);
+    strcat(result, " succesfully generated!\n");
+
+    free(postfix);
+    free(command);
+
+    
+    Tcl_SetObjResult(interp, Tcl_NewStringObj(result, -1));
+
+    free(result);
+
+    return TCL_OK;
+}
+
 int main(int argc, char *argv[])
 {
     char *text = NULL; // readline result //
@@ -1062,6 +1136,7 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "convert_infix_to_postfix", convert_infix_to_postfix, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_component_postfix_boolean_function", report_component_postfix_boolean_function, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_component_BDD", report_component_BDD, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "compute_expression_BDD", compute_expression_BDD, NULL, NULL);
 
 
     while (1)
