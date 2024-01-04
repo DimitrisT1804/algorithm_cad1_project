@@ -58,16 +58,21 @@ int identify_symbol(char operator)
     {
         return -1;
     }
+    else if(operator == '(' || operator == ')')
+    {
+        return -2;
+    }
     else
     {
         return 0;
     }
 }
 
-
 DdNode *generate_bdd(char *infix, char *cell_name)
 {
     int i;
+    int j;
+    int k;
     int size = 0;
     int result;
     int var_size = 0;
@@ -75,8 +80,11 @@ DdNode *generate_bdd(char *infix, char *cell_name)
     char *postfix = NULL;
     int string_size = 1;
     char *out_name = NULL;
-    int var_num = 0;
+    int var_num = 1;
     int pos = 0;
+    char *temp_name = NULL;
+    int exists = 0;
+    char **vars_row = NULL;
 
     postfix = parse_infix(infix);
 
@@ -103,28 +111,117 @@ DdNode *generate_bdd(char *infix, char *cell_name)
         printf("System Failure!\n");
     }
 
-    varNames = (char **) realloc(varNames, sizeof(char *) * (var_num + 1));
+    varNames = (char **) malloc(sizeof(char *) * 2);
+    // varNames[var_num] = (char *) malloc(sizeof(char) * 5);
+    temp_name = (char *) malloc(sizeof(char) * 5);
     for(i = 0; i < strlen(infix); i++)
     {
-        if(identify_symbol(infix[i]) == 0 || identify_symbol(infix[i]) == -1 )
+        if(identify_symbol(infix[i]) == 0 || identify_symbol(infix[i]) == -1)
         {
-            varNames[var_num] = (char *) realloc(varNames[var_num], sizeof(char) * (pos + 2));
-            varNames[var_num][pos] = infix[i];
+            // varNames[var_num] = (char *) realloc(varNames[var_num], sizeof(char) * (pos + 2));
+            // varNames[var_num][pos] = infix[i];
+            temp_name[pos] = infix[i];
             pos++;
         }
-        else
+        else if(identify_symbol(infix[i]) != -2)  // it is operator //
         {
-            varNames[var_num][pos] = '\0';
-            printf("Var is %s\n", varNames[var_num]);
+            temp_name[pos] = '\0';
+            exists = 0;
+            //printf("Var is %s\n", varNames[var_num]);
             pos = 0;
-            var_num++;
-            varNames = (char **) realloc(varNames, sizeof(char *) * (var_num + 1));
+            // var_num++;
+            // varNames[var_num] = (char *) malloc(sizeof(char) * 5);
+            // temp_name = (char *) malloc(sizeof(char) * 5);
+            for(j = 1; j < var_num; j++)
+            {
+                if(varNames[j] != NULL)
+                {
+                    if(strcmp(varNames[j], temp_name) == 0)
+                    {
+                        // strcpy(varNames[var_size], temp_name);
+                        exists = 1;
+                    }
+                }
+            }
+            if(exists != 1)
+            {
+                varNames = (char **) realloc(varNames, sizeof(char *) * (var_num + 2));
+                // strcpy(varNames[var_num], temp_name);
+                varNames[var_num] = strdup(temp_name);
+                
+                var_num++; 
+            }
         }
     }
+    temp_name[pos] = '\0';
+    exists = 0;
+    //printf("Var is %s\n", varNames[var_num]);
+    pos = 0;
+    // var_num++;
+    // varNames[var_num] = (char *) malloc(sizeof(char) * 5);
+    // temp_name = (char *) malloc(sizeof(char) * 5);
+    for(j = 1; j < var_num; j++)
+    {
+        if(varNames[j] != NULL)
+        {
+            if(strcmp(varNames[j], temp_name) == 0)
+            {
+                // strcpy(varNames[var_size], temp_name);
+                exists = 1;
+            }
+        }
+    }
+    if(exists != 1)
+    {
+        varNames = (char **) realloc(varNames, sizeof(char *) * (var_num + 2));
+        // strcpy(varNames[var_num], temp_name);
+        varNames[var_num] = strdup(temp_name);
+        
+        var_num++; 
+    }
+    varNames[var_num] = NULL;
+
+
     size = var_num;
     for(i = 0; i < size; i++)
     {
         vars[i] = Cudd_bddNewVar(gbm);
+    }
+
+    var_num = 0;
+    pos = 0;
+    vars_row = (char **) malloc(sizeof(char *) * 1);
+    for(i = 0; i < strlen(infix); i++) // keep variables in row from infix //
+    {
+        if(identify_symbol(infix[i]) == 0 || identify_symbol(infix[i]) == -1)
+        {
+            // varNames[var_num] = (char *) realloc(varNames[var_num], sizeof(char) * (pos + 2));
+            // varNames[var_num][pos] = infix[i];
+            temp_name[pos] = infix[i];
+            pos++;
+        }
+        else if(identify_symbol(infix[i]) != -2)  // it is operator //
+        {
+            temp_name[pos] = '\0';
+            exists = 0;
+            //printf("Var is %s\n", varNames[var_num]);
+            pos = 0;
+            vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
+            // strcpy(varNames[var_num], temp_name);
+            vars_row[var_num] = strdup(temp_name);
+            
+            var_num++; 
+        }
+    }
+    vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
+    // strcpy(varNames[var_num], temp_name);
+    vars_row[var_num] = strdup(temp_name);
+    
+    var_num++; 
+
+    for(i = 0; i < var_num; i++)
+    {
+        printf("Series are %s\n", vars_row[i]);
     }
 
     for(i = 0; i < strlen(postfix); i++)
@@ -147,15 +244,43 @@ DdNode *generate_bdd(char *infix, char *cell_name)
         //     varNames[string_size][1] = '\0';
         //     string_size++;
         // }
+
+        for(j = 1; j < 4; j++)  // need to change 3
+        {
+            if(strcmp(vars_row[var_size], varNames[j]) == 0)
+            {
+                break;
+            }
+        }
+        if(j == 4)
+        {
+            printf("ERROR\n");
+        }
+
+        if(found_operator != 1)
+        {
+            for(k = 1; k < 4; k++)  // need to change 3
+            {
+                if(strcmp(vars_row[var_size+1], varNames[k]) == 0)
+                {
+                    break;
+                }
+            }
+            if(k == 4)
+            {
+                printf("ERROR\n");
+            }
+        }
+
         if (result == 3)
         {
             if(found_operator)
             {
-                bdd = Cudd_bddAnd ( gbm , bdd , vars[var_size] );
+                bdd = Cudd_bddAnd ( gbm , bdd , vars[j]);
             }
             else
             {
-                bdd = Cudd_bddAnd ( gbm , vars[var_size] , vars[var_size + 1] );
+                bdd = Cudd_bddAnd ( gbm , vars[j] , vars[k] );
                 var_size++;
             }
             found_operator = 1;
@@ -165,11 +290,11 @@ DdNode *generate_bdd(char *infix, char *cell_name)
         {
             if(found_operator)
             {
-                bdd = Cudd_bddOr ( gbm , bdd , vars[var_size] );
+                bdd = Cudd_bddOr ( gbm , bdd , vars[j] );
             }
             else
             {
-                bdd = Cudd_bddOr ( gbm , vars[var_size] , vars[var_size + 1] );
+                bdd = Cudd_bddOr ( gbm , vars[j] , vars[k] );
                 var_size++;
             }
             found_operator = 1;
@@ -179,11 +304,11 @@ DdNode *generate_bdd(char *infix, char *cell_name)
         {
             if(found_operator)
             {
-                bdd = Cudd_bddXor ( gbm , bdd , vars[var_size] );
+                bdd = Cudd_bddXor ( gbm , bdd , vars[j] );
             }
             else
             {
-                bdd = Cudd_bddXor ( gbm , vars[var_size] , vars[var_size + 1] );
+                bdd = Cudd_bddXor ( gbm , vars[j] , vars[k] );
                 var_size++;
             }
             found_operator = 1;
@@ -206,6 +331,14 @@ DdNode *generate_bdd(char *infix, char *cell_name)
         // }
     }
 
+    // for(i = 0; i < var_size; i++)
+    // {
+    //     if(varNames[i] != NULL)
+    //     {
+    //         printf("Var is %s\n", varNames[i]);
+    //     }
+    // }
+
     Cudd_Ref(bdd);
 
     bdd = Cudd_BddToAdd(gbm, bdd);
@@ -221,7 +354,7 @@ DdNode *generate_bdd(char *infix, char *cell_name)
 
     FILE *dotFile;
     dotFile = fopen(out_name, "w");
-    Cudd_DumpDot(gbm, 1, &bdd, (char **) varNames, NULL, dotFile);
+    Cudd_DumpDot(gbm, 1, &bdd, (char **)varNames, NULL, dotFile);
     fclose(dotFile);
 
     free(out_name);
