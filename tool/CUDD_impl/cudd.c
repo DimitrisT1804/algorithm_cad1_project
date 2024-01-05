@@ -110,11 +110,6 @@ void generate_bdd(char *infix, char *cell_name)
         }
     }
 
-    vars = (DdNode **) malloc(size * sizeof(DdNode*));
-    if(vars == NULL)
-    {
-        printf("System Failure!\n");
-    }
 
     varNames = (char **) malloc(sizeof(char *) * 2);
     // varNames[var_num] = (char *) malloc(sizeof(char) * 5);
@@ -137,6 +132,10 @@ void generate_bdd(char *infix, char *cell_name)
             // var_num++;
             // varNames[var_num] = (char *) malloc(sizeof(char) * 5);
             // temp_name = (char *) malloc(sizeof(char) * 5);
+            if(strcmp(temp_name, "\0") == 0)
+            {
+                continue;
+            }
             for(j = 1; j < seperate_vars; j++)
             {
                 if(varNames[j] != NULL)
@@ -188,7 +187,13 @@ void generate_bdd(char *infix, char *cell_name)
     varNames[0] = NULL;
 
 
-    size = seperate_vars;
+    size = seperate_vars-1;
+
+    vars = (DdNode **) malloc(size * sizeof(DdNode*));
+    if(vars == NULL)
+    {
+        printf("System Failure!\n");
+    }
     for(i = 0; i < size; i++)
     {
         vars[i] = Cudd_bddNewVar(gbm);
@@ -209,6 +214,10 @@ void generate_bdd(char *infix, char *cell_name)
         else if(identify_symbol(infix[i]) != -2)  // it is operator //
         {
             temp_name[pos] = '\0';
+            if(strcmp(temp_name, "\0") == 0)
+            {
+                continue;
+            }
             exists = 0;
             //printf("Var is %s\n", varNames[var_num]);
             pos = 0;
@@ -229,47 +238,59 @@ void generate_bdd(char *infix, char *cell_name)
     {
         printf("Series are %s\n", vars_row[i]);
     }
+    
+    bdd = Cudd_ReadOne(gbm);
 
     for(i = 0; i < strlen(postfix); i++)
     {
+        // if(var_size >= var_num)
+        // {
+        //     break;
+        // }
         result = identify_symbol(postfix[i]);
 
-        for(j = 1; j < seperate_vars; j++)  // need to change 3
-        {
-            if(strcmp(vars_row[var_size], varNames[j]) == 0)
-            {
-                break;
-            }
-        }
-        if(j == seperate_vars)
-        {
-            printf("ERROR\n");
-        }
+        Cudd_Ref(bdd);
 
-        if(found_operator != 1)
+        if(var_size < var_num)
         {
-            for(k = 1; k < seperate_vars; k++)  // need to change 3
+            for(j = 1; j < seperate_vars; j++)  // need to change 3
             {
-                if(strcmp(vars_row[var_size+1], varNames[k]) == 0)
+                if(strcmp(vars_row[var_size], varNames[j]) == 0)
                 {
                     break;
                 }
             }
-            if(k == seperate_vars)
+            if(j == seperate_vars)
             {
                 printf("ERROR\n");
             }
+
+            if(found_operator != 1)
+            {
+                for(k = 1; k < seperate_vars; k++)  // need to change 3
+                {
+                    if(strcmp(vars_row[var_size+1], varNames[k]) == 0)
+                    {
+                        break;
+                    }
+                }
+                if(k == seperate_vars)
+                {
+                    printf("ERROR\n");
+                }
+            }
         }
+
 
         if (result == 3)
         {
             if(found_operator)
             {
-                bdd = Cudd_bddAnd ( gbm , bdd , vars[j]);
+                bdd = Cudd_bddAnd ( gbm ,vars[j-1], bdd);
             }
             else
             {
-                bdd = Cudd_bddAnd ( gbm , vars[j] , vars[k] );
+                bdd = Cudd_bddAnd ( gbm , vars[j-1] , vars[k-1] );
                 var_size++;
             }
             found_operator = 1;
@@ -279,11 +300,11 @@ void generate_bdd(char *infix, char *cell_name)
         {
             if(found_operator)
             {
-                bdd = Cudd_bddOr ( gbm , bdd , vars[j] );
+                bdd = Cudd_bddOr ( gbm , vars[j-1], bdd);
             }
             else
             {
-                bdd = Cudd_bddOr ( gbm , vars[j] , vars[k] );
+                bdd = Cudd_bddOr ( gbm , vars[j-1] , vars[k-1] );
                 var_size++;
             }
             found_operator = 1;
@@ -293,11 +314,11 @@ void generate_bdd(char *infix, char *cell_name)
         {
             if(found_operator)
             {
-                bdd = Cudd_bddXor ( gbm , bdd , vars[j] );
+                bdd = Cudd_bddXor ( gbm , vars[j-1], bdd );
             }
             else
             {
-                bdd = Cudd_bddXor ( gbm , vars[j] , vars[k] );
+                bdd = Cudd_bddXor ( gbm , vars[j-1] , vars[k-1] );
                 var_size++;
             }
             found_operator = 1;
@@ -311,11 +332,11 @@ void generate_bdd(char *infix, char *cell_name)
             }
             else
             {
-                bdd = Cudd_Not (vars[var_size]);
-                // var_size++;
+                bdd = Cudd_Not (vars[j-1]);
+                var_size++;
             }
             found_operator = 1;
-            var_size++;
+            // var_size++;
         }
     }
 
