@@ -1,7 +1,5 @@
 //
 #include "cudd.h"
-
-DdManager *gbm;
 char **varNames;
 
 /**
@@ -13,17 +11,17 @@ char **varNames;
  * pr > 3 : prints counts + disjoint sum of product + list of nodes
  */
 
-void print_dd (DdNode *dd, int n, int pr, char *name)
-{
-    printf("%s\n", name);
-    printf("DdManager nodes: %ld | ", Cudd_ReadNodeCount(gbm)); /*Reports the number of live nodes in BDDs and ADDs*/
-    printf("DdManager vars: %d | ", Cudd_ReadSize(gbm) ); /*Returns the number of BDD variables in existance*/
-    printf("DdNode nodes: %d | ", Cudd_DagSize(dd)); /*Reports the number of nodes in the BDD*/
-	printf("DdNode vars: %d | ", Cudd_SupportSize(gbm, dd) ); /*Returns the number of variables in the BDD*/
-    printf("DdManager reorderings: %d | ", Cudd_ReadReorderings(gbm) ); /*Returns the number of times reordering has occurred*/
-    printf("DdManager memory: %ld |\n\n", Cudd_ReadMemoryInUse(gbm) ); /*Returns the memory in use by the manager measured in bytes*/
-    Cudd_PrintDebug(gbm, dd, n, pr);	// Prints to the standard output a DD and its statistics: number of nodes, number of leaves, number of minterms.
-}
+// void print_dd (DdNode *dd, int n, int pr, char *name)
+// {
+//     printf("%s\n", name);
+//     printf("DdManager nodes: %ld | ", Cudd_ReadNodeCount(gbm)); /*Reports the number of live nodes in BDDs and ADDs*/
+//     printf("DdManager vars: %d | ", Cudd_ReadSize(gbm) ); /*Returns the number of BDD variables in existance*/
+//     printf("DdNode nodes: %d | ", Cudd_DagSize(dd)); /*Reports the number of nodes in the BDD*/
+// 	printf("DdNode vars: %d | ", Cudd_SupportSize(gbm, dd) ); /*Returns the number of variables in the BDD*/
+//     printf("DdManager reorderings: %d | ", Cudd_ReadReorderings(gbm) ); /*Returns the number of times reordering has occurred*/
+//     printf("DdManager memory: %ld |\n\n", Cudd_ReadMemoryInUse(gbm) ); /*Returns the memory in use by the manager measured in bytes*/
+//     Cudd_PrintDebug(gbm, dd, n, pr);	// Prints to the standard output a DD and its statistics: number of nodes, number of leaves, number of minterms.
+// }
 
 void write_dd (DdManager *gbm, DdNode *dd, char* filename)
 {
@@ -85,6 +83,9 @@ void generate_bdd(char *infix, char *cell_name)
     char *temp_name = NULL;
     int exists = 0;
     char **vars_row = NULL;
+    int seperate_vars = 1;
+
+    DdManager *gbm;
 
     postfix = parse_infix(infix);
 
@@ -94,7 +95,8 @@ void generate_bdd(char *infix, char *cell_name)
     gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
     Cudd_AutodynEnable(gbm, CUDD_REORDER_SYMM_SIFT);
-    Cudd_ReduceHeap(gbm, CUDD_REORDER_SYMM_SIFT, 3000);
+    // Cudd_ReduceHeap(gbm, CUDD_REORDER_SYMM_SIFT, 3000);
+    // Cudd_AutodynDisable(gbm);
 
     bdd = Cudd_bddNewVar(gbm);
 
@@ -135,7 +137,7 @@ void generate_bdd(char *infix, char *cell_name)
             // var_num++;
             // varNames[var_num] = (char *) malloc(sizeof(char) * 5);
             // temp_name = (char *) malloc(sizeof(char) * 5);
-            for(j = 1; j < var_num; j++)
+            for(j = 1; j < seperate_vars; j++)
             {
                 if(varNames[j] != NULL)
                 {
@@ -148,22 +150,22 @@ void generate_bdd(char *infix, char *cell_name)
             }
             if(exists != 1)
             {
-                varNames = (char **) realloc(varNames, sizeof(char *) * (var_num + 2));
-                // strcpy(varNames[var_num], temp_name);
-                varNames[var_num] = strdup(temp_name);
+                varNames = (char **) realloc(varNames, sizeof(char *) * (seperate_vars + 2));
+                // strcpy(varNames[seperate_vars], temp_name);
+                varNames[seperate_vars] = strdup(temp_name);
                 
-                var_num++; 
+                seperate_vars++; 
             }
         }
     }
     temp_name[pos] = '\0';
     exists = 0;
-    //printf("Var is %s\n", varNames[var_num]);
+    //printf("Var is %s\n", varNames[seperate_vars]);
     pos = 0;
-    // var_num++;
-    // varNames[var_num] = (char *) malloc(sizeof(char) * 5);
+    // seperate_vars++;
+    // varNames[seperate_vars] = (char *) malloc(sizeof(char) * 5);
     // temp_name = (char *) malloc(sizeof(char) * 5);
-    for(j = 1; j < var_num; j++)
+    for(j = 1; j < seperate_vars; j++)
     {
         if(varNames[j] != NULL)
         {
@@ -176,16 +178,17 @@ void generate_bdd(char *infix, char *cell_name)
     }
     if(exists != 1)
     {
-        varNames = (char **) realloc(varNames, sizeof(char *) * (var_num + 2));
-        // strcpy(varNames[var_num], temp_name);
-        varNames[var_num] = strdup(temp_name);
+        varNames = (char **) realloc(varNames, sizeof(char *) * (seperate_vars + 2));
+        // strcpy(varNames[seperate_vars], temp_name);
+        varNames[seperate_vars] = strdup(temp_name);
         
-        var_num++; 
+        seperate_vars++; 
     }
-    varNames[var_num] = NULL;
+    varNames[seperate_vars] = NULL;
+    varNames[0] = NULL;
 
 
-    size = var_num;
+    size = seperate_vars;
     for(i = 0; i < size; i++)
     {
         vars[i] = Cudd_bddNewVar(gbm);
@@ -231,45 +234,28 @@ void generate_bdd(char *infix, char *cell_name)
     {
         result = identify_symbol(postfix[i]);
 
-        // if(result == -1)
-        // {
-        //     // var_size++;
-        //     string_size--;
-        //     varNames[string_size][1] = postfix[i];
-        //     varNames[string_size][2] = '\0';
-        //     string_size++;
-        // }
-        // else if (result == 0)
-        // {
-        //     varNames = (char **) realloc(varNames, (string_size+1) * sizeof(char*));
-        //     varNames[string_size] = (char *) malloc(5 * sizeof(char));
-        //     varNames[string_size][0] = postfix[i];
-        //     varNames[string_size][1] = '\0';
-        //     string_size++;
-        // }
-
-        for(j = 1; j < 4; j++)  // need to change 3
+        for(j = 1; j < seperate_vars; j++)  // need to change 3
         {
             if(strcmp(vars_row[var_size], varNames[j]) == 0)
             {
                 break;
             }
         }
-        if(j == 4)
+        if(j == seperate_vars)
         {
             printf("ERROR\n");
         }
 
         if(found_operator != 1)
         {
-            for(k = 1; k < 4; k++)  // need to change 3
+            for(k = 1; k < seperate_vars; k++)  // need to change 3
             {
                 if(strcmp(vars_row[var_size+1], varNames[k]) == 0)
                 {
                     break;
                 }
             }
-            if(k == 4)
+            if(k == seperate_vars)
             {
                 printf("ERROR\n");
             }
