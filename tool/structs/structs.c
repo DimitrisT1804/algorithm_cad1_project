@@ -198,6 +198,10 @@ void gatepin_characterize_IOs()
         {
             if(gatepinhash[i].hashpresent[j] != 0 && gatepinhash[i].type[j] == IO_TYPE)
             {
+                if(gatepinhash[i].connections_size[j] <= 0)
+                {
+                    break;
+                }
                 ghash = gatepinhash[i].pinConn[j][0];
                 gdepth = gatepinhash[i].pinConnDepth[j][0];
                 for (k = strlen(gatepinhash[ghash].name[gdepth]); gatepinhash[ghash].name[gdepth][k] != '/'; k--)
@@ -216,7 +220,9 @@ void gatepin_characterize_IOs()
                 }
                 pin_name[pos] = '\0';
                 pos = 0;
+                #ifdef DEBUG
                 printf("name is %s\n", pin_name);
+                #endif
 
                 get_comphash_indices(comp_name, &chash, &cdepth);
 
