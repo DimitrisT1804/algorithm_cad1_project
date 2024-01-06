@@ -8,6 +8,8 @@
 #include <tcl8.6/tcl.h>
 #include <limits.h>
 #include <syscall.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 #include "../parser/parser.h"
 // #include "../convert_infix/parse_infix.h"

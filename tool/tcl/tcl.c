@@ -1101,6 +1101,7 @@ int main(int argc, char *argv[])
     char *textexpansion; // readline result history expanded //
     int expansionresult;
     int kati = 0;
+    const char *directory = "bdd_output";
 
     Tcl_Interp *interp;
 
@@ -1138,6 +1139,34 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "report_component_BDD", report_component_BDD, NULL, NULL);
     Tcl_CreateObjCommand(interp, "compute_expression_BDD", compute_expression_BDD, NULL, NULL);
 
+
+    DIR *dir = opendir(directory);
+    
+    if (dir) 
+    {
+        // Directory exists
+        closedir(dir);
+        #ifdef DEBUG
+        printf("Directory \"%s\" already exists.\n", directory);
+        #endif
+    } 
+    else 
+    {
+        // Directory doesn't exist, so create it
+        if (mkdir(directory, 0777) == 0) 
+        {
+            #ifdef DEBUG
+            printf("Directory \"%s\" created successfully.\n", directory);
+            #endif
+        } 
+        else 
+        {
+            #ifdef DEBUG
+            printf("Error creating directory \"%s\".\n", directory);
+            #endif
+            return 1; // Return an error code
+        }
+    }
 
     while (1)
     {
