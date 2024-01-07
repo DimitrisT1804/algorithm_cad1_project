@@ -371,6 +371,21 @@ void generate_bdd(char *infix, char *cell_name)
     Cudd_Quit(gbm);
     gbm = NULL;
 
+    free(temp_name);
+    free(postfix);
+    free(vars);
+
+    for(i = 0; i < var_num; i++)
+    {
+        free(vars_row[i]);
+    }
+    free(vars_row);
+
+    for(i = 0; i < seperate_vars; i++)
+    {
+        free(varNames[i]);
+    }
+    free(varNames);
 }
 
 // int main()

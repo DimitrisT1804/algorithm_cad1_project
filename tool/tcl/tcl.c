@@ -1140,6 +1140,8 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "compute_expression_BDD", compute_expression_BDD, NULL, NULL);
 
 
+    signal(SIGSEGV, segfault_handler);
+    
     DIR *dir = opendir(directory);
     
     if (dir) 

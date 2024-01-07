@@ -25,7 +25,7 @@ int getPriority(char operator)
     }
 }
 
-char* parse_infix(char *infix)
+char *parse_infix(char *infix)
 {
     int i;
     stack *operatorStack;
