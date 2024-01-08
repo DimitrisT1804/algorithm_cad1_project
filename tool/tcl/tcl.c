@@ -1141,6 +1141,7 @@ int main(int argc, char *argv[])
 
 
     signal(SIGSEGV, segfault_handler);
+    signal(SIGINT, sigint_handler);
     
     DIR *dir = opendir(directory);
     
@@ -1170,7 +1171,9 @@ int main(int argc, char *argv[])
         }
     }
 
-    while (1)
+    exit_requested = false;
+    ctrl_c_pressed = false;
+    while (!exit_requested)
     {
         text = readline("PR> ");
         if (text != NULL)
@@ -1201,7 +1204,7 @@ int main(int argc, char *argv[])
         }
 
         // handle two basic commands: history and quit //
-        if (strcmp(command, "quit") == 0)
+        if (strcmp(command, "quit") == 0 || ctrl_c_pressed)
         {
             Tcl_DeleteInterp(interp);
             if(gatepinhash != NULL)

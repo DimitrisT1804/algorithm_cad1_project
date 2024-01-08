@@ -11,32 +11,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
-#include <signal.h>
-#include <execinfo.h>
 
 #include "../parser/parser.h"
-// #include "../convert_infix/parse_infix.h"
 #include "../CUDD_impl/cudd.h"
+#include "../signals/signals.h"
 
-void segfault_handler(int signum) 
-{
-    fprintf(stderr, ANSI_COLOR_RED "Something went wrong with the program. Please inform developer!\n" ANSI_COLOR_RESET);
-    
-    // // Storage array for backtrace symbols
-    // void* callstack[1000];
-    // int frames = backtrace(callstack, sizeof(callstack) / sizeof(callstack[0]));
-
-    // // Print backtrace symbols
-    // char** symbols = backtrace_symbols(callstack, frames);
-    // if (symbols != NULL) {
-    //     for (int i = 0; i < frames; i++) {
-    //         fprintf(stderr, "%s\n", symbols[i]);
-    //     }
-    //     free(symbols);
-    // }
-
-    exit(EXIT_FAILURE);
-}
 
 /* Global array that stores all custom, system and TCL commands for tab-completion */
 static const char *commands[] = 

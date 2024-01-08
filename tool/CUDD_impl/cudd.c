@@ -11,17 +11,17 @@ char **varNames;
  * pr > 3 : prints counts + disjoint sum of product + list of nodes
  */
 
-// void print_dd (DdNode *dd, int n, int pr, char *name)
-// {
-//     printf("%s\n", name);
-//     printf("DdManager nodes: %ld | ", Cudd_ReadNodeCount(gbm)); /*Reports the number of live nodes in BDDs and ADDs*/
-//     printf("DdManager vars: %d | ", Cudd_ReadSize(gbm) ); /*Returns the number of BDD variables in existance*/
-//     printf("DdNode nodes: %d | ", Cudd_DagSize(dd)); /*Reports the number of nodes in the BDD*/
-// 	printf("DdNode vars: %d | ", Cudd_SupportSize(gbm, dd) ); /*Returns the number of variables in the BDD*/
-//     printf("DdManager reorderings: %d | ", Cudd_ReadReorderings(gbm) ); /*Returns the number of times reordering has occurred*/
-//     printf("DdManager memory: %ld |\n\n", Cudd_ReadMemoryInUse(gbm) ); /*Returns the memory in use by the manager measured in bytes*/
-//     Cudd_PrintDebug(gbm, dd, n, pr);	// Prints to the standard output a DD and its statistics: number of nodes, number of leaves, number of minterms.
-// }
+void print_dd (DdManager *gbm, DdNode *dd, int n, int pr, char *name)
+{
+    printf("%s\n", name);
+    printf("DdManager nodes: %ld | ", Cudd_ReadNodeCount(gbm)); /*Reports the number of live nodes in BDDs and ADDs*/
+    printf("DdManager vars: %d | ", Cudd_ReadSize(gbm) ); /*Returns the number of BDD variables in existance*/
+    printf("DdNode nodes: %d | ", Cudd_DagSize(dd)); /*Reports the number of nodes in the BDD*/
+	printf("DdNode vars: %d | ", Cudd_SupportSize(gbm, dd) ); /*Returns the number of variables in the BDD*/
+    printf("DdManager reorderings: %d | ", Cudd_ReadReorderings(gbm) ); /*Returns the number of times reordering has occurred*/
+    printf("DdManager memory: %ld |\n\n", Cudd_ReadMemoryInUse(gbm) ); /*Returns the memory in use by the manager measured in bytes*/
+    Cudd_PrintDebug(gbm, dd, n, pr);	// Prints to the standard output a DD and its statistics: number of nodes, number of leaves, number of minterms.
+}
 
 void write_dd (DdManager *gbm, DdNode *dd, char* filename)
 {
@@ -84,6 +84,9 @@ void generate_bdd(char *infix, char *cell_name)
     int exists = 0;
     char **vars_row = NULL;
     int seperate_vars = 1;
+    int need_reverse = 0;
+    int not_eval = 0;
+    int is_variable = 0;
 
     DdManager *gbm;
 
@@ -99,17 +102,6 @@ void generate_bdd(char *infix, char *cell_name)
     // Cudd_AutodynDisable(gbm);
 
     bdd = Cudd_bddNewVar(gbm);
-
-    for(i = 0; i < strlen(postfix); i++)
-    {
-        result = identify_symbol(postfix[i]);
-
-        if(result == 0)
-        {
-            size++;
-        }
-    }
-
 
     varNames = (char **) malloc(sizeof(char *) * 2);
     // varNames[var_num] = (char *) malloc(sizeof(char) * 5);
@@ -249,6 +241,12 @@ void generate_bdd(char *infix, char *cell_name)
         // }
         result = identify_symbol(postfix[i]);
 
+        if(result == 3 || result == 2 || result == 1)
+        {
+            var_size = var_size - not_eval;
+            not_eval = 0;
+        }
+
         Cudd_Ref(bdd);
 
         if(var_size < var_num)
@@ -282,71 +280,84 @@ void generate_bdd(char *infix, char *cell_name)
         }
 
 
-        if (result == 3)
+        if(result == 0) // is variable //
         {
-            if(found_operator)
-            {
-                bdd = Cudd_bddAnd ( gbm ,vars[j-1], bdd);
-            }
-            else
+            need_reverse = 0;
+            is_variable++;
+        }
+        else if (result == 3)
+        {
+            need_reverse = 1;
+            is_variable = 0;
+            if(is_variable == 2)
             {
                 bdd = Cudd_bddAnd ( gbm , vars[j-1] , vars[k-1] );
                 var_size++;
             }
+            else if(found_operator)
+            {
+                bdd = Cudd_bddAnd ( gbm ,vars[j-1], bdd);
+            }
+
             found_operator = 1;
             var_size++;
         }
         else if (result == 2)
         {
-            if(found_operator)
-            {
-                bdd = Cudd_bddOr ( gbm , vars[j-1], bdd);
-            }
-            else
+            need_reverse = 1;
+            is_variable = 0;
+            if(is_variable == 2)
             {
                 bdd = Cudd_bddOr ( gbm , vars[j-1] , vars[k-1] );
                 var_size++;
             }
+            else if(found_operator)
+            {
+                bdd = Cudd_bddOr ( gbm , vars[j-1], bdd);
+            }
+
             found_operator = 1;
             var_size++;
         }
         else if (result == 1)
         {
-            if(found_operator)
-            {
-                bdd = Cudd_bddXor ( gbm , vars[j-1], bdd );
-            }
-            else
+            need_reverse = 1;
+            is_variable = 0;
+            if(is_variable == 2)
             {
                 bdd = Cudd_bddXor ( gbm , vars[j-1] , vars[k-1] );
                 var_size++;
             }
+            else if(found_operator)
+            {
+                bdd = Cudd_bddXor ( gbm , vars[j-1], bdd );
+            }
+
             found_operator = 1;
             var_size++;
         }
         else if (result == 4)
         {
-            if(found_operator)
+            is_variable = 0;
+            if (need_reverse == 0)
+            {
+                vars[j-1] = Cudd_Not(vars[j-1]);
+                var_size++;
+                not_eval++;
+            }
+            else if(found_operator)
             {
                 bdd = Cudd_Not (bdd);
             }
-            else
-            {
-                bdd = Cudd_Not (vars[j-1]);
-                var_size++;
-            }
-            found_operator = 1;
+            // else
+            // {
+            //     bdd = Cudd_Not (vars[j-1]);
+            //     var_size++;
+            // }
+            // found_operator = 1;
             // var_size++;
         }
     }
-
-    // for(i = 0; i < var_size; i++)
-    // {
-    //     if(varNames[i] != NULL)
-    //     {
-    //         printf("Var is %s\n", varNames[i]);
-    //     }
-    // }
 
     Cudd_Ref(bdd);
 
@@ -365,6 +376,10 @@ void generate_bdd(char *infix, char *cell_name)
     dotFile = fopen(out_name, "w");
     Cudd_DumpDot(gbm, 1, &bdd, varNames, NULL, dotFile);
     fclose(dotFile);
+
+    print_dd(gbm, bdd, 2, 2, out_name); // prints info about bdd //
+    Cudd_PrintMinterm(gbm, bdd); // prints minterms of bdd //
+    // Cudd_PrintDebug(gbm, bdd, 1, 3);
 
     free(out_name);
 
