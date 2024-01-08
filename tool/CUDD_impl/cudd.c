@@ -87,12 +87,15 @@ void generate_bdd(char *infix, char *cell_name)
     int need_reverse = 0;
     int not_eval = 0;
     int is_variable = 0;
+    
 
     DdManager *gbm;
 
     postfix = parse_infix(infix);
 
     DdNode *bdd;
+    DdNode *temp_bdd[2];
+    int temp_bdd_num = 0;
     DdNode **vars;
 
     gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
@@ -102,6 +105,8 @@ void generate_bdd(char *infix, char *cell_name)
     // Cudd_AutodynDisable(gbm);
 
     bdd = Cudd_bddNewVar(gbm);
+    temp_bdd[0] = Cudd_bddNewVar(gbm);
+    temp_bdd[1] = Cudd_bddNewVar(gbm);
 
     varNames = (char **) malloc(sizeof(char *) * 2);
     // varNames[var_num] = (char *) malloc(sizeof(char) * 5);
@@ -239,6 +244,10 @@ void generate_bdd(char *infix, char *cell_name)
         // {
         //     break;
         // }
+        if(temp_bdd_num == 2)
+        {
+            temp_bdd_num = 0;
+        }
         result = identify_symbol(postfix[i]);
 
         if(result == 3 || result == 2 || result == 1)
@@ -246,7 +255,6 @@ void generate_bdd(char *infix, char *cell_name)
             var_size = var_size - not_eval;
             not_eval = 0;
         }
-
         Cudd_Ref(bdd);
 
         if(var_size < var_num)
@@ -263,7 +271,7 @@ void generate_bdd(char *infix, char *cell_name)
                 printf("ERROR\n");
             }
 
-            if(found_operator != 1)
+            if(var_size + 1 < var_num)
             {
                 for(k = 1; k < seperate_vars; k++)  // need to change 3
                 {
@@ -279,7 +287,6 @@ void generate_bdd(char *infix, char *cell_name)
             }
         }
 
-
         if(result == 0) // is variable //
         {
             need_reverse = 0;
@@ -288,36 +295,49 @@ void generate_bdd(char *infix, char *cell_name)
         else if (result == 3)
         {
             need_reverse = 1;
-            is_variable = 0;
             if(is_variable == 2)
             {
-                bdd = Cudd_bddAnd ( gbm , vars[j-1] , vars[k-1] );
+                temp_bdd[temp_bdd_num] = Cudd_bddAnd ( gbm , vars[j-1] , vars[k-1] );
+                temp_bdd_num++;
                 var_size++;
             }
-            else if(found_operator)
+            else if(is_variable == 1)
             {
-                bdd = Cudd_bddAnd ( gbm ,vars[j-1], bdd);
+                bdd = Cudd_bddAnd ( gbm ,vars[j-1], temp_bdd[0]);
+            }
+            else
+            {
+                temp_bdd[0] = Cudd_bddAnd(gbm, temp_bdd[0], temp_bdd[1]);
+                temp_bdd_num = 0;
             }
 
             found_operator = 1;
             var_size++;
+            is_variable = 0;
         }
         else if (result == 2)
         {
             need_reverse = 1;
-            is_variable = 0;
+            
             if(is_variable == 2)
             {
-                bdd = Cudd_bddOr ( gbm , vars[j-1] , vars[k-1] );
+                temp_bdd[temp_bdd_num] = Cudd_bddOr ( gbm , vars[j-1] , vars[k-1] );
                 var_size++;
+                temp_bdd_num++;
             }
-            else if(found_operator)
+            else if(is_variable == 1)
             {
-                bdd = Cudd_bddOr ( gbm , vars[j-1], bdd);
+                bdd = Cudd_bddOr ( gbm , vars[j-1], temp_bdd[0]);
+            }
+            else 
+            {
+                temp_bdd[0] = Cudd_bddOr ( gbm , temp_bdd[0], temp_bdd[1]);
+                temp_bdd_num = 0;
             }
 
             found_operator = 1;
             var_size++;
+            is_variable = 0;
         }
         else if (result == 1)
         {
@@ -338,7 +358,6 @@ void generate_bdd(char *infix, char *cell_name)
         }
         else if (result == 4)
         {
-            is_variable = 0;
             if (need_reverse == 0)
             {
                 vars[j-1] = Cudd_Not(vars[j-1]);
@@ -349,6 +368,7 @@ void generate_bdd(char *infix, char *cell_name)
             {
                 bdd = Cudd_Not (bdd);
             }
+            is_variable = 0;
             // else
             // {
             //     bdd = Cudd_Not (vars[j-1]);
@@ -358,6 +378,7 @@ void generate_bdd(char *infix, char *cell_name)
             // var_size++;
         }
     }
+    bdd = temp_bdd[0];
 
     Cudd_Ref(bdd);
 
@@ -374,7 +395,7 @@ void generate_bdd(char *infix, char *cell_name)
 
     FILE *dotFile;
     dotFile = fopen(out_name, "w");
-    Cudd_DumpDot(gbm, 1, &bdd, varNames, NULL, dotFile);
+    Cudd_DumpDot(gbm, 1, &bdd, NULL, NULL, dotFile);
     fclose(dotFile);
 
     print_dd(gbm, bdd, 2, 2, out_name); // prints info about bdd //
