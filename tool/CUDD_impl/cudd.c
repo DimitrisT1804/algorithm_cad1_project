@@ -237,6 +237,7 @@ void generate_bdd(char *infix, char *cell_name)
     }
     
     bdd = Cudd_ReadOne(gbm);
+    // bdd = NULL;
 
     for(i = 0; i < strlen(postfix); i++)
     {
@@ -303,12 +304,14 @@ void generate_bdd(char *infix, char *cell_name)
             }
             else if(is_variable == 1)
             {
-                bdd = Cudd_bddAnd ( gbm ,vars[j-1], temp_bdd[0]);
+                temp_bdd[0] = Cudd_bddAnd ( gbm ,vars[j-1], temp_bdd[0]);
+                temp_bdd_num = 1;
             }
             else
             {
                 temp_bdd[0] = Cudd_bddAnd(gbm, temp_bdd[0], temp_bdd[1]);
-                temp_bdd_num = 0;
+                temp_bdd_num = 1;
+                var_size--;
             }
 
             found_operator = 1;
@@ -327,12 +330,14 @@ void generate_bdd(char *infix, char *cell_name)
             }
             else if(is_variable == 1)
             {
-                bdd = Cudd_bddOr ( gbm , vars[j-1], temp_bdd[0]);
+                temp_bdd[0] = Cudd_bddOr ( gbm , vars[j-1], temp_bdd[0]);
+                temp_bdd_num = 1;
             }
             else 
             {
                 temp_bdd[0] = Cudd_bddOr ( gbm , temp_bdd[0], temp_bdd[1]);
-                temp_bdd_num = 0;
+                temp_bdd_num = 1;
+                var_size--;
             }
 
             found_operator = 1;
@@ -378,6 +383,11 @@ void generate_bdd(char *infix, char *cell_name)
             // var_size++;
         }
     }
+    // bdd = temp_bdd[0];
+    // if(bdd == NULL)
+    // {
+    //     bdd = temp_bdd[0];
+    // }
     bdd = temp_bdd[0];
 
     Cudd_Ref(bdd);
@@ -423,6 +433,220 @@ void generate_bdd(char *infix, char *cell_name)
     }
     free(varNames);
 }
+
+void generate_bdd_two(char *infix, char *cell_name)
+{
+    int i;
+    DdManager *gbm;
+    DdNode *bdd;
+    DdNode *temp_bdd[2];
+    DdNode **vars;
+    char *postfix = NULL;
+    stack_bdd *cur_stack;
+    int result = -5;
+    int seperate_vars = 1;
+    char *temp_name = NULL;
+    int pos = 0;
+    int var_exists = 0;
+    int j;
+    int vars_size = 0;
+    char temp_char; 
+    int k;
+    int temp_bdd_pos = 0;
+    char *out_name = NULL;
+
+    gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
+
+    Cudd_AutodynEnable(gbm, CUDD_REORDER_SYMM_SIFT);
+
+    bdd = Cudd_bddNewVar(gbm);
+    temp_bdd[0] = Cudd_bddNewVar(gbm);
+    temp_bdd[1] = Cudd_bddNewVar(gbm);
+
+    cur_stack = create_stack_bdd(10); // create stack //
+
+    postfix = parse_infix(infix);
+
+    varNames = (char **) malloc(sizeof(char *) * 2);
+    // varNames[var_num] = (char *) malloc(sizeof(char) * 5);
+    temp_name = (char *) malloc(sizeof(char) * 5);
+    for(i = 0; i < strlen(infix); i++)
+    {
+        if(identify_symbol(infix[i]) == 0 || identify_symbol(infix[i]) == -1)
+        {
+            temp_name[pos] = infix[i];
+            pos++;
+        }
+        else if(identify_symbol(infix[i]) != -2)  // it is operator //
+        {
+            temp_name[pos] = '\0';
+            var_exists = 0;
+            pos = 0;
+            if(strcmp(temp_name, "\0") == 0)
+            {
+                continue;
+            }
+            for(j = 1; j < seperate_vars; j++)
+            {
+                if(varNames[j] != NULL)
+                {
+                    if(strcmp(varNames[j], temp_name) == 0)
+                    {
+                        var_exists = 1;
+                    }
+                }
+            }
+            if(var_exists != 1)
+            {
+                varNames = (char **) realloc(varNames, sizeof(char *) * (seperate_vars + 2));
+                varNames[seperate_vars] = strdup(temp_name);
+                
+                seperate_vars++; 
+            }
+        }
+    }
+    temp_name[pos] = '\0';
+    var_exists = 0;
+    pos = 0;
+    for(j = 1; j < seperate_vars; j++)
+    {
+        if(varNames[j] != NULL)
+        {
+            if(strcmp(varNames[j], temp_name) == 0)
+            {
+                var_exists = 1;
+            }
+        }
+    }
+    if(var_exists != 1)
+    {
+        varNames = (char **) realloc(varNames, sizeof(char *) * (seperate_vars + 2));
+        varNames[seperate_vars] = strdup(temp_name);
+        
+        seperate_vars++; 
+    }
+    varNames[seperate_vars] = NULL;
+    varNames[0] = NULL;
+
+
+    vars_size = seperate_vars-1;
+
+    vars = (DdNode **) malloc(vars_size * sizeof(DdNode*));
+    if(vars == NULL)
+    {
+        printf("System Failure!\n");
+    }
+    for(i = 0; i < vars_size; i++)
+    {
+        vars[i] = Cudd_bddNewVar(gbm);
+    }
+
+    for(i = 0; i < strlen(postfix); i++)
+    {
+        if(temp_bdd_pos == 2)
+        {
+            temp_bdd_pos = 0;
+        }
+        result = identify_symbol(postfix[i]);
+        if(result == 0)    // is variable //
+        {
+            for(j = 1; j < vars_size; j++)
+            {
+                if(varNames[j][0] == postfix[i])
+                {
+                    break;
+                }
+            }
+            push_bdd(cur_stack, vars[j-1]);
+        }
+        else if (result == 3)   // operator * //
+        {
+
+            temp_bdd[temp_bdd_pos] = Cudd_bddAnd(gbm, pop_bdd(cur_stack), pop_bdd(cur_stack));
+
+            push_bdd(cur_stack, temp_bdd[temp_bdd_pos]);
+            temp_bdd_pos++;
+        }
+        else if (result == 2)   // operator + //
+        {
+            temp_bdd[temp_bdd_pos] = Cudd_bddOr(gbm, pop_bdd(cur_stack), pop_bdd(cur_stack));
+
+            push_bdd(cur_stack, temp_bdd[temp_bdd_pos]);
+            temp_bdd_pos++;
+        }
+        else if (result == 1) // operator ^ //
+        {
+            temp_bdd[temp_bdd_pos] = Cudd_bddXor(gbm, pop_bdd(cur_stack), pop_bdd(cur_stack));
+
+            push_bdd(cur_stack, temp_bdd[temp_bdd_pos]);
+            temp_bdd_pos++;
+        }
+        else if (result == 4)
+        {
+            temp_bdd[temp_bdd_pos] = Cudd_Not(pop_bdd(cur_stack));
+
+            push_bdd(cur_stack, temp_bdd[temp_bdd_pos]);
+            temp_bdd_pos++;
+        }
+    }
+
+    if(isEmpty_bdd(cur_stack))
+    {
+        bdd = temp_bdd[0];
+    }
+    else
+    {
+        bdd = pop_bdd(cur_stack);
+    }
+
+    Cudd_Ref(bdd);
+
+    bdd = Cudd_BddToAdd(gbm, bdd);
+
+    out_name = malloc(sizeof(char) * (strlen(".dot ") + strlen(cell_name) + strlen("bdd_output/ ")) );
+    strcpy(out_name, "bdd_output/");
+    strcat(out_name, cell_name);
+    strcat(out_name, ".dot");
+
+    #ifdef DEBUG
+    printf("The out_name is %s\n", out_name);
+    #endif
+
+    FILE *dotFile;
+    dotFile = fopen(out_name, "w");
+    Cudd_DumpDot(gbm, 1, &bdd, NULL, NULL, dotFile);
+    fclose(dotFile);
+
+    print_dd(gbm, bdd, 2, 2, out_name); // prints info about bdd //
+    Cudd_PrintMinterm(gbm, bdd); // prints minterms of bdd //
+    // Cudd_PrintDebug(gbm, bdd, 1, 3);
+
+    free(out_name);
+
+    Cudd_Quit(gbm);
+    gbm = NULL;
+
+    free(temp_name);
+    free(postfix);
+    free(vars);
+
+    // for(i = 0; i < var_num; i++)
+    // {
+    //     free(vars_row[i]);
+    // }
+    // free(vars_row);
+
+    for(i = 0; i < seperate_vars; i++)
+    {
+        free(varNames[i]);
+    }
+    free(varNames);
+
+    delete_stack_bdd(cur_stack);
+
+}
+
+
 
 // int main()
 // {

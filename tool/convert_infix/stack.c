@@ -3,12 +3,17 @@
 
 stack *create_stack(int capacity)
 {
+    // int i;
     stack *newStack = (stack*) malloc(sizeof(stack));
 
     newStack->capacity = capacity;
     newStack->top = -1;
     newStack->array = (char*) malloc(newStack->capacity * sizeof(char));
 
+    // for(i = 0; i < newStack->capacity; i++)
+    // {
+    //     newStack->array[i] = '\0';
+    // }
     return newStack;
 }
 
@@ -61,3 +66,23 @@ void delete_stack (stack *currStack)
     free(currStack->array);
     free(currStack);
 }
+
+// int count_items(stack *currStack)
+// {
+//     int valid_items = 0;
+//     int i;
+
+//     for(i = 0; i < currStack->capacity; i++)
+//     {
+//         if(currStack->array[i] != '\0')
+//         {
+//             valid_items++;
+//         }
+//         else
+//         {
+//             break;
+//         }
+//     }
+
+//     return valid_items;
+// }

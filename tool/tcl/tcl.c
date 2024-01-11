@@ -1056,7 +1056,8 @@ int compute_expression_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, 
 
     postfix = parse_infix(infix);
 
-    generate_bdd(infix, filename);
+    // generate_bdd(infix, filename);
+    generate_bdd_two(infix, filename);
 
     command = malloc(strlen("dot -Tpng ") + strlen(filename) + strlen(".dot -o .png  ") + strlen(filename) + strlen("bdd_output/") + strlen("bdd_output/_ "));
     strcpy(command, "dot -Tpng ");
