@@ -482,6 +482,8 @@ void generate_bdd_two(char *infix, char *cell_name)
     int pos_left_string = 0;
     int var_num = 0;
     char **vars_row = NULL;
+    int already_calculated = 0;
+    char **bdd_out_name = NULL;
 
     char left_string[100], right_string[100];
 
@@ -580,29 +582,38 @@ void generate_bdd_two(char *infix, char *cell_name)
             temp_name[pos] = infix[i];
             pos++;
         }
-        else if(identify_symbol(infix[i]) != -2)  // it is operator //
+        else  if (identify_symbol(infix[i]) != -2)
         {
             temp_name[pos] = '\0';
+            pos = 0;
             if(strcmp(temp_name, "\0") == 0)
             {
                 continue;
             }
-            pos = 0;
             vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
             vars_row[var_num] = strdup(temp_name);
             
             var_num++; 
         }
     }
+    if(identify_symbol(infix[i-1]) == 0 || identify_symbol(infix[i-1]) == -1)
+    {
+        temp_name[pos] = '\0';
+    }
     vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
     vars_row[var_num] = strdup(temp_name);
     var_num++; 
+    vars_row[var_num] == NULL;
+
+    // var_found_counter = calloc(vars_size, sizeof(int));
 
     // !!! add a sentinel between variables in postfix !!! //
+    already_calculated = 0;
+
     postfix = (char *) realloc (postfix, strlen(postfix) * 2);
     for(i = 0; i < var_num; i++)
     {
-        temp_string = strstr(postfix, vars_row[i]);
+        temp_string = strstr(postfix + already_calculated, vars_row[i]);
         for(j = 0; j < (temp_string - postfix) + strlen(vars_row[i]); j++)
         {
             left_string[j] = postfix[j];
@@ -614,6 +625,8 @@ void generate_bdd_two(char *infix, char *cell_name)
         strcpy(postfix, left_string);
 
         strcat(postfix, right_string);
+        
+        already_calculated = temp_string - postfix;
     }
 
     for(i = 0; i < strlen(postfix); i++)
@@ -699,9 +712,14 @@ void generate_bdd_two(char *infix, char *cell_name)
     printf("The out_name is %s\n", out_name);
     #endif
 
+    bdd_out_name = malloc(2*sizeof(char *));
+    bdd_out_name[0] = malloc(strlen(cell_name) + 1);
+    strcpy(bdd_out_name[0], cell_name);
+    bdd_out_name[1] = NULL;
+
     FILE *dotFile;
     dotFile = fopen(out_name, "w");
-    Cudd_DumpDot(gbm, 1, &bdd, NULL, NULL, dotFile);
+    Cudd_DumpDot(gbm, 1, &bdd, NULL, bdd_out_name, dotFile);
     fclose(dotFile);
 
     print_dd(gbm, bdd, 2, 2, out_name); // prints info about bdd //
@@ -717,11 +735,20 @@ void generate_bdd_two(char *infix, char *cell_name)
     free(postfix);
     free(vars);
 
+    for(i = 0; i < var_num; i++)
+    {
+        free(vars_row[i]);
+    }
+    free(vars_row);
+
     for(i = 0; i < seperate_vars; i++)
     {
         free(varNames[i]);
     }
     free(varNames);
+
+    free (bdd_out_name[0]);
+    free(bdd_out_name);
 
     delete_stack_bdd(cur_stack);
 
