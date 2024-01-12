@@ -976,7 +976,8 @@ int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
 
         postfix = parse_infix(infix);
 
-        generate_bdd(infix, libhash[lhash].name[ldepth]);
+        // generate_bdd(infix, libhash[lhash].name[ldepth]);
+        generate_bdd_two(infix, libhash[lhash].name[ldepth]);
 
         command = malloc(strlen("dot -Tpng ") + strlen(libhash[lhash].name[ldepth]) + strlen(".dot -o .png  ") + strlen(libhash[lhash].name[ldepth]) + strlen("bdd_output/") + strlen("bdd_output/_ "));
         strcpy(command, "dot -Tpng ");

@@ -434,6 +434,30 @@ void generate_bdd(char *infix, char *cell_name)
     free(varNames);
 }
 
+// function that finds nth occurence of needle inside haystack string //
+char *findNthOccurrence(char *haystack, char *needle, int n)
+ {
+    int needleLen = strlen(needle);
+    char *result = haystack;
+    int i;
+
+    for (i = 0; i < n; i++) 
+    {
+        result = strstr(result, needle);
+
+        // If no more occurrences found, return NULL
+        if (result == NULL) {
+            return NULL;
+        }
+
+        // Move the pointer forward to search for the next occurrence
+        result = result + needleLen;
+    }
+
+    return result;
+}
+
+
 void generate_bdd_two(char *infix, char *cell_name)
 {
     int i;
@@ -454,6 +478,12 @@ void generate_bdd_two(char *infix, char *cell_name)
     int k;
     int temp_bdd_pos = 0;
     char *out_name = NULL;
+    char *temp_string = NULL;
+    int pos_left_string = 0;
+    int var_num = 0;
+    char **vars_row = NULL;
+
+    char left_string[100], right_string[100];
 
     gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
@@ -528,7 +558,6 @@ void generate_bdd_two(char *infix, char *cell_name)
     varNames[seperate_vars] = NULL;
     varNames[0] = NULL;
 
-
     vars_size = seperate_vars-1;
 
     vars = (DdNode **) malloc(vars_size * sizeof(DdNode*));
@@ -541,6 +570,52 @@ void generate_bdd_two(char *infix, char *cell_name)
         vars[i] = Cudd_bddNewVar(gbm);
     }
 
+    var_num = 0;
+    pos = 0;
+    vars_row = (char **) malloc(sizeof(char *) * 1);
+    for(i = 0; i < strlen(infix); i++) // keep variables in row from infix //
+    {
+        if(identify_symbol(infix[i]) == 0 || identify_symbol(infix[i]) == -1)
+        {
+            temp_name[pos] = infix[i];
+            pos++;
+        }
+        else if(identify_symbol(infix[i]) != -2)  // it is operator //
+        {
+            temp_name[pos] = '\0';
+            if(strcmp(temp_name, "\0") == 0)
+            {
+                continue;
+            }
+            pos = 0;
+            vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
+            vars_row[var_num] = strdup(temp_name);
+            
+            var_num++; 
+        }
+    }
+    vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
+    vars_row[var_num] = strdup(temp_name);
+    var_num++; 
+
+    // !!! add a sentinel between variables in postfix !!! //
+    postfix = (char *) realloc (postfix, strlen(postfix) * 2);
+    for(i = 0; i < var_num; i++)
+    {
+        temp_string = strstr(postfix, vars_row[i]);
+        for(j = 0; j < (temp_string - postfix) + strlen(vars_row[i]); j++)
+        {
+            left_string[j] = postfix[j];
+        }
+        left_string[j] = '/';
+        left_string[j+1] = '\0';
+
+        strcpy(right_string, (postfix + ( (temp_string - postfix) + strlen(vars_row[i]) )));
+        strcpy(postfix, left_string);
+
+        strcat(postfix, right_string);
+    }
+
     for(i = 0; i < strlen(postfix); i++)
     {
         if(temp_bdd_pos == 2)
@@ -550,9 +625,21 @@ void generate_bdd_two(char *infix, char *cell_name)
         result = identify_symbol(postfix[i]);
         if(result == 0)    // is variable //
         {
+            while(postfix[i] != '/')
+            {
+                left_string[pos_left_string] = postfix[i];
+                pos_left_string++;
+                i++;
+            }
+            left_string[pos_left_string] = '\0';
+            pos_left_string = 0;
             for(j = 1; j < vars_size; j++)
             {
-                if(varNames[j][0] == postfix[i])
+                // if(varNames[j][0] == postfix[i])
+                // {
+                //     break;
+                // }
+                if(strcmp(varNames[j], left_string) == 0)
                 {
                     break;
                 }
@@ -629,12 +716,6 @@ void generate_bdd_two(char *infix, char *cell_name)
     free(temp_name);
     free(postfix);
     free(vars);
-
-    // for(i = 0; i < var_num; i++)
-    // {
-    //     free(vars_row[i]);
-    // }
-    // free(vars_row);
 
     for(i = 0; i < seperate_vars; i++)
     {
