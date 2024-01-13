@@ -474,8 +474,6 @@ void generate_bdd_two(char *infix, char *cell_name)
     int var_exists = 0;
     int j;
     int vars_size = 0;
-    char temp_char; 
-    int k;
     int temp_bdd_pos = 0;
     char *out_name = NULL;
     char *temp_string = NULL;
@@ -603,7 +601,7 @@ void generate_bdd_two(char *infix, char *cell_name)
     vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
     vars_row[var_num] = strdup(temp_name);
     var_num++; 
-    vars_row[var_num] == NULL;
+    vars_row[var_num] = NULL;
 
     // var_found_counter = calloc(vars_size, sizeof(int));
 

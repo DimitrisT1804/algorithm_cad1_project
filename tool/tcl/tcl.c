@@ -1213,7 +1213,7 @@ int main(int argc, char *argv[])
             {
                 structs_free();
             }
-            printf(ANSI_COLOR_BLUE "EDA TOOL EXITING\n" ANSI_COLOR_RESET);
+            printf(ANSI_COLOR_BLUE BOLD_LETTERS "EDA TOOL EXITING\n" ANSI_COLOR_RESET);
             Tcl_Finalize();
 
             return EXIT_SUCCESS;

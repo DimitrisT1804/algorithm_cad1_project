@@ -374,7 +374,6 @@ void lib_add_pins (char *cell_name, char *pin_name, int pin_type)
         printf("ERROR: There is not this cell\n");
         return;
     }
-    // free(cell_name);
 
      // Check for duplicate pin names in the specified cell //
     for(i = 0; i < libhash[lhash].pin_count[ldepth]; i++)
