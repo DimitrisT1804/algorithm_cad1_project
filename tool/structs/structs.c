@@ -280,7 +280,6 @@ void Lib_init()
             libhash[i].name[j] = NULL;
             libhash[i].function[j] = NULL;
             libhash[i].pin_names[j] = NULL;
-            libhash[i].pin_names[j] = NULL;
             libhash[i].pin_count[j] = 0;
             libhash[i].hashpresent[j] = 0;           
             libhash[i].cell_type[j] = -1;
@@ -450,6 +449,7 @@ void libhash_free()
                     free(libhash[i].pin_names[j][k]);
                 }
                 free(libhash[i].pin_names[j]);
+                free(libhash[i].pin_type[j]);
             }
         }
     }
@@ -621,6 +621,9 @@ void structs_init()
     Gatepins_init();
     Lib_init();
     comphash_init();
+    
+    libarray = NULL;
+    libarray_size = 0;
 }
 
 /* ######################## structs_free() ######################## */
@@ -632,4 +635,14 @@ void structs_free()
     Gatepins_free();
     libhash_free();
     comphash_free();
+
+    for(int i = 0; i < libarray_size; i++)
+    {
+        free(libarray[i]);
+    }
+    free(libarray);
+
+    gatepinhash = NULL;
+    comphash = NULL;
+    libhash = NULL;
 }

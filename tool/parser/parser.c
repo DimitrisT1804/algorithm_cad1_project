@@ -428,7 +428,9 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
 
         case PIN_OUT:
             if(event[strlen(event)-1] == ',')
+            {
                 event[strlen(event)-1] = '\0';
+            }
 
             cell_pin = (char *) my_calloc(strlen(event) + 2, sizeof(char));
             strcpy(cell_pin, "/");
@@ -459,6 +461,7 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             lib_add_pins(name_of_cell, cell_pin, pin_type);
             free(comp_name);
             free(out_pin);
+            free(cell_pin);
 
             return WAIT;
 
@@ -527,6 +530,7 @@ enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO current
             event[j] = '\0';
 
             lib_add_pins(cell_name, event, INPUT); // add pins for current cell //
+            free(cell_name);
 
             return GET_COMP_NAME_IO;
 
@@ -599,6 +603,7 @@ enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, ch
 
             lib_add_pins(cell_name, event, INPUT); // add pin without brackets on cell //
 
+            free(cell_name);
             return GET_COMP_NAME;
 
         default:
