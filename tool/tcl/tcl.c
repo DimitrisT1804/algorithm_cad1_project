@@ -621,7 +621,6 @@ int list_cells(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *con
         return TCL_ERROR;
     }
 
-
     if(gatepinhash == NULL)
     {
         printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
@@ -641,7 +640,7 @@ int list_cells(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *con
                 }
                 else
                 {
-                    printf("Cell Type is: Sequential\n");
+                    printf(ANSI_COLOR_MAGENDA "Cell Type is: Sequential\n" ANSI_COLOR_RESET);
                 }
 
                 printf("Pin names are: \n");
@@ -662,7 +661,6 @@ int list_cells(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *con
             }
         }
     }
-
 
     return TCL_OK;
 }
@@ -723,9 +721,9 @@ int list_component_info(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl
             return TCL_ERROR;
         }
         free(currPin);
-        printf(ANSI_COLOR_BLUE "Successors of pin %s are: \n" ANSI_COLOR_RESET, gatepinhash[ghash].name[gdepth]);
         if(gatepinhash[ghash].connections_size[gdepth] != 0)
         {
+            printf(ANSI_COLOR_BLUE "Successors of pin %s are: \n" ANSI_COLOR_RESET, gatepinhash[ghash].name[gdepth]);
             for(j = 0; j < gatepinhash[ghash].connections_size[gdepth]; j++)
             {
                 gconhash = gatepinhash[ghash].pinConn[gdepth][j];
@@ -793,9 +791,9 @@ int list_components_info(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
                         return TCL_ERROR;
                     }
                     free(currPin);
-                    printf(ANSI_COLOR_BLUE "Successors of pin %s are: \n" ANSI_COLOR_RESET, gatepinhash[ghash].name[gdepth]);
                     if(gatepinhash[ghash].connections_size[gdepth] != 0)
                     {
+                        printf(ANSI_COLOR_BLUE "Successors of pin %s are: \n" ANSI_COLOR_RESET, gatepinhash[ghash].name[gdepth]);
                         for(j = 0; j < gatepinhash[ghash].connections_size[gdepth]; j++)
                         {
                             gconhash = gatepinhash[ghash].pinConn[gdepth][j];
@@ -803,7 +801,7 @@ int list_components_info(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
 
                             printf(ANSI_COLOR_GREEN "• %s \n" ANSI_COLOR_RESET, gatepinhash[gconhash].name[gcondepth]);
                         }
-                        break;
+                        // break;
                     }
                 }
                 for(i = 0; i < strlen(comphash[chash].name[cdepth]) + 44; i++)
@@ -1102,7 +1100,6 @@ int main(int argc, char *argv[])
     char *text = NULL; // readline result //
     char *textexpansion; // readline result history expanded //
     int expansionresult;
-    int kati = 0;
     const char *directory = "bdd_output";
 
     Tcl_Interp *interp;

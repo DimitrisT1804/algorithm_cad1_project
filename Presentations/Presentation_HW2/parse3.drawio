@@ -1,0 +1,63 @@
+<mxfile host="Electron" modified="2024-01-14T23:57:33.462Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.18 Chrome/120.0.6099.199 Electron/28.1.2 Safari/537.36" etag="EkDzy_JFCvLvT7wwE8BA" version="22.1.18" type="device">
+  <diagram name="Page-1" id="itxUjWYvNmH4sVzir4aR">
+    <mxGraphModel dx="2074" dy="1231" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2339" pageHeight="3300" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="KMbIL7Nj7a4aRVGGerm7-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="KMbIL7Nj7a4aRVGGerm7-1" target="KMbIL7Nj7a4aRVGGerm7-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="KMbIL7Nj7a4aRVGGerm7-1" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Begin&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="513" y="266" width="132" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="KMbIL7Nj7a4aRVGGerm7-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="KMbIL7Nj7a4aRVGGerm7-3" target="KMbIL7Nj7a4aRVGGerm7-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="KMbIL7Nj7a4aRVGGerm7-67" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="KMbIL7Nj7a4aRVGGerm7-3" target="KMbIL7Nj7a4aRVGGerm7-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="899" y="205" />
+              <mxPoint x="579" y="205" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KMbIL7Nj7a4aRVGGerm7-3" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;get_comp_name&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="833" y="266" width="132" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="KMbIL7Nj7a4aRVGGerm7-71" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="KMbIL7Nj7a4aRVGGerm7-4" target="KMbIL7Nj7a4aRVGGerm7-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1340" y="332" />
+              <mxPoint x="1340" y="538" />
+              <mxPoint x="579" y="538" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KMbIL7Nj7a4aRVGGerm7-4" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Pin&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="1128" y="266" width="132" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="KMbIL7Nj7a4aRVGGerm7-11" value="&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;font color=&quot;#0066cc&quot;&gt;if (word == &quot;CCs&quot;)&lt;/font&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="651" y="289" width="158" height="41" as="geometry" />
+        </mxCell>
+        <mxCell id="KMbIL7Nj7a4aRVGGerm7-14" value="&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;font color=&quot;#00994d&quot;&gt;&lt;b&gt;keep cell name&lt;/b&gt;&lt;/font&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="799" y="402" width="200" height="41" as="geometry" />
+        </mxCell>
+        <mxCell id="KMbIL7Nj7a4aRVGGerm7-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="KMbIL7Nj7a4aRVGGerm7-1" target="KMbIL7Nj7a4aRVGGerm7-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="711" y="332" />
+              <mxPoint x="711" y="418" />
+              <mxPoint x="579" y="418" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KMbIL7Nj7a4aRVGGerm7-68" value="&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;font color=&quot;#0066cc&quot;&gt;if (word == &quot;Component&quot;)&lt;/font&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="627" y="162" width="221" height="41" as="geometry" />
+        </mxCell>
+        <mxCell id="KMbIL7Nj7a4aRVGGerm7-72" value="&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;font color=&quot;#00994d&quot;&gt;&lt;b&gt;Keep pin name and add pins on libhash for this cell&lt;/b&gt;&lt;/font&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1098" y="418" width="200" height="41" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -8,7 +8,9 @@
 #define ANSI_COLOR_GREEN   "\x1b[32m"
 #define ANSI_COLOR_BLUE    "\x1b[34m"
 #define ANSI_COLOR_ORANGE  "\x1b[38;5;208m"
+#define ANSI_COLOR_MAGENDA "\e[1;35m"
 #define BOLD_LETTERS "\033[1m"
+
 
 enum IO_STATES 
 {

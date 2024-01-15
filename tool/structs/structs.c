@@ -290,9 +290,8 @@ void Lib_init()
 }
 
 /* ## Lib_add(char *cell_name, int cell_type, char *func_expr) ## */
-/* This function adds in libhash for each component the name of
-   component the cell_type (Combinational or Sequential) and
-   the boolean function of this cell */
+/* This function adds in libhash for each cell the name of
+   cell the cell_type (Combinational or Sequential) */
 void Lib_add(char *cell_name, int cell_type, char *func_expr)
 {
     int i;
@@ -621,9 +620,6 @@ void structs_init()
     Gatepins_init();
     Lib_init();
     comphash_init();
-    
-    libarray = NULL;
-    libarray_size = 0;
 }
 
 /* ######################## structs_free() ######################## */
@@ -632,17 +628,25 @@ void structs_init()
    individual free functions for each data structure. */
 void structs_free()
 {
+    int i;
+
     Gatepins_free();
     libhash_free();
     comphash_free();
 
-    for(int i = 0; i < libarray_size; i++)
+    for(i = 0; i < libarray_size; i++)
     {
-        free(libarray[i]);
+        if(libarray[i] != NULL)
+        {
+            free(libarray[i]);
+        }
     }
     free(libarray);
 
     gatepinhash = NULL;
     comphash = NULL;
     libhash = NULL;
+
+    libarray = NULL;
+    libarray_size = 0;
 }

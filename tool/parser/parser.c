@@ -274,8 +274,10 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             new_comp = 0;
             out_pin = (char *) my_calloc (strlen(event) + 1, sizeof(char));
             if(event[strlen(event)-1] == ',')
+            {
                 event[strlen(event)-1] = '\0';
-            // get_libhash_indices(event, &lhash, &lhashdepth);
+            }
+
             get_comphash_indices(event, &comphash, &compdepth);
             if(compdepth != -1)
             {
@@ -383,8 +385,6 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             strcpy(con_pin, event);
 
             return CONNECTED_PINS_2;
-            
-
 
         case CONNECTED_PINS_2:
             j = 0; 
@@ -493,7 +493,9 @@ enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO current
 
         case GET_COMP_NAME_IO: // get comp name of CC pin //
             if(strcmp(event, "IO:") == 0 || strncmp(event, "#", 1) == 0 || strncmp(event, "\n", 1) == 0)
+            {
                 return BEGIN_IO;
+            }
 
             comp_name = (char *) calloc(strlen(event) + 1, sizeof(char));
             strcpy(comp_name, event);
@@ -996,7 +998,7 @@ int call_parser(char *input_file)
     printf("IO pins size is %d and compsize is %d\n", gatepinhash_size, comphash_size);
     #endif
 
-    printf(ANSI_COLOR_BLUE "####### Summary of Design #######\n" ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_BLUE "####### Summary of Design: %s #######\n" ANSI_COLOR_RESET, input_file);
     printf(ANSI_COLOR_GREEN "Components: %d\n" ANSI_COLOR_RESET, count);
     printf(ANSI_COLOR_GREEN "IOs: %d\n" ANSI_COLOR_RESET, count_IOs);
     printf(ANSI_COLOR_GREEN "Cells: %d\n" ANSI_COLOR_RESET, count_cells);

@@ -37,7 +37,7 @@ struct library
     char *name[HASHDEPTH]; // names of cells //
     int cell_type[HASHDEPTH]; // type of each cell (Combinational or Sequential) //
     char **pin_names[HASHDEPTH]; // names of pins for each cell //
-    int pin_count[HASHDEPTH]; // count of pins for each cell //
+    int pin_count[HASHDEPTH]; // number of pins for each cell //
     char **function[HASHDEPTH]; // boolean function for each cell //
     int out_pins_count[HASHDEPTH];
     int hashpresent[HASHDEPTH]; // flag indicating presence in the hash table //

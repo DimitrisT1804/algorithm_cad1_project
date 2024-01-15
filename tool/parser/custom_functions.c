@@ -8,6 +8,8 @@ void* my_realloc(void* ptr, size_t size)
     if(ptr == NULL)
     {
         printf("Error on allocation\n");
+
+        exit(EXIT_FAILURE);
     }
     return ptr;
 }
@@ -19,6 +21,8 @@ void* my_calloc(int nmemb, size_t size)
     if(ptr == NULL)
     {
         printf("Error on allocation\n");
+
+        exit(EXIT_FAILURE);
     }
     return ptr;
 }
