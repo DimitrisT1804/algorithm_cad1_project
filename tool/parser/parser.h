@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "../structs/structs.h"
 
 #define ANSI_COLOR_RED     "\x1b[31m"   // define color codes to print TCL messages //

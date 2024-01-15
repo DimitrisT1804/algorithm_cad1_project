@@ -76,7 +76,6 @@ void generate_bdd(char *infix, char *cell_name)
     int var_size = 0;
     int found_operator = 0;
     char *postfix = NULL;
-    int string_size = 1;
     char *out_name = NULL;
     int var_num = 1;
     int pos = 0;

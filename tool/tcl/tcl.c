@@ -1172,6 +1172,15 @@ int main(int argc, char *argv[])
 
     exit_requested = false;
     ctrl_c_pressed = false;
+
+    // const char *ascii_art = "   ____    _    ____    _____ ___   ___  _     \n"
+    //     "  / ___|  / \\  |  _ \\  |_   _/ _ \\ / _ \\| |    \n"
+    //     " | |     / _ \\ | | | |   | || | | | | | | |    \n"
+    //     " | |___ / ___ \\| |_| |   | || |_| | |_| | |___ \n"
+    //     "  \\____/_/   \\_\\____/    |_| \\___/ \\___/|_____|\n";
+
+    // printf("%s", ascii_art);
+
     while (!exit_requested)
     {
         text = readline("PR> ");

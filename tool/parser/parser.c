@@ -741,6 +741,9 @@ int call_parser(char *input_file)
     enum proccess_lib_pins currentState4 = BEGIN;
     enum proccess_lib_pins currentState5 = BEGIN_IO;
 
+
+    clock_t clock_start = clock();
+
     filename = fopen(input_file, "r");  // open file only for reading //
 
     if(filename == NULL)
@@ -1004,6 +1007,11 @@ int call_parser(char *input_file)
     printf(ANSI_COLOR_GREEN "Cells: %d\n" ANSI_COLOR_RESET, count_cells);
 
     fclose(filename); // close file //
+
+    clock_t clock_end = clock();
+    double total_time = ((double) (clock_end - clock_start)) / CLOCKS_PER_SEC;
+
+    printf(ANSI_COLOR_ORANGE "Total elapsed time for parsing is %.4lf sec\n" ANSI_COLOR_RESET, total_time);
 
     return 0;   // exit succesfully //
 }
