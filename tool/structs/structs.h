@@ -81,12 +81,11 @@ unsigned int hash_function(const char *str, unsigned int num_buckets);
 /* libhash function */
 void Lib_init();
 void Lib_add(char *cell_name, int cell_type, char *func_expr);
-void lib_add_function(char *cell_name, char *func_expr);
 void get_libhash_indices(char *cell_name, int *lhash, int *lhashdepth);
 void lib_add_pins (char *cell_name, char *pin_name, int pin_type);
 void libhash_free();
 void add_cell(char *cell_name);
-void lib_add_func(char *cell_name, char *func_expr);
+void lib_add_func(char *cell_name, char *func_expr, char *cell_pin);
 
 /* Compohash functions */
 void comphash_init();

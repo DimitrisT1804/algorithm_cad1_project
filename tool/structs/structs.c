@@ -400,7 +400,7 @@ void lib_add_pins (char *cell_name, char *pin_name, int pin_type)
 /* This function adds function to libhash structure for
    a specified cell. It checks for duplicate functions and ensures that
    the function information is appropriately stored in the libhash. */
-void lib_add_func(char *cell_name, char *func_expr)
+void lib_add_func(char *cell_name, char *func_expr, char *cell_pin)
 {
     int i;
     int lhash, ldepth;
@@ -411,9 +411,9 @@ void lib_add_func(char *cell_name, char *func_expr)
     
     for (i = 0; i < libhash[lhash].out_pins_count[ldepth]; i++)
     {
-        if ( strcmp(libhash[lhash].function[ldepth][i], func_expr) == 0)
+        if (strcmp(libhash[lhash].function[ldepth][i], cell_pin) == 0)     // what if two pins have same function //
         {
-            return;
+            break;
         } 
     }
 

@@ -457,7 +457,7 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             }
             if(event[strlen(event)-1] == '\n')
                 event[strlen(event)-1] = '\0';
-            lib_add_func(name_of_cell, event);
+            lib_add_func(name_of_cell, event, cell_pin);
             lib_add_pins(name_of_cell, cell_pin, pin_type);
             free(comp_name);
             free(out_pin);
