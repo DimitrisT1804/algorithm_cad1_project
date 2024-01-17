@@ -240,10 +240,6 @@ void generate_bdd(char *infix, char *cell_name)
 
     for(i = 0; i < strlen(postfix); i++)
     {
-        // if(var_size >= var_num)
-        // {
-        //     break;
-        // }
         if(temp_bdd_num == 2)
         {
             temp_bdd_num = 0;
@@ -714,9 +710,20 @@ void generate_bdd_two(char *infix, char *cell_name)
     strcpy(bdd_out_name[0], cell_name);
     bdd_out_name[1] = NULL;
 
+    varNames[0] = strdup("hello");
+
+    // char **innamesArray = (char **)malloc(sizeof(char *) * (Cudd_ReadSize(gbm)));
+    
+    // for (int i = 0; i < Cudd_ReadSize(gbm); i++) 
+    // {
+    //     //innamesArray[i] = (char *)malloc(strlen(innames[i]) + 1);
+    //     innamesArray[i] = (char *) malloc(3);
+    //     strcpy(innamesArray[i], "CD");
+    // }
+
     FILE *dotFile;
     dotFile = fopen(out_name, "w");
-    Cudd_DumpDot(gbm, 1, &bdd, NULL, bdd_out_name, dotFile);
+    Cudd_DumpDot(gbm, 1, &bdd, NULL, (const char **) bdd_out_name, dotFile);
     fclose(dotFile);
 
     print_dd(gbm, bdd, 2, 2, out_name); // prints info about bdd //

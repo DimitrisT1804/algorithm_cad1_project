@@ -2,7 +2,7 @@
 
 void segfault_handler(int signum) 
 {
-    fprintf(stderr, ANSI_COLOR_RED "Something went wrong with the program. Please inform developer!\n" ANSI_COLOR_RESET);
+    fprintf(stderr, ANSI_COLOR_RED "It is a feaature not a bug!\n" ANSI_COLOR_RESET);
     
     // // Storage array for backtrace symbols
     // void* callstack[1000];
