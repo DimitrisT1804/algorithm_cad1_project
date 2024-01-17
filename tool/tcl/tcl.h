@@ -15,6 +15,7 @@
 #include "../parser/parser.h"
 #include "../CUDD_impl/cudd.h"
 #include "../signals/signals.h"
+#include "../CUDD_impl/toposort.h"
 
 
 /* Global array that stores all custom, system and TCL commands for tab-completion */
@@ -62,6 +63,7 @@ static const char *commands[] =
     "report_component_type", "list_component_CCS", "list_IO_CCS",  "clear_design", "list_cell",
     "list_cells", "list_component_info", "list_components_info", "convert_infix_to_postfix", 
     "report_component_postfix_boolean_function", "report_component_BDD", "compute_expression_BDD", 
+    "get_toposort", 
      
     NULL    // should terminate with NULL //
 

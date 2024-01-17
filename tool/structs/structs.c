@@ -620,6 +620,7 @@ void structs_init()
     Gatepins_init();
     Lib_init();
     comphash_init();
+    gatepinhashVisited_init();
 }
 
 /* ######################## structs_free() ######################## */
@@ -649,4 +650,28 @@ void structs_free()
 
     libarray = NULL;
     libarray_size = 0;
+}
+
+void gatepinhashVisited_init()
+{
+    int i, j;
+    gatepinhashv = (GatepinhashVisited*) my_calloc(gatepinhash_size, sizeof(GatepinhashVisited)); // size of 10 positions //
+
+    for(i = 0; i < gatepinhash_size; i++)
+    {   
+        for(j = 0; j < HASHDEPTH; j++) // what is the value of hashdepth
+        {
+            gatepinhashv[i].isVisited[j] = 0;
+        }
+    }
+}
+
+void gatepinhashVisited_make_visited(int ghash, int gdepth)
+{
+    gatepinhashv[ghash].isVisited[gdepth] = 1;
+}
+
+void gatepinhashVisited_remove_visited(int ghash, int gdepth)
+{
+    gatepinhashv[ghash].isVisited[gdepth] = 0;
 }

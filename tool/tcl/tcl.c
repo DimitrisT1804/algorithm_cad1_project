@@ -1095,6 +1095,13 @@ int compute_expression_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, 
     return TCL_OK;
 }
 
+int get_toposort(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    add_startpoints();
+
+    return TCL_OK;
+}
+
 int main(int argc, char *argv[])
 {
     char *text = NULL; // readline result //
@@ -1137,6 +1144,7 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "report_component_postfix_boolean_function", report_component_postfix_boolean_function, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_component_BDD", report_component_BDD, NULL, NULL);
     Tcl_CreateObjCommand(interp, "compute_expression_BDD", compute_expression_BDD, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "get_toposort", get_toposort, NULL, NULL);
 
 
     signal(SIGSEGV, segfault_handler);

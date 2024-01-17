@@ -1,4 +1,5 @@
 // Toposort algorithm header file //
+#include "../structs/structs.h"
 
 struct gatepin_pos
 {
@@ -12,9 +13,8 @@ typedef struct gatepin_pos Gatepin_pos;
 Gatepin_pos *sorted_gatepins;   // L //
 Gatepin_pos *input_nodes;       // S //
 
-Gatepin_pos *init_gatepin_pos(Gatepin_pos *gatepin);
+Gatepin_pos *toposort(int *startpoins_ghash, int *startpoints_gdepth);
 void add_gatepin_pos(Gatepin_pos *gatepin, int ghash, int gdepth);
 void remove_gatepin_pos(Gatepin_pos *gatepin, int ghash);
 void free_gatepin_pos(Gatepin_pos *gatepin);
-
-// End of snippet //
+void add_startpoints();

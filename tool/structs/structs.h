@@ -1,3 +1,6 @@
+#ifndef _STRUCTS_H
+#define _STRUCTS_H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -55,6 +58,13 @@ struct components
 };
 typedef struct components Components;
 
+struct gatepinhashVisited
+{
+    int isVisited[HASHDEPTH];
+};
+typedef struct gatepinhashVisited GatepinhashVisited;
+
+
 gatePins *gatepinhash;
 int gatepinhash_size;
 
@@ -65,6 +75,8 @@ int libarray_size;
 
 Components *comphash;
 int comphash_size;
+
+GatepinhashVisited *gatepinhashv;
 
 /* gatepinhash functions*/
 void Gatepins_init();
@@ -94,3 +106,10 @@ void get_comphash_indices(char *comp_name, int *chash, int *chashdepth);
 void comphash_free();
 void structs_init();
 void structs_free();
+
+/* GatepinhashVisited functions */
+void gatepinhashVisited_init();
+void gatepinhashVisited_make_visited(int ghash, int gdepth);
+void gatepinhashVisited_remove_visited(int ghash, int gdepth);
+
+#endif
