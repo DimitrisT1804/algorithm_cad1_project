@@ -68,6 +68,7 @@ void free_gatepin_pos(Gatepin_pos *gatepin)
     free(gatepin);
 }
 
+
 Gatepin_pos *toposort(int *startpoins_ghash, int *startpoints_gdepth)
 {
     int ghash;
@@ -122,8 +123,13 @@ Gatepin_pos *toposort(int *startpoins_ghash, int *startpoints_gdepth)
             }
 
             printf("new_gatepin is %s\n", new_gatepin);
-            // get_gatepin_indices(new_gatepin, &curr_ghash, &curr_gdepth);
-            // add_gatepin_pos(S, curr_ghash, curr_gdepth);
+            get_gatepin_indices(new_gatepin, &curr_ghash, &curr_gdepth);
+            add_gatepin_pos(L, curr_ghash, curr_gdepth);
+        }
+        else
+        {
+            curr_ghash = ghash;
+            curr_gdepth = gdepth;
         }
         
         for(i = 0; i < gatepinhash[curr_ghash].connections_size[curr_gdepth]; i++)
@@ -164,7 +170,24 @@ Gatepin_pos *toposort(int *startpoins_ghash, int *startpoints_gdepth)
 
                 //printf("new_gatepin is %s\n", new_gatepin);
                 //get_gatepin_indices(new_gatepin, &curr_ghash, &curr_gdepth);
+            int size = 0;
+            if(gatepinhash[ghash].type[gdepth] == WIRE)
+            {
+                for(j = 0; j < gatepinhash[ghash].connections_size[gdepth]; j++)
+                {
+                    curr_ghash = gatepinhash[ghash].pinConn[gdepth][j];
+                    curr_gdepth = gatepinhash[ghash].pinConnDepth[gdepth][j];
+
+                    if(gatepinhashv[curr_ghash].isVisited[curr_gdepth] == 1)
+                    {
+                        size++;
+                    }
+                }
+            }
+            if(size == gatepinhash[ghash].connections_size[gdepth])
+            {
                 add_gatepin_pos(S, ghash, gdepth);
+            }
             // }
         }
     }
@@ -183,13 +206,19 @@ void add_startpoints()
 
     Gatepin_pos *L = NULL;
 
-    startpoint_ghash = (int *) malloc(4 * sizeof(int));
-    startpoint_gdepth = (int *) malloc(4 * sizeof(int));
+    startpoint_ghash = (int *) malloc(9 * sizeof(int));
+    startpoint_gdepth = (int *) malloc(9 * sizeof(int));
 
     get_gatepin_indices("N1", &startpoint_ghash[0], &startpoint_gdepth[0]);
     get_gatepin_indices("N3", &startpoint_ghash[1], &startpoint_gdepth[1]);
+    get_gatepin_indices("N2", &startpoint_ghash[2], &startpoint_gdepth[2]);
+    get_gatepin_indices("N6", &startpoint_ghash[3], &startpoint_gdepth[3]);
+    get_gatepin_indices("N7", &startpoint_ghash[4], &startpoint_gdepth[4]);
+    get_gatepin_indices("N22", &startpoint_ghash[5], &startpoint_gdepth[5]);
+    get_gatepin_indices("N23", &startpoint_ghash[6], &startpoint_gdepth[6]);
 
-    startpoint_ghash[2] = -1;
+
+    startpoint_ghash[7] = -1;
 
     L = toposort(startpoint_ghash, startpoint_gdepth);
 
