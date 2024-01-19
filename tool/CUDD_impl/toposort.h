@@ -15,6 +15,8 @@ Gatepin_pos *input_nodes;       // S //
 
 Gatepin_pos *toposort(int *startpoins_ghash, int *startpoints_gdepth);
 void add_gatepin_pos(Gatepin_pos *gatepin, int ghash, int gdepth);
-void remove_gatepin_pos(Gatepin_pos *gatepin, int ghash);
+void remove_gatepin_pos(Gatepin_pos *gatepin, int ghash, int gdepth);
 void free_gatepin_pos(Gatepin_pos *gatepin);
 void add_startpoints();
+
+int max(int a, int b);

@@ -61,6 +61,7 @@ typedef struct components Components;
 struct gatepinhashVisited
 {
     int isVisited[HASHDEPTH];
+    int level[HASHDEPTH];
 };
 typedef struct gatepinhashVisited GatepinhashVisited;
 
@@ -86,6 +87,7 @@ void get_gatepin_indices(char *pin_name, int *ghash, int *ghashdepth);
 void gatepin_add_CCs(char *source_pin, char *connection_pin);
 void gatepins_complete_parent();
 void gatepin_characterize_IOs();
+void get_predecessors_pin(char *gatepin, int *ghash, int *gdepth);
 
 unsigned int hash_function(const char *str, unsigned int num_buckets);
 
@@ -111,5 +113,6 @@ void structs_free();
 void gatepinhashVisited_init();
 void gatepinhashVisited_make_visited(int ghash, int gdepth);
 void gatepinhashVisited_remove_visited(int ghash, int gdepth);
+void gatepinhashVisited_free();
 
 #endif

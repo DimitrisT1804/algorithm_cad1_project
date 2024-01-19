@@ -634,6 +634,7 @@ void structs_free()
     Gatepins_free();
     libhash_free();
     comphash_free();
+    gatepinhashVisited_free();
 
     for(i = 0; i < libarray_size; i++)
     {
@@ -647,6 +648,7 @@ void structs_free()
     gatepinhash = NULL;
     comphash = NULL;
     libhash = NULL;
+    gatepinhashv = NULL;
 
     libarray = NULL;
     libarray_size = 0;
@@ -662,6 +664,7 @@ void gatepinhashVisited_init()
         for(j = 0; j < HASHDEPTH; j++) // what is the value of hashdepth
         {
             gatepinhashv[i].isVisited[j] = 0;
+            gatepinhashv[i].level[j] = -1;
         }
     }
 }
@@ -674,4 +677,46 @@ void gatepinhashVisited_make_visited(int ghash, int gdepth)
 void gatepinhashVisited_remove_visited(int ghash, int gdepth)
 {
     gatepinhashv[ghash].isVisited[gdepth] = 0;
+}
+
+void gatepinhashVisited_free()
+{
+    free(gatepinhashv);
+}
+
+void get_predecessors_pin(char *gatepin, int *ghash, int *gdepth)
+{
+    int i;
+    int j;
+    int k;
+    int con_ghash;
+    int con_gdepth;
+
+    *ghash = -1;
+    *gdepth = -1;
+    if(gatepin == NULL)
+    {
+        return;
+    }
+
+    for(i = 0; i < gatepinhash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] == 1)
+            {
+                for(k = 0; k < gatepinhash[i].connections_size[j]; k++)
+                {
+                    con_ghash = gatepinhash[i].pinConn[j][k];
+                    con_gdepth = gatepinhash[i].pinConnDepth[j][k];
+                    if(strcmp(gatepinhash[con_ghash].name[con_gdepth], gatepin) == 0)
+                    {
+                        *ghash = i;
+                        *gdepth = j;
+                        return;
+                    }
+                }
+            }
+        }
+    }
 }

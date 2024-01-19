@@ -1097,6 +1097,11 @@ int compute_expression_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, 
 
 int get_toposort(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
 {
+    if(gatepinhash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
     add_startpoints();
 
     return TCL_OK;
