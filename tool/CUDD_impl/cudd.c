@@ -56,9 +56,13 @@ int identify_symbol(char operator)
     {
         return -1;
     }
-    else if(operator == '(' || operator == ')')
+    else if(operator == '(')
     {
         return -2;
+    }
+    else if (operator == ')')
+    {
+        return -3;
     }
     else
     {
@@ -592,11 +596,11 @@ void generate_bdd_two(char *infix, char *cell_name)
     if(identify_symbol(infix[i-1]) == 0 || identify_symbol(infix[i-1]) == -1)
     {
         temp_name[pos] = '\0';
+        vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
+        vars_row[var_num] = strdup(temp_name);
+        var_num++; 
+        vars_row[var_num] = NULL;
     }
-    vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
-    vars_row[var_num] = strdup(temp_name);
-    var_num++; 
-    vars_row[var_num] = NULL;
 
     // var_found_counter = calloc(vars_size, sizeof(int));
 
@@ -619,7 +623,7 @@ void generate_bdd_two(char *infix, char *cell_name)
 
         strcat(postfix, right_string);
         
-        already_calculated = temp_string - postfix;
+        already_calculated = temp_string - postfix + strlen(vars_row[i]);
     }
 
     for(i = 0; i < strlen(postfix); i++)
@@ -712,25 +716,38 @@ void generate_bdd_two(char *infix, char *cell_name)
 
     varNames[0] = strdup("hello");
 
-    // char **innamesArray = (char **)malloc(sizeof(char *) * (Cudd_ReadSize(gbm)));
+    char **innamesArray = (char **)malloc(sizeof(char *) * (Cudd_ReadSize(gbm)));
     
-    // for (int i = 0; i < Cudd_ReadSize(gbm); i++) 
-    // {
-    //     //innamesArray[i] = (char *)malloc(strlen(innames[i]) + 1);
-    //     innamesArray[i] = (char *) malloc(3);
-    //     strcpy(innamesArray[i], "CD");
-    // }
+    for (int i = 0; i < Cudd_ReadSize(gbm); i++) 
+    {
+        //innamesArray[i] = (char *)malloc(strlen(innames[i]) + 1);
+        innamesArray[i] = (char *) malloc(10);
+        if(i > 2)
+        {
+            strcpy(innamesArray[i], varNames[i-2]);
+        }
+        else
+        {
+            strcpy(innamesArray[i], "hello");
+        }
+    }
 
     FILE *dotFile;
     dotFile = fopen(out_name, "w");
-    Cudd_DumpDot(gbm, 1, &bdd, NULL, (const char **) bdd_out_name, dotFile);
+    Cudd_DumpDot(gbm, 1, &bdd, (const char **) innamesArray, (const char **) bdd_out_name, dotFile);
     fclose(dotFile);
 
-    print_dd(gbm, bdd, 2, 2, out_name); // prints info about bdd //
+    // print_dd(gbm, bdd, 2, 2, out_name); // prints info about bdd //
     Cudd_PrintMinterm(gbm, bdd); // prints minterms of bdd //
     // Cudd_PrintDebug(gbm, bdd, 1, 3);
 
     free(out_name);
+
+    for (int i = 0; i < Cudd_ReadSize(gbm); i++) 
+    {
+        free(innamesArray[i]);
+    }
+    free(innamesArray);
 
     Cudd_Quit(gbm);
     gbm = NULL;

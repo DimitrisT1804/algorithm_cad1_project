@@ -411,9 +411,9 @@ void lib_add_func(char *cell_name, char *func_expr, char *cell_pin)
     
     for (i = 0; i < libhash[lhash].out_pins_count[ldepth]; i++)
     {
-        if (strcmp(libhash[lhash].function[ldepth][i], cell_pin) == 0)     // what if two pins have same function //
+        if (strcmp(libhash[lhash].function[ldepth][i], func_expr) == 0)     // what if two pins have same function //
         {
-            break;
+            return;
         } 
     }
 
