@@ -996,6 +996,18 @@ int call_parser(char *input_file)
         }
     }
 
+    int count_gatepins = 0;
+    for(i = 0; i < gatepinhash_size; i++) // count gatepins //
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] == 1)
+            {
+                count_gatepins++;
+            }
+        }
+    }
+
     #ifdef DEBUG
     printf("comps are %d\n", count);
     printf("IO pins size is %d and compsize is %d\n", gatepinhash_size, comphash_size);
@@ -1005,6 +1017,7 @@ int call_parser(char *input_file)
     printf(ANSI_COLOR_GREEN "Components: %d\n" ANSI_COLOR_RESET, count);
     printf(ANSI_COLOR_GREEN "IOs: %d\n" ANSI_COLOR_RESET, count_IOs);
     printf(ANSI_COLOR_GREEN "Cells: %d\n" ANSI_COLOR_RESET, count_cells);
+    printf(ANSI_COLOR_GREEN "Total gatepins: %d\n" ANSI_COLOR_RESET, count_gatepins);
 
     fclose(filename); // close file //
 

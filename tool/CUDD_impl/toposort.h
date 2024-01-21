@@ -1,5 +1,13 @@
 // Toposort algorithm header file //
 #include "../structs/structs.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+#define ANSI_COLOR_ORANGE  "\x1b[38;5;208m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
 
 struct gatepin_pos
 {
