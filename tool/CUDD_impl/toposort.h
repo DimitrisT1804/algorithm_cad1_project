@@ -6,6 +6,7 @@
 #include <time.h>
 
 #define ANSI_COLOR_ORANGE  "\x1b[38;5;208m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
 
@@ -28,3 +29,4 @@ void free_gatepin_pos(Gatepin_pos *gatepin);
 void add_startpoints();
 
 int max(int a, int b);
+

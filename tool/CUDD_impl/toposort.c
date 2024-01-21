@@ -117,7 +117,7 @@ Gatepin_pos *toposort(int *startpoins_ghash, int *startpoints_gdepth)
 
         gatepinhashVisited_make_visited(ghash, gdepth);
 
-        if(gatepinhash[ghash].type[gdepth] != IO_TYPE)
+        if(gatepinhash[ghash].type[gdepth] != IO_TYPE && gatepinhash[ghash].type[gdepth] != PO)
         {            
             chash = gatepinhash[ghash].parentComponent[gdepth];
             cdepth = gatepinhash[ghash].parentComponentDepth[gdepth];
@@ -145,18 +145,37 @@ Gatepin_pos *toposort(int *startpoins_ghash, int *startpoints_gdepth)
                 
         for(i = 0; i < gatepinhash[ghash].connections_size[gdepth]; i++)
         {
-            // remove connection of this pin with current one //
-            // make this pin as visited //
-            curr_ghash = gatepinhash[ghash].pinConn[gdepth][i];
-            curr_gdepth = gatepinhash[ghash].pinConnDepth[gdepth][i];
-        
-            // make this one visited //
-            // if(gatepinhashv[curr_ghash].isVisited[curr_gdepth] == 1)
-            // {
-            //     continue;
-            // }
-            // gatepinhashVisited_make_visited(curr_ghash, curr_gdepth);
-            add_gatepin_pos(S, curr_ghash, curr_gdepth);
+            if(gatepinhash[ghash].type[gdepth] == PO || gatepinhash[ghash].type[gdepth] == IO_TYPE)
+            {                
+                curr_ghash = gatepinhash[ghash].pinConn[gdepth][i];
+                curr_gdepth = gatepinhash[ghash].pinConnDepth[gdepth][i];
+
+                chash = gatepinhash[curr_ghash].parentComponent[curr_gdepth];
+                cdepth = gatepinhash[curr_ghash].parentComponentDepth[curr_gdepth];
+                lhash = comphash[chash].lib_type[cdepth];
+                ldepth = comphash[chash].lib_type_depth[cdepth];
+
+                for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
+                {
+                    strcpy(curr_pin, comphash[chash].name[cdepth]);
+                    strcat(curr_pin, libhash[lhash].pin_names[ldepth][k]); 
+                    if(strcmp(curr_pin, gatepinhash[curr_ghash].name[curr_gdepth]) == 0)
+                    {
+                        break;
+                    }
+                }
+                if(libhash[lhash].pin_type[ldepth][k] == INPUT)
+                {
+                    add_gatepin_pos(S, curr_ghash, curr_gdepth);
+                }           
+            }
+            else
+            {
+                curr_ghash = gatepinhash[ghash].pinConn[gdepth][i];
+                curr_gdepth = gatepinhash[ghash].pinConnDepth[gdepth][i];
+            
+                add_gatepin_pos(S, curr_ghash, curr_gdepth);
+            }
         }
         // add_gatepin_pos(L, ghash, gdepth);
 
@@ -245,7 +264,7 @@ void assign_level_gatepins(Gatepin_pos *L)
     for(i = L->size - 1; i >= 0; i--)
     {
         max_level = 0;
-        if(gatepinhash[L->ghash[i]].type[L->gdepth[i]] == IO_TYPE)
+        if(gatepinhash[L->ghash[i]].type[L->gdepth[i]] == IO_TYPE || gatepinhash[L->ghash[i]].type[L->gdepth[i]] == PO)
         {
             gatepinhashv[L->ghash[i]].level[L->gdepth[i]] = 0;
         }
@@ -317,7 +336,7 @@ void add_startpoints()
         {
             if(gatepinhash[ghash].hashpresent[gdepth] == 1)
             {
-                if(gatepinhash[ghash].type[gdepth] == IO_TYPE)
+                if(gatepinhash[ghash].type[gdepth] == IO_TYPE || gatepinhash[ghash].type[gdepth] == PO)
                 {
                     startpoint_ghash = (int *) realloc(startpoint_ghash, sizeof(int) * (i + 1));
                     startpoint_gdepth = (int *) realloc(startpoint_gdepth, sizeof(int) * (i + 1));
@@ -325,6 +344,22 @@ void add_startpoints()
                     startpoint_ghash[i] = ghash;
                     startpoint_gdepth[i] = gdepth;  
                     i++;
+                }
+                else if (gatepinhash[ghash].type[gdepth] != PO)
+                {
+                    chash = gatepinhash[ghash].parentComponent[gdepth];
+                    cdepth = gatepinhash[ghash].parentComponentDepth[gdepth];
+                    lhash = comphash[chash].lib_type[cdepth];
+                    ldepth = comphash[chash].lib_type_depth[cdepth];
+                    if(libhash[lhash].pin_count[ldepth] == 1)
+                    {
+                        startpoint_ghash = (int *) realloc(startpoint_ghash, sizeof(int) * (i + 1));
+                        startpoint_gdepth = (int *) realloc(startpoint_gdepth, sizeof(int) * (i + 1));
+                    
+                        startpoint_ghash[i] = ghash;
+                        startpoint_gdepth[i] = gdepth;  
+                        i++;
+                    }
                 }
             }
         }
@@ -351,7 +386,7 @@ void add_startpoints()
     {
         for(i = 0; i < L->size; i++)
         {
-            if(gatepinhash[L->ghash[i]].type[L->gdepth[i]] == IO_TYPE)
+            if(gatepinhash[L->ghash[i]].type[L->gdepth[i]] == IO_TYPE || gatepinhash[L->ghash[i]].type[L->gdepth[i]] == PO) 
             {
                 continue;
             }
@@ -447,6 +482,8 @@ void add_startpoints()
             }
         }
     }
+
+    printf(ANSI_COLOR_BLUE "Max depth of design is: %d\n" ANSI_COLOR_RESET, max_level);
 
     free_gatepin_pos(L);
     free(startpoint_ghash);
