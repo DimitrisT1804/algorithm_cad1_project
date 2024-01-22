@@ -63,6 +63,10 @@ void remove_gatepin_pos(Gatepin_pos *gatepin, int ghash, int gdepth)
 
 void free_gatepin_pos(Gatepin_pos *gatepin)
 {
+    if(gatepin == NULL)
+    {
+        return;
+    }
     free(gatepin->ghash);
     free(gatepin->gdepth);
     free(gatepin);
@@ -85,7 +89,7 @@ Gatepin_pos *toposort(int *startpoins_ghash, int *startpoints_gdepth)
     int size = 0;
     char *curr_pin;
     int k;
-    curr_pin = (char *) malloc(100 * sizeof(char));
+    curr_pin = (char *) malloc(1000 * sizeof(char));
 
     Gatepin_pos *L = NULL;
     L = init_gatepin_pos(L);
@@ -282,6 +286,31 @@ void assign_level_gatepins(Gatepin_pos *L)
                 lhash  = comphash[chash].lib_type[cdepth];
                 ldepth = comphash[chash].lib_type_depth[cdepth];
 
+                // if it is Output of Sequential we need to assign leve 0 //
+                if(libhash[lhash].cell_type[ldepth] == SEQUENTIAL)
+                {
+                    curr_gatepin = (char *) realloc(curr_gatepin, sizeof(char) * (strlen(comphash[chash].name[cdepth]) + 1));
+                    strcpy(curr_gatepin, comphash[chash].name[cdepth]);
+                    // strcat(curr_gatepin, libhash[lhash].pin_names[ldepth][j]);
+
+                    for(j = 0; j < libhash[lhash].pin_count[ldepth]; j++)
+                    {
+                        if(libhash[lhash].pin_type[ldepth][j] == OUTPUT)
+                        {
+                            curr_gatepin = (char *) realloc(curr_gatepin, sizeof(char) * (strlen(comphash[chash].name[cdepth]) + strlen(libhash[lhash].pin_names[ldepth][j]) + 1));
+                            strcat(curr_gatepin, libhash[lhash].pin_names[ldepth][j]);
+                            break;
+                        }
+                    }
+                    if(strcmp(curr_gatepin, gatepinhash[L->ghash[i]].name[L->gdepth[i]]) == 0)
+                    {
+                        gatepinhashv[L->ghash[i]].level[L->gdepth[i]] = 0;
+                        free(curr_gatepin);
+                        curr_gatepin = NULL;
+                        continue;
+                    }
+                }
+
                 for(j = 0; j < libhash[lhash].pin_count[ldepth]; j++)
                 {
                     curr_gatepin = (char *) realloc(curr_gatepin, sizeof(char) * (strlen(comphash[chash].name[cdepth]) + strlen(libhash[lhash].pin_names[ldepth][j]) + 1));
@@ -374,7 +403,15 @@ void add_startpoints()
 
     // levelize gatepins //
     assign_level_gatepins(L);
+    // free_gatepin_pos(L);    // free L //
     j = 0;
+
+    // print toposort for debug //
+    printf("Toposort 1 is:\n");
+    for(i = 0; i < L->size; i++)
+    {
+        printf("No: %d is %s and level is %d\n", i+1, gatepinhash[L->ghash[i]].name[L->gdepth[i]], gatepinhashv[L->ghash[i]].level[L->gdepth[i]]);
+    }
 
 
     startpoint_ghash = (int *) realloc(startpoint_ghash, sizeof(int) * (1000 + 1));
@@ -437,6 +474,14 @@ void add_startpoints()
         {
             L = toposort(startpoint_ghash, startpoint_gdepth);
             assign_level_gatepins(L);
+            // free_gatepin_pos(L);    // free L //
+
+            // print toposort for debug //
+            printf("Toposort 2 is:\n");
+            for(i = 0; i < L->size; i++)
+            {
+                printf("No: %d is %s and level is %d\n", i+1, gatepinhash[L->ghash[i]].name[L->gdepth[i]], gatepinhashv[L->ghash[i]].level[L->gdepth[i]]);
+            }
         }
         // free(startpoint_ghash);
         // free(startpoint_gdepth);
