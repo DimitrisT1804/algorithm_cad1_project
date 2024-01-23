@@ -1,5 +1,6 @@
+#line 2 "flex_bison/lexer.c"
 
-#line 3 "lex.yy.c"
+#line 4 "flex_bison/lexer.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -441,11 +442,11 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "lexer.l"
-#line 2 "lexer.l"
-#include "parser.tab.h"
-#line 448 "lex.yy.c"
-#line 449 "lex.yy.c"
+#line 1 "flex_bison/lexer.l"
+#line 2 "flex_bison/lexer.l"
+#include "parser.h"
+#line 449 "flex_bison/lexer.c"
+#line 450 "flex_bison/lexer.c"
 
 #define INITIAL 0
 
@@ -662,10 +663,10 @@ YY_DECL
 		}
 
 	{
-#line 5 "lexer.l"
+#line 5 "flex_bison/lexer.l"
 
 
-#line 669 "lex.yy.c"
+#line 670 "flex_bison/lexer.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -724,46 +725,46 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 7 "lexer.l"
+#line 7 "flex_bison/lexer.l"
 ; // Ignore whitespace
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 8 "lexer.l"
+#line 8 "flex_bison/lexer.l"
 { yylval.integer = atoi(yytext); return NUMBER; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 9 "lexer.l"
+#line 9 "flex_bison/lexer.l"
 { yylval.variable = strdup(yytext); return VARIABLE; } // Allow variables longer than one character
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 10 "lexer.l"
+#line 10 "flex_bison/lexer.l"
 { return yytext[0]; }
 	YY_BREAK
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 11 "lexer.l"
+#line 11 "flex_bison/lexer.l"
 { return EOL; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 12 "lexer.l"
+#line 12 "flex_bison/lexer.l"
 { return BANG; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 13 "lexer.l"
+#line 13 "flex_bison/lexer.l"
 { fprintf(stderr, "Invalid character: %s\n", yytext); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 15 "lexer.l"
+#line 15 "flex_bison/lexer.l"
 ECHO;
 	YY_BREAK
-#line 767 "lex.yy.c"
+#line 768 "flex_bison/lexer.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1768,7 +1769,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 15 "lexer.l"
+#line 15 "flex_bison/lexer.l"
 
 
 int yywrap() 

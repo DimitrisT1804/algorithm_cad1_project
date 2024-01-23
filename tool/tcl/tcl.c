@@ -835,6 +835,11 @@ int convert_infix_to_postfix(ClientData clientdata, Tcl_Interp *interp, int objc
     }
 
     postfix = parse_infix(infix);
+    if(postfix == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Postfix has not correct format\n" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
     result = malloc(strlen(infix) + 5 + strlen("The postfix of  is ") + strlen(postfix));
     
     strcpy(result, "The postfix of ");

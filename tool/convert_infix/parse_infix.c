@@ -33,6 +33,44 @@ char *parse_infix(char *infix)
     char *postfix = NULL;
     int postfix_pos = 0;
     char token;
+    int result_pipe = 0;
+
+    FILE *pipe = popen("../examples/parser", "w");
+    if(pipe == 0)
+    {
+        //printf("Error: failed to open parser\n");
+        return NULL;
+    }
+
+    fprintf(pipe, "%s\n", infix);
+    
+    result_pipe = pclose(pipe);
+    if(result_pipe == -1)
+    {
+        //printf("Error: failed to close parser\n");
+        return NULL;
+    }
+
+    if(WIFEXITED(result_pipe) == 1 && WEXITSTATUS(result_pipe) == 0)
+    {
+        //printf("Parser success\n");
+    }
+    else
+    {
+        printf("Error: parser failed\n");
+        return NULL;
+    }
+
+    // strcat(infix, "\n");
+    // if(yacc_main(infix) == 0)
+    // {
+    //     printf("Parser success\n");
+    // }
+    // else
+    // {
+    //     printf("Error: parser failed\n");
+    //     return NULL;
+    // }
 
     infix_size = strlen(infix) + 1;
     postfix = (char*) malloc(sizeof(char) * infix_size);

@@ -1,9 +1,13 @@
 %{
 #include <stdio.h>
+#include <string.h>
 
 int yylex();
 int yyparse();
 void yyerror(const char *s);
+
+char* expression; // Variable to store the expression
+
 %}
 
 %union 
@@ -20,7 +24,6 @@ void yyerror(const char *s);
 %left '+'
 %left '*' '/'
 %right '^'
-%nonassoc UMINUS
 %nonassoc BANG  /* Unary negation */
 
 %type <integer> expr term factor unary
@@ -57,16 +60,22 @@ void yyerror(const char *s)
     fprintf(stderr, "Parser error: %s\n", s);
 }
 
-int main() 
+int yacc_main(const char* expr) 
 {
+    expression = strdup(expr); // Copy the expression to the variable
+    /* YY_BUFFER_STATE buffer_state; // Declare the buffer_state variable
+    buffer_state = yy_scan_string(expression); // Set the input buffer */
+    
+    yy_scan_string(expression); // Set the input buffer
+
     if (yyparse() == 0) 
     {
-        /* printf("Parsing is correct!\n"); */
+        printf("Parsing is correct!\n");
         return 0;
     }
     else 
     {
-        /* printf("Parsing failed.\n"); */
+        printf("Parsing failed.\n");
         return 1;
     }
 }
