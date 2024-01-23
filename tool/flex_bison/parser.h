@@ -34,8 +34,8 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_YY_PARSER_TAB_H_INCLUDED
-# define YY_YY_PARSER_TAB_H_INCLUDED
+#ifndef YY_YY_FLEX_BISON_PARSER_H_INCLUDED
+# define YY_YY_FLEX_BISON_PARSER_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -52,8 +52,7 @@ extern int yydebug;
     NUMBER = 258,
     VARIABLE = 259,
     BANG = 260,
-    EOL = 261,
-    UMINUS = 262
+    EOL = 261
   };
 #endif
 
@@ -61,12 +60,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 10 "parser.y"
+#line 14 "flex_bison/parser.y"
 
     int integer;
     char variable;
 
-#line 70 "parser.tab.h"
+#line 69 "flex_bison/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -79,4 +78,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
+#endif /* !YY_YY_FLEX_BISON_PARSER_H_INCLUDED  */

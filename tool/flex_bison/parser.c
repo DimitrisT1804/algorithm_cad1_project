@@ -66,15 +66,19 @@
 
 
 /* First part of user prologue.  */
-#line 1 "parser.y"
+#line 1 "flex_bison/parser.y"
 
 #include <stdio.h>
+#include <string.h>
 
 int yylex();
 int yyparse();
 void yyerror(const char *s);
 
-#line 78 "parser.tab.c"
+char* expression; // Variable to store the expression
+
+
+#line 82 "flex_bison/parser.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -107,8 +111,8 @@ void yyerror(const char *s);
 
 /* Use api.header.include to #include this header
    instead of duplicating it here.  */
-#ifndef YY_YY_PARSER_TAB_H_INCLUDED
-# define YY_YY_PARSER_TAB_H_INCLUDED
+#ifndef YY_YY_FLEX_BISON_PARSER_H_INCLUDED
+# define YY_YY_FLEX_BISON_PARSER_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -125,8 +129,7 @@ extern int yydebug;
     NUMBER = 258,
     VARIABLE = 259,
     BANG = 260,
-    EOL = 261,
-    UMINUS = 262
+    EOL = 261
   };
 #endif
 
@@ -134,12 +137,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 10 "parser.y"
+#line 14 "flex_bison/parser.y"
 
     int integer;
     char variable;
 
-#line 143 "parser.tab.c"
+#line 146 "flex_bison/parser.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -152,7 +155,7 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
+#endif /* !YY_YY_FLEX_BISON_PARSER_H_INCLUDED  */
 
 
 
@@ -458,10 +461,10 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  13
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   35
+#define YYLAST   36
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  14
+#define YYNTOKENS  13
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  6
 /* YYNRULES -- Number of rules.  */
@@ -470,7 +473,7 @@ union yyalloc
 #define YYNSTATES  27
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   262
+#define YYMAXUTOK   261
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -486,7 +489,7 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      12,    13,     8,     7,     2,     2,     2,     9,     2,     2,
+      11,    12,     8,     7,     2,     2,     2,     9,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -508,15 +511,15 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,    11
+       5,     6
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    30,    30,    33,    34,    37,    38,    39,    42,    43,
-      44,    45,    46,    49,    50
+       0,    33,    33,    36,    37,    40,    41,    42,    45,    46,
+      47,    48,    49,    52,    53
 };
 #endif
 
@@ -526,8 +529,8 @@ static const yytype_int8 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "NUMBER", "VARIABLE", "BANG", "EOL",
-  "'+'", "'*'", "'/'", "'^'", "UMINUS", "'('", "')'", "$accept", "input",
-  "expr", "term", "factor", "unary", YY_NULLPTR
+  "'+'", "'*'", "'/'", "'^'", "'('", "')'", "$accept", "input", "expr",
+  "term", "factor", "unary", YY_NULLPTR
 };
 #endif
 
@@ -537,11 +540,11 @@ static const char *const yytname[] =
 static const yytype_int16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,    43,    42,    47,
-      94,   262,    40,    41
+      94,    40,    41
 };
 # endif
 
-#define YYPACT_NINF (-5)
+#define YYPACT_NINF (-8)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -555,9 +558,9 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       3,    -5,    -5,     3,     3,     1,    16,    24,    -5,    -5,
-      20,    -4,    11,    -5,    -5,     3,     3,     3,     3,     3,
-      -5,    21,    24,    25,    -5,    -5,     4
+       3,    -8,    -8,     3,     3,    10,    24,    -7,    -8,    -8,
+      25,    16,    17,    -8,    -8,     3,     3,     3,     3,     3,
+      -8,    26,    -7,     1,    -8,    -8,     9
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -573,7 +576,7 @@ static const yytype_int8 yydefact[] =
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -5,    -5,     0,    10,     2,    -5
+      -8,    -8,     0,    -6,     2,    -8
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -587,34 +590,34 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       6,    13,   -13,    10,    12,    11,     1,     2,     3,   -13,
-     -14,     0,    17,    18,     0,     4,    23,   -14,    15,    24,
-      25,    16,    14,    15,    20,    22,    16,    19,    15,    26,
-      16,    16,    17,    18,     0,    16
+       6,    17,    18,    10,    12,    11,     1,     2,     3,    22,
+      13,    16,     0,    26,     4,   -14,    23,    17,    18,    24,
+      25,   -14,   -13,     0,    15,     0,     0,    16,   -13,    20,
+      14,    15,    19,    15,    16,    16,    16
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,     0,     6,     3,     4,     3,     3,     4,     5,    13,
-       6,    -1,     8,     9,    -1,    12,    16,    13,     7,    17,
-      18,    10,     6,     7,    13,    15,    10,     7,     7,    19,
-      10,    10,     8,     9,    -1,    10
+       0,     8,     9,     3,     4,     3,     3,     4,     5,    15,
+       0,    10,    -1,    19,    11,     6,    16,     8,     9,    17,
+      18,    12,     6,    -1,     7,    -1,    -1,    10,    12,    12,
+       6,     7,     7,     7,    10,    10,    10
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,     4,     5,    12,    15,    16,    17,    18,    19,
-      16,    18,    16,     0,     6,     7,    10,     8,     9,     7,
-      13,    16,    17,    16,    18,    18,    17
+       0,     3,     4,     5,    11,    14,    15,    16,    17,    18,
+      15,    17,    15,     0,     6,     7,    10,     8,     9,     7,
+      12,    15,    16,    15,    17,    17,    16
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    14,    15,    16,    16,    17,    17,    17,    18,    18,
-      18,    18,    18,    19,    19
+       0,    13,    14,    15,    15,    16,    16,    16,    17,    17,
+      17,    17,    17,    18,    18
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -1317,85 +1320,85 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 30 "parser.y"
-                { printf("Parsing is correct!\n"); }
-#line 1323 "parser.tab.c"
+#line 33 "flex_bison/parser.y"
+                { }
+#line 1326 "flex_bison/parser.c"
     break;
 
   case 3:
-#line 33 "parser.y"
+#line 36 "flex_bison/parser.y"
                        { }
-#line 1329 "parser.tab.c"
+#line 1332 "flex_bison/parser.c"
     break;
 
   case 4:
-#line 34 "parser.y"
+#line 37 "flex_bison/parser.y"
                        { }
-#line 1335 "parser.tab.c"
+#line 1338 "flex_bison/parser.c"
     break;
 
   case 5:
-#line 37 "parser.y"
+#line 40 "flex_bison/parser.y"
                       { }
-#line 1341 "parser.tab.c"
+#line 1344 "flex_bison/parser.c"
     break;
 
   case 6:
-#line 38 "parser.y"
+#line 41 "flex_bison/parser.y"
                       { }
-#line 1347 "parser.tab.c"
+#line 1350 "flex_bison/parser.c"
     break;
 
   case 7:
-#line 39 "parser.y"
+#line 42 "flex_bison/parser.y"
                        { }
-#line 1353 "parser.tab.c"
+#line 1356 "flex_bison/parser.c"
     break;
 
   case 8:
-#line 42 "parser.y"
+#line 45 "flex_bison/parser.y"
                       { }
-#line 1359 "parser.tab.c"
+#line 1362 "flex_bison/parser.c"
     break;
 
   case 9:
-#line 43 "parser.y"
+#line 46 "flex_bison/parser.y"
                       { }
-#line 1365 "parser.tab.c"
+#line 1368 "flex_bison/parser.c"
     break;
 
   case 10:
-#line 44 "parser.y"
+#line 47 "flex_bison/parser.y"
                        { }
-#line 1371 "parser.tab.c"
+#line 1374 "flex_bison/parser.c"
     break;
 
   case 11:
-#line 45 "parser.y"
+#line 48 "flex_bison/parser.y"
                        { }
-#line 1377 "parser.tab.c"
+#line 1380 "flex_bison/parser.c"
     break;
 
   case 12:
-#line 46 "parser.y"
+#line 49 "flex_bison/parser.y"
                        { }
-#line 1383 "parser.tab.c"
+#line 1386 "flex_bison/parser.c"
     break;
 
   case 13:
-#line 49 "parser.y"
+#line 52 "flex_bison/parser.y"
                       { }
-#line 1389 "parser.tab.c"
+#line 1392 "flex_bison/parser.c"
     break;
 
   case 14:
-#line 50 "parser.y"
+#line 53 "flex_bison/parser.y"
                           { }
-#line 1395 "parser.tab.c"
+#line 1398 "flex_bison/parser.c"
     break;
 
 
-#line 1399 "parser.tab.c"
+#line 1402 "flex_bison/parser.c"
 
       default: break;
     }
@@ -1627,7 +1630,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 53 "parser.y"
+#line 56 "flex_bison/parser.y"
 
 
 void yyerror(const char *s) 
@@ -1635,8 +1638,14 @@ void yyerror(const char *s)
     fprintf(stderr, "Parser error: %s\n", s);
 }
 
-int main() 
+int yacc_main(const char* expr) 
 {
+    expression = strdup(expr); // Copy the expression to the variable
+    /* YY_BUFFER_STATE buffer_state; // Declare the buffer_state variable
+    buffer_state = yy_scan_string(expression); // Set the input buffer */
+    
+    yy_scan_string(expression); // Set the input buffer
+
     if (yyparse() == 0) 
     {
         printf("Parsing is correct!\n");
