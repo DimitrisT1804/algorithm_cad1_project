@@ -245,12 +245,15 @@ Gatepin_pos *toposort(int *startpoins_ghash, int *startpoints_gdepth)
                 if(size == libhash[lhash].pin_count[ldepth] - 1)
                 {
                     // printf("new_gatepin is %s\n", new_gatepin);
-                    get_gatepin_indices(new_gatepin, &ghash, &gdepth);
                     // if(gatepinhashv[ghash].isVisited[gdepth] == 1)
                     // {
                     //     continue;
                     // }
-                    add_gatepin_pos(S, ghash, gdepth);
+                    //if(strcmp(new_gatepin, gatepinhash[ghash].name[gdepth]) != 0)
+                    //{
+                        get_gatepin_indices(new_gatepin, &ghash, &gdepth);
+                        add_gatepin_pos(S, ghash, gdepth);
+                    //}
                     // gatepinhashVisited_make_visited(ghash, gdepth);
                 }
             }
@@ -298,7 +301,7 @@ void assign_level_gatepins(Gatepin_pos *L)
         {
             get_predecessors_pin(gatepinhash[L->ghash[i]].name[L->gdepth[i]], &ghash, &gdepth);
             // it is output or Primary Output //
-            if( (gdepth == -1) || (gatepinhash[ghash].type[gdepth] == PO) )
+            if( (gdepth == -1) || (gatepinhash[ghash].type[gdepth] == PO) || gatepinhash[ghash].type[gdepth] == IO_TYPE)
             {
                 //printf("Warning: %s is not connected to any other gate\n", gatepinhash[L->ghash[i]].name[L->gdepth[i]]);
 

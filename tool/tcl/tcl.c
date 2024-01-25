@@ -1112,6 +1112,42 @@ int get_toposort(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
     return TCL_OK;
 }
 
+int get_predecessor_pin(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int ghash;
+    int gdepth;
+    char *gatepin = NULL;
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "gatepin-name");
+        return TCL_ERROR;
+    }
+
+    gatepin = Tcl_GetString(objv[1]);
+    if(gatepin == NULL)
+    {
+        printf("ERROR: Gatepin is NULL\n");
+        return TCL_ERROR;
+    }
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    get_predecessors_pin(gatepin, &ghash, &gdepth);
+    if(gdepth == -1)
+    {
+        printf(ANSI_COLOR_ORANGE "ERROR: Gatepin has not predecessors" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+    printf(ANSI_COLOR_ORANGE "Gatepin %s has predecessor %s\n" ANSI_COLOR_RESET, gatepin, gatepinhash[ghash].name[gdepth]);
+
+    return TCL_OK;
+}
+
+
 int main(int argc, char *argv[])
 {
     char *text = NULL; // readline result //
@@ -1156,6 +1192,7 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "report_component_BDD", report_component_BDD, NULL, NULL);
     Tcl_CreateObjCommand(interp, "compute_expression_BDD", compute_expression_BDD, NULL, NULL);
     Tcl_CreateObjCommand(interp, "get_toposort", get_toposort, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "get_predecessor_pin", get_predecessor_pin, NULL, NULL);
 
 
     signal(SIGSEGV, segfault_handler);
