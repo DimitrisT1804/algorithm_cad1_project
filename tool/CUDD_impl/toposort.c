@@ -393,7 +393,7 @@ void add_startpoints()
         {
             if(gatepinhash[ghash].hashpresent[gdepth] == 1)
             {
-                if(gatepinhash[ghash].type[gdepth] == IO_TYPE || gatepinhash[ghash].type[gdepth] == PO)
+                if(gatepinhash[ghash].type[gdepth] == IO_TYPE)
                 {
                     startpoint_ghash = (int *) realloc(startpoint_ghash, sizeof(int) * (i + 1));
                     startpoint_gdepth = (int *) realloc(startpoint_gdepth, sizeof(int) * (i + 1));
@@ -456,7 +456,7 @@ void add_startpoints()
     {
         for(i = 0; i < L->size; i++)
         {
-            if(gatepinhash[L->ghash[i]].type[L->gdepth[i]] == IO_TYPE || gatepinhash[L->ghash[i]].type[L->gdepth[i]] == PO) 
+            if(gatepinhash[L->ghash[i]].type[L->gdepth[i]] == IO_TYPE) 
             {
                 continue;
             }

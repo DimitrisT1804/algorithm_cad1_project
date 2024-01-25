@@ -191,6 +191,8 @@ void gatepin_characterize_IOs()
     int chash, cdepth;
     int lhash, ldepth;
     int ghash, gdepth;
+    int m;
+    int curr_ghash, curr_gdepth;
 
     for (i = 0; i < gatepinhash_size; i++)
     {
@@ -202,47 +204,74 @@ void gatepin_characterize_IOs()
                 {
                     break;
                 }
-                ghash = gatepinhash[i].pinConn[j][0];
-                gdepth = gatepinhash[i].pinConnDepth[j][0];
-                for (k = strlen(gatepinhash[ghash].name[gdepth]); gatepinhash[ghash].name[gdepth][k] != '/'; k--)
+                for(m = 0; m < gatepinhash[i].connections_size[j]; m++)
                 {
+                    curr_ghash = gatepinhash[i].pinConn[j][m];
+                    curr_gdepth = gatepinhash[i].pinConnDepth[j][m];
 
-                }
-                comp_name = (char *) calloc(k+1, sizeof(char));
-                strncpy(comp_name, gatepinhash[ghash].name[gdepth], k);
-
-                // pin_name = (char *) calloc(sizeof())
-                while(gatepinhash[ghash].name[gdepth][k] != '\0')
-                {
-                    pin_name[pos] = gatepinhash[ghash].name[gdepth][k];
-                    pos++;
-                    k++;
-                }
-                pin_name[pos] = '\0';
-                pos = 0;
-                #ifdef DEBUG
-                printf("name is %s\n", pin_name);
-                #endif
-
-                get_comphash_indices(comp_name, &chash, &cdepth);
-
-                free(comp_name);
-                if(cdepth != -1)
-                {
+                    chash = gatepinhash[curr_ghash].parentComponent[curr_gdepth];
+                    cdepth = gatepinhash[curr_ghash].parentComponentDepth[curr_gdepth];
+                    comp_name = (char *) calloc(strlen(comphash[chash].name[cdepth]) + 1, sizeof(char));
+                    strcpy(comp_name, comphash[chash].name[cdepth]);
+                    
                     lhash = comphash[chash].lib_type[cdepth];
                     ldepth = comphash[chash].lib_type_depth[cdepth];
-
                     for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
                     {
-                        if(strcmp(pin_name, libhash[lhash].pin_names[ldepth][k]) == 0)
+                        if(libhash[lhash].pin_type[ldepth][k] == OUTPUT)
                         {
-                            if(libhash[lhash].pin_type[ldepth][k] == OUTPUT)
+                            comp_name = (char *) realloc(comp_name, strlen(comphash[chash].name[cdepth]) + strlen(libhash[lhash].pin_names[ldepth][k]) + 2);
+                            strcat(comp_name, libhash[lhash].pin_names[ldepth][k]);
+
+                            if(strcmp(comp_name, gatepinhash[curr_ghash].name[curr_gdepth]) == 0)
                             {
                                 gatepinhash[i].type[j] = PO;
                             }
                         }
+                        
                     }
+                    free(comp_name);
                 }
+                // ghash = gatepinhash[i].pinConn[j][0];
+                // gdepth = gatepinhash[i].pinConnDepth[j][0];
+                // for (k = strlen(gatepinhash[ghash].name[gdepth]); gatepinhash[ghash].name[gdepth][k] != '/'; k--)
+                // {
+
+                // }
+                // comp_name = (char *) calloc(k+1, sizeof(char));
+                // strncpy(comp_name, gatepinhash[ghash].name[gdepth], k);
+
+                // while(gatepinhash[ghash].name[gdepth][k] != '\0')
+                // {
+                //     pin_name[pos] = gatepinhash[ghash].name[gdepth][k];
+                //     pos++;
+                //     k++;
+                // }
+                // pin_name[pos] = '\0';
+                // pos = 0;
+                // #ifdef DEBUG
+                // printf("name is %s\n", pin_name);
+                // #endif
+
+                // get_comphash_indices(comp_name, &chash, &cdepth);
+
+                // free(comp_name);
+                // if(cdepth != -1)
+                // {
+                //     lhash = comphash[chash].lib_type[cdepth];
+                //     ldepth = comphash[chash].lib_type_depth[cdepth];
+
+                //     for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
+                //     {
+                //         if(strcmp(pin_name, libhash[lhash].pin_names[ldepth][k]) == 0)
+                //         {
+                //             if(libhash[lhash].pin_type[ldepth][k] == OUTPUT)
+                //             {
+                //                 gatepinhash[i].type[j] = PO;
+                //             }
+                //         }
+                //     }
+                // }
 
             }
         }
