@@ -1018,6 +1018,7 @@ int call_parser(char *input_file)
     printf(ANSI_COLOR_GREEN "IOs: %d\n" ANSI_COLOR_RESET, count_IOs);
     printf(ANSI_COLOR_GREEN "Cells: %d\n" ANSI_COLOR_RESET, count_cells);
     printf(ANSI_COLOR_GREEN "Total gatepins: %d\n" ANSI_COLOR_RESET, count_gatepins);
+    printf(ANSI_COLOR_BLUE "##########################################################################\n\n" ANSI_COLOR_RESET);
 
     fclose(filename); // close file //
 
