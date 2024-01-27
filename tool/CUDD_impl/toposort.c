@@ -207,7 +207,10 @@ Gatepin_pos *toposort(int *startpoins_ghash, int *startpoints_gdepth)
 
         if(gatepinhash[ghash].type[gdepth] == WIRE)
         {
+            #ifdef DEBUG
             printf("proccessing: %s\n", gatepinhash[ghash].name[gdepth]);
+            #endif
+
             if(gatepinhash[ghash].connections_size[gdepth] == 0)    // it is input //
             {
                 chash = gatepinhash[ghash].parentComponent[gdepth];
@@ -409,6 +412,24 @@ void add_startpoints()
                         startpoint_gdepth[i] = gdepth;  
                         i++;
                     }
+                    else if (libhash[lhash].cell_type[ldepth] == SEQUENTIAL)    // only Outputs //
+                    {
+                        curr_gatepin = (char *) realloc(curr_gatepin, sizeof(char) * (strlen(comphash[chash].name[cdepth]) + 4));   // for D pin //
+                        strcpy(curr_gatepin, comphash[chash].name[cdepth]);
+                        strcat(curr_gatepin, "/Q");
+
+                        if(strcmp(gatepinhash[ghash].name[gdepth], curr_gatepin) == 0)
+                        {
+                            startpoint_ghash = (int *) realloc(startpoint_ghash, sizeof(int) * (i + 1));
+                            startpoint_gdepth = (int *) realloc(startpoint_gdepth, sizeof(int) * (i + 1));
+                        
+                            startpoint_ghash[i] = ghash;
+                            startpoint_gdepth[i] = gdepth;  
+                            i++;
+                        }
+                        free(curr_gatepin);
+                        curr_gatepin = NULL;
+                    }
                 }
             }
         }
@@ -432,125 +453,127 @@ void add_startpoints()
     j = 0;
 
     // print toposort for debug //
+    #ifdef DEBUG
     printf("Toposort 1 is:\n");
     for(i = 0; i < L->size; i++)
     {
         printf("No: %d is %s and level is %d\n", i+1, gatepinhash[L->ghash[i]].name[L->gdepth[i]], gatepinhashv[L->ghash[i]].level[L->gdepth[i]]);
     }
+    #endif
 
 
-    startpoint_ghash = (int *) realloc(startpoint_ghash, sizeof(int) * (1000 + 1));
-    startpoint_gdepth = (int *) realloc(startpoint_gdepth, sizeof(int) * (1000 + 1));
+    // startpoint_ghash = (int *) realloc(startpoint_ghash, sizeof(int) * (1000 + 1));
+    // startpoint_gdepth = (int *) realloc(startpoint_gdepth, sizeof(int) * (1000 + 1));
     
 
-    curr_gatepin = (char *) malloc(1000 * sizeof(char)); // needs modify !!!!!!! //
-    while(startpoint_ghash[0] != -1)
-    {
-        for(i = 0; i < L->size; i++)
-        {
-            if(gatepinhash[L->ghash[i]].type[L->gdepth[i]] == IO_TYPE) 
-            {
-                continue;
-            }
-            chash = gatepinhash[L->ghash[i]].parentComponent[L->gdepth[i]];
-            cdepth = gatepinhash[L->ghash[i]].parentComponentDepth[L->gdepth[i]];
-            lhash = comphash[chash].lib_type[cdepth];
-            ldepth = comphash[chash].lib_type_depth[cdepth];
+    // curr_gatepin = (char *) malloc(1000 * sizeof(char)); // needs modify !!!!!!! //
+    // while(startpoint_ghash[0] != -1)
+    // {
+    //     for(i = 0; i < L->size; i++)
+    //     {
+    //         if(gatepinhash[L->ghash[i]].type[L->gdepth[i]] == IO_TYPE) 
+    //         {
+    //             continue;
+    //         }
+    //         chash = gatepinhash[L->ghash[i]].parentComponent[L->gdepth[i]];
+    //         cdepth = gatepinhash[L->ghash[i]].parentComponentDepth[L->gdepth[i]];
+    //         lhash = comphash[chash].lib_type[cdepth];
+    //         ldepth = comphash[chash].lib_type_depth[cdepth];
 
-            if(libhash[lhash].cell_type[ldepth] == SEQUENTIAL)
-            {
-                curr_gatepin = (char *) realloc(curr_gatepin, sizeof(char) * (strlen(comphash[chash].name[cdepth]) + 4));   // for D pin //
-                //startpoint_ghash = (int *) realloc(startpoint_ghash, sizeof(int) * (j + 1));
-                //startpoint_gdepth = (int *) realloc(startpoint_gdepth, sizeof(int) * (j + 1));
-                curr_gatepin_2 = (char *) realloc(curr_gatepin_2, sizeof(char) * (strlen(comphash[chash].name[cdepth]) + 4));   // for D pin //
+    //         if(libhash[lhash].cell_type[ldepth] == SEQUENTIAL)
+    //         {
+    //             curr_gatepin = (char *) realloc(curr_gatepin, sizeof(char) * (strlen(comphash[chash].name[cdepth]) + 4));   // for D pin //
+    //             //startpoint_ghash = (int *) realloc(startpoint_ghash, sizeof(int) * (j + 1));
+    //             //startpoint_gdepth = (int *) realloc(startpoint_gdepth, sizeof(int) * (j + 1));
+    //             curr_gatepin_2 = (char *) realloc(curr_gatepin_2, sizeof(char) * (strlen(comphash[chash].name[cdepth]) + 4));   // for D pin //
 
-                size = 0;
+    //             size = 0;
 
-                strcpy(curr_gatepin, comphash[chash].name[cdepth]);
-                strcpy(curr_gatepin_2, comphash[chash].name[cdepth]);
-                strcat(curr_gatepin, "/RN"); 
-                strcat(curr_gatepin_2, "/D");
-                get_gatepin_indices(curr_gatepin, &input_ghash, &input_gdepth);
-                get_gatepin_indices(curr_gatepin_2, &input_ghash_2, &input_gdepth_2);
-                // if(gatepinhashv[input_ghash].isVisited[input_gdepth] == 1)
-                // {
-                //     free(curr_gatepin);
-                //     curr_gatepin = NULL;
-                //     for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
-                //     {
-                //         if(libhash[lhash].pin_type[ldepth][k] == OUTPUT)
-                //         {
-                //             curr_gatepin = (char *) realloc(curr_gatepin, sizeof(char) * (strlen(comphash[chash].name[cdepth]) + strlen(libhash[lhash].pin_names[ldepth][k]) + 1));
-                //             strcpy(curr_gatepin, comphash[chash].name[cdepth]);
-                //             strcat(curr_gatepin, libhash[lhash].pin_names[ldepth][k]);
-                //             get_gatepin_indices(curr_gatepin, &output_ghash, &output_gdepth);
-                //             break;
-                //         }
-                //     }
-                //     startpoint_ghash[j] = output_ghash;
-                //     startpoint_gdepth[j] = output_gdepth;
-                //     j++;
-                // }
-                if (gatepinhashv[input_ghash_2].isVisited[input_gdepth_2] == 1)
-                {
-                    free(curr_gatepin_2);
-                    curr_gatepin_2 = NULL;
-                    for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
-                    {
-                        if(libhash[lhash].pin_type[ldepth][k] == OUTPUT)
-                        {
-                            curr_gatepin_2 = (char *) realloc(curr_gatepin_2, sizeof(char) * (strlen(comphash[chash].name[cdepth]) + strlen(libhash[lhash].pin_names[ldepth][k]) + 1));
-                            strcpy(curr_gatepin_2, comphash[chash].name[cdepth]);
-                            strcat(curr_gatepin_2, libhash[lhash].pin_names[ldepth][k]);
-                            get_gatepin_indices(curr_gatepin_2, &output_ghash, &output_gdepth);
-                            break;
-                        }
-                    }
-                    startpoint_ghash[j] = output_ghash;
-                    startpoint_gdepth[j] = output_gdepth;
-                    j++;    
-                }
-                else
-                {
-                    if(curr_gatepin == NULL)
-                    {
-                        free(curr_gatepin);
-                        curr_gatepin = NULL;
-                    }
-                    if(curr_gatepin_2 == NULL)
-                    {
-                        free(curr_gatepin_2);
-                        curr_gatepin_2 = NULL;
-                    }
-                }
-            }
-        }
-        startpoint_ghash[j] = -1;
-        if(j != 0)
-        {
-            L = toposort(startpoint_ghash, startpoint_gdepth);
-            assign_level_gatepins(L);
-            // free_gatepin_pos(L);    // free L //
-            for(i = 0; i < L->size; i++)
-            {
-                check_visited(L->ghash[i], L->gdepth[i]);
-            }
+    //             strcpy(curr_gatepin, comphash[chash].name[cdepth]);
+    //             strcpy(curr_gatepin_2, comphash[chash].name[cdepth]);
+    //             strcat(curr_gatepin, "/RN"); 
+    //             strcat(curr_gatepin_2, "/D");
+    //             get_gatepin_indices(curr_gatepin, &input_ghash, &input_gdepth);
+    //             get_gatepin_indices(curr_gatepin_2, &input_ghash_2, &input_gdepth_2);
+    //             // if(gatepinhashv[input_ghash].isVisited[input_gdepth] == 1)
+    //             // {
+    //             //     free(curr_gatepin);
+    //             //     curr_gatepin = NULL;
+    //             //     for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
+    //             //     {
+    //             //         if(libhash[lhash].pin_type[ldepth][k] == OUTPUT)
+    //             //         {
+    //             //             curr_gatepin = (char *) realloc(curr_gatepin, sizeof(char) * (strlen(comphash[chash].name[cdepth]) + strlen(libhash[lhash].pin_names[ldepth][k]) + 1));
+    //             //             strcpy(curr_gatepin, comphash[chash].name[cdepth]);
+    //             //             strcat(curr_gatepin, libhash[lhash].pin_names[ldepth][k]);
+    //             //             get_gatepin_indices(curr_gatepin, &output_ghash, &output_gdepth);
+    //             //             break;
+    //             //         }
+    //             //     }
+    //             //     startpoint_ghash[j] = output_ghash;
+    //             //     startpoint_gdepth[j] = output_gdepth;
+    //             //     j++;
+    //             // }
+    //             if (gatepinhashv[input_ghash_2].isVisited[input_gdepth_2] == 1)
+    //             {
+    //                 free(curr_gatepin_2);
+    //                 curr_gatepin_2 = NULL;
+    //                 for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
+    //                 {
+    //                     if(libhash[lhash].pin_type[ldepth][k] == OUTPUT)
+    //                     {
+    //                         curr_gatepin_2 = (char *) realloc(curr_gatepin_2, sizeof(char) * (strlen(comphash[chash].name[cdepth]) + strlen(libhash[lhash].pin_names[ldepth][k]) + 1));
+    //                         strcpy(curr_gatepin_2, comphash[chash].name[cdepth]);
+    //                         strcat(curr_gatepin_2, libhash[lhash].pin_names[ldepth][k]);
+    //                         get_gatepin_indices(curr_gatepin_2, &output_ghash, &output_gdepth);
+    //                         break;
+    //                     }
+    //                 }
+    //                 startpoint_ghash[j] = output_ghash;
+    //                 startpoint_gdepth[j] = output_gdepth;
+    //                 j++;    
+    //             }
+    //             else
+    //             {
+    //                 if(curr_gatepin == NULL)
+    //                 {
+    //                     free(curr_gatepin);
+    //                     curr_gatepin = NULL;
+    //                 }
+    //                 if(curr_gatepin_2 == NULL)
+    //                 {
+    //                     free(curr_gatepin_2);
+    //                     curr_gatepin_2 = NULL;
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     startpoint_ghash[j] = -1;
+    //     if(j != 0)
+    //     {
+    //         L = toposort(startpoint_ghash, startpoint_gdepth);
+    //         assign_level_gatepins(L);
+    //         // free_gatepin_pos(L);    // free L //
+    //         for(i = 0; i < L->size; i++)
+    //         {
+    //             check_visited(L->ghash[i], L->gdepth[i]);
+    //         }
 
-            // print toposort for debug //
-            printf("Toposort 2 is:\n");
-            for(i = 0; i < L->size; i++)
-            {
-                printf("No: %d is %s and level is %d\n", i+1, gatepinhash[L->ghash[i]].name[L->gdepth[i]], gatepinhashv[L->ghash[i]].level[L->gdepth[i]]);
-            }
-        }
-        // free(startpoint_ghash);
-        // free(startpoint_gdepth);
-        // free(curr_gatepin);
-        // startpoint_gdepth = NULL;
-        // startpoint_ghash = NULL;
-        // curr_gatepin = NULL;
-        j = 0;
-    }
+    //         // print toposort for debug //
+    //         printf("Toposort 2 is:\n");
+    //         for(i = 0; i < L->size; i++)
+    //         {
+    //             printf("No: %d is %s and level is %d\n", i+1, gatepinhash[L->ghash[i]].name[L->gdepth[i]], gatepinhashv[L->ghash[i]].level[L->gdepth[i]]);
+    //         }
+    //     }
+    //     // free(startpoint_ghash);
+    //     // free(startpoint_gdepth);
+    //     // free(curr_gatepin);
+    //     // startpoint_gdepth = NULL;
+    //     // startpoint_ghash = NULL;
+    //     // curr_gatepin = NULL;
+    //     j = 0;
+    // }
 
     // for (i = 0; i < L->size; i++)
     // {
@@ -566,12 +589,41 @@ void add_startpoints()
         {
             if(gatepinhash[i].hashpresent[j] == 1)
             {
+                if(gatepinhashv[i].level[j] == -1)
+                {
+                    if(gatepinhash[i].type[j] == PO)
+                    {
+                        for(k = 0; k < gatepinhash[i].connections_size[j]; k++)
+                        {
+                            ghash = gatepinhash[i].pinConn[j][k];
+                            gdepth = gatepinhash[i].pinConnDepth[j][k];
+
+                            max_level = max(max_level, gatepinhashv[ghash].level[gdepth]);
+                        }
+                        gatepinhashv[i].level[j] = max_level + 1;
+                        max_level = 0;
+                    }
+                }
+                
+            }
+        }
+    }
+
+    max_level = 0;
+
+    for(i = 0; i < gatepinhash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] == 1)
+            {
                 max_level = max(max_level, gatepinhashv[i].level[j]);
             }
         }
     }
     max_design_level = max_level;
 
+    #ifdef DEBUG
     for (int level = -1; level <= max_level; level++) 
     {
         for (i = 0; i < gatepinhash_size; i++) 
@@ -588,6 +640,7 @@ void add_startpoints()
             }
         }
     }
+    #endif
 
     printf(ANSI_COLOR_BLUE "Max depth of design is: %d\n" ANSI_COLOR_RESET, max_level);
 
