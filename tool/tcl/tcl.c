@@ -554,6 +554,8 @@ int clear_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
 
     printf(ANSI_COLOR_GREEN "Design succesfully cleared!" ANSI_COLOR_RESET);
 
+    isLevelized = 0;
+    max_design_level = -2;
     return TCL_OK;
 }
 
@@ -1117,6 +1119,8 @@ int get_toposort(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
     }
     add_startpoints();
 
+    isLevelized = 1;
+
     return TCL_OK;
 }
 
@@ -1155,6 +1159,186 @@ int get_predecessor_pin(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl
     return TCL_OK;
 }
 
+int report_gatepins_levelized(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i;
+    int j;
+    int max_level;
+
+    if(objc != 1)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "nothing");
+        return TCL_ERROR;
+    }
+
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    if(isLevelized == 0)    // check if design is levelized //
+    {
+        printf(ANSI_COLOR_ORANGE "ERROR: Design is not levelized\nCall get_toposort to levelize design!" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    max_level = 0;
+
+    for(i = 0; i < gatepinhash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] == 1)
+            {
+                max_level = max(max_level, gatepinhashv[i].level[j]);
+            }
+        }
+    }
+
+    for (int level = -1; level <= max_level; level++) 
+    {
+        printf(ANSI_COLOR_MAGENDA "------ Level %d: ------\n" ANSI_COLOR_RESET, level);
+        for (i = 0; i < gatepinhash_size; i++) 
+        {
+            for(j = 0; j < HASHDEPTH; j++)
+            {
+                if(gatepinhash[i].hashpresent[j] == 1)
+                {
+                    if (gatepinhashv[i].level[j] == level) 
+                    {
+                        printf(ANSI_COLOR_GREEN "• %s\n" ANSI_COLOR_RESET, gatepinhash[i].name[j]);
+                    }
+                }
+            }
+        }  
+        if(level > 9)
+        {
+            printf(ANSI_COLOR_MAGENDA "-----------------------\n\n" ANSI_COLOR_RESET);
+        }
+        else
+        {
+            printf(ANSI_COLOR_MAGENDA "----------------------\n\n" ANSI_COLOR_RESET);
+        }
+    }
+    printf(ANSI_COLOR_BLUE "INFO: Max depth of design is: %d\n" ANSI_COLOR_RESET, max_level);
+
+    return TCL_OK;
+}
+
+
+int report_level_gatepins(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i;
+    int j;
+    int level;
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "<level>");
+        return TCL_ERROR;
+    }
+
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    if(isLevelized == 0)    // check if design is levelized //
+    {
+        printf(ANSI_COLOR_ORANGE "ERROR: Design is not levelized\nCall get_toposort to levelize design!" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    level = atoi(Tcl_GetString(objv[1]));
+
+    if(level < -1 || level > max_design_level)
+    {
+        printf(ANSI_COLOR_ORANGE "Warning: Level %d out of bounds\n" ANSI_COLOR_RESET, level);
+        return TCL_ERROR;
+    }
+
+
+    printf(ANSI_COLOR_MAGENDA "------ Level %d: ------\n" ANSI_COLOR_RESET, level);
+    for (i = 0; i < gatepinhash_size; i++) 
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] == 1)
+            {
+                if (gatepinhashv[i].level[j] == level) 
+                {
+                    printf(ANSI_COLOR_GREEN "• %s\n" ANSI_COLOR_RESET, gatepinhash[i].name[j]);
+                }
+            }
+        }
+    }  
+    if(level > 9 || level < 0)
+    {
+        printf(ANSI_COLOR_MAGENDA "-----------------------\n\n" ANSI_COLOR_RESET);
+    }
+    else
+    {
+        printf(ANSI_COLOR_MAGENDA "----------------------\n\n" ANSI_COLOR_RESET);
+    }
+
+    return TCL_OK;
+}
+
+int report_gatepin_level(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i;
+    int level;
+    int ghash;
+    int gdepth;
+    char **gatepins_name = NULL;
+    char *list_gatepins = NULL;
+    int list_len;
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "<gatepins_list>");
+        return TCL_ERROR;
+    }
+
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    if(isLevelized == 0)    // check if design is levelized //
+    {
+        printf(ANSI_COLOR_ORANGE "ERROR: Design is not levelized\nCall get_toposort to levelize design!" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    list_gatepins = Tcl_GetString(objv[1]);
+
+    if(Tcl_SplitList(interp, (const char *) list_gatepins, &list_len,  (const char ***) &gatepins_name) != TCL_OK)
+    {
+        return TCL_ERROR;
+    }
+    for(i = 0; i < list_len; i++)
+    {
+        get_gatepin_indices(gatepins_name[i], &ghash, &gdepth);
+        if(gdepth == -1)
+        {
+            printf(ANSI_COLOR_RED "ERROR: Gatepin %s NOT found" ANSI_COLOR_RESET, gatepins_name[i]);
+            return TCL_ERROR;
+        }
+    }
+
+    for(i = 0; i < list_len; i++)
+    {
+        get_gatepin_indices(gatepins_name[i], &ghash, &gdepth);
+        level = gatepinhashv[ghash].level[gdepth];
+        printf(ANSI_COLOR_GREEN "• gatepin %s has level %d\n" ANSI_COLOR_RESET, gatepins_name[i], level);
+    }   
+
+    return TCL_OK;
+}
 
 int main(int argc, char *argv[])
 {
@@ -1201,6 +1385,9 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "compute_expression_BDD", compute_expression_BDD, NULL, NULL);
     Tcl_CreateObjCommand(interp, "get_toposort", get_toposort, NULL, NULL);
     Tcl_CreateObjCommand(interp, "get_predecessor_pin", get_predecessor_pin, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "report_gatepins_levelized", report_gatepins_levelized, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "report_level_gatepins", report_level_gatepins, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "report_gatepin_level", report_gatepin_level, NULL, NULL);
 
 
     signal(SIGSEGV, segfault_handler);
@@ -1236,6 +1423,8 @@ int main(int argc, char *argv[])
 
     exit_requested = false;
     ctrl_c_pressed = false;
+    isLevelized = 0;
+    max_design_level = -2;
 
     const char *ascii_art = "   ____    _    ____    _____ ___   ___  _     \n"
         "  / ___|  / \\  |  _ \\  |_   _/ _ \\ / _ \\| |    \n"

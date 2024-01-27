@@ -78,6 +78,8 @@ Components *comphash;
 int comphash_size;
 
 GatepinhashVisited *gatepinhashv;
+int isLevelized;
+int max_design_level;
 
 /* gatepinhash functions*/
 void Gatepins_init();
