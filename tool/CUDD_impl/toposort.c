@@ -244,7 +244,8 @@ Gatepin_pos *toposort(int *startpoins_ghash, int *startpoints_gdepth)
                         }
                         /* if we found input pin, we check the output pin and if all pins
                         are visited, we can add this output pin to L */
-                        if(size == libhash[lhash].pin_count[ldepth] - 1)
+                        
+                        if(size == libhash[lhash].pin_count[ldepth] - libhash[lhash].out_pins_count[ldepth])
                         {
                             get_gatepin_indices(new_gatepin, &ghash, &gdepth);
                             add_gatepin_pos(S, ghash, gdepth);
@@ -296,7 +297,7 @@ void assign_level_gatepins(Gatepin_pos *L)
         {
             get_predecessors_pin(gatepinhash[L->ghash[i]].name[L->gdepth[i]], &ghash, &gdepth);
             // it is output or Primary Output //
-            if( (gdepth == -1) || (gatepinhash[ghash].type[gdepth] == PO) || gatepinhash[ghash].type[gdepth] == IO_TYPE)
+            if( (gdepth == -1) || (gatepinhash[ghash].type[gdepth] == PO))
             {
                 //printf("Warning: %s is not connected to any other gate\n", gatepinhash[L->ghash[i]].name[L->gdepth[i]]);
 
@@ -367,14 +368,6 @@ void add_startpoints()
     int lhash;
     int ldepth;
     int j = 0;
-    int output_ghash;
-    int output_gdepth;
-    int input_ghash;
-    int input_gdepth;
-    int size = 0;
-    char *curr_gatepin_2 = NULL;
-    int input_ghash_2;
-    int input_gdepth_2;
 
     clock_t start, end;
 

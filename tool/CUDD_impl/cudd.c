@@ -95,6 +95,10 @@ void generate_bdd(char *infix, char *cell_name)
     DdManager *gbm;
 
     postfix = parse_infix(infix);
+    if(postfix == NULL) // parse failed //
+    {
+        return;
+    }
 
     DdNode *bdd;
     DdNode *temp_bdd[2];
@@ -714,7 +718,7 @@ void generate_bdd_two(char *infix, char *cell_name)
     strcpy(bdd_out_name[0], cell_name);
     bdd_out_name[1] = NULL;
 
-    varNames[0] = strdup("hello");
+    varNames[0] = strdup("test");
 
     char **innamesArray = (char **)malloc(sizeof(char *) * (Cudd_ReadSize(gbm)));
     
@@ -728,7 +732,7 @@ void generate_bdd_two(char *infix, char *cell_name)
         }
         else
         {
-            strcpy(innamesArray[i], "hello");
+            strcpy(innamesArray[i], "test");
         }
     }
 

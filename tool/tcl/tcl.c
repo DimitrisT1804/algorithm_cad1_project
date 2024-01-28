@@ -1069,6 +1069,11 @@ int compute_expression_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, 
     size = size + strlen(infix) + 3 + strlen("The BDD of  is ") + strlen(" succesfully generated!");
 
     postfix = parse_infix(infix);
+    if(postfix == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Expression has not correct format\n" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
 
     // generate_bdd(infix, filename);
     generate_bdd_two(infix, filename);
@@ -1117,7 +1122,7 @@ int get_toposort(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
         printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
         return TCL_ERROR;
     }
-    add_startpoints();
+    add_startpoints();  // call toposort //
 
     isLevelized = 1;
 
@@ -1432,7 +1437,7 @@ int main(int argc, char *argv[])
         " | |___ / ___ \\| |_| |   | || |_| | |_| | |___ \n"
         "  \\____/_/   \\_\\____/    |_| \\___/ \\___/|_____|\n";
 
-    printf("%s", ascii_art);
+    printf("%s\n\n\n", ascii_art);
 
     while (!exit_requested)
     {

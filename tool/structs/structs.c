@@ -185,12 +185,10 @@ void gatepins_complete_parent()
 
 void gatepin_characterize_IOs()
 {
-    int i, j, k, pos = 0;
+    int i, j, k;
     char *comp_name;
-    char pin_name[10];
     int chash, cdepth;
     int lhash, ldepth;
-    int ghash, gdepth;
     int m;
     int curr_ghash, curr_gdepth;
 

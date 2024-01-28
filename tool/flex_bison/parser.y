@@ -35,6 +35,7 @@ input: expr EOL { }
 
 expr: expr '+' term    { }
     | term             { }
+    | unary            { } // Add unary production rule
     ;
 
 term: term '*' factor { }
@@ -46,7 +47,6 @@ factor: NUMBER        { }
       | VARIABLE      { }
       | '(' expr ')'   { }
       | expr '^' expr  { }
-      | unary          { }
       ;
 
 unary: BANG factor    { }

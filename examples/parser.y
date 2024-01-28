@@ -48,6 +48,7 @@ factor: NUMBER        { }
 
 unary: BANG factor    { }
      | BANG expr '+' term { }
+     | BANG term      { }
      ;
 
 %%
