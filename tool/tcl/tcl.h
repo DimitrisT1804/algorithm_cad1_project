@@ -64,7 +64,7 @@ static const char *commands[] =
     "list_cells", "list_component_info", "list_components_info", "convert_infix_to_postfix", 
     "report_component_postfix_boolean_function", "report_component_BDD", "compute_expression_BDD", 
     "get_toposort", "get_predecessor_pin", "report_gatepins_levelized", "report_level_gatepins", 
-    "report_gatepin_level", 
+    "report_gatepin_level", "report_library_cell_BDD", 
      
     NULL    // should terminate with NULL //
 

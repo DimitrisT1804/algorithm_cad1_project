@@ -935,6 +935,114 @@ int report_component_postfix_boolean_function(ClientData clientdata, Tcl_Interp 
     return TCL_OK;
 }
 
+int report_library_cell_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{    
+    int i;
+    char *cell = NULL;
+    int lhash;
+    int ldepth;
+    int size = 0;
+    char *infix = NULL;
+    char *result = NULL;
+    char *postfix = NULL;
+    char *command = NULL;
+    char number[5];
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "library cell_name");
+        return TCL_ERROR;
+    }
+
+    cell = Tcl_GetString(objv[1]);
+    if(cell == NULL)
+    {
+        printf("ERROR: cell is NULL\n");
+        return TCL_ERROR;
+    }
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    get_libhash_indices(cell, &lhash, &ldepth);
+    if(ldepth == -1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Cell NOT found" ANSI_COLOR_RESET);
+        return TCL_ERROR; 
+    }
+
+    if(libhash[lhash].cell_type[ldepth] == SEQUENTIAL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Component is of type SEQUENTIAL" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    result = NULL;
+    for(i = 0; i < libhash[lhash].out_pins_count[ldepth]; i++)
+    {
+        infix = strdup(libhash[lhash].function[ldepth][i]);
+        size = size + strlen(infix) + 3 + strlen("The BDD of  is ") + strlen(" succesfully generated!");
+
+        postfix = parse_infix(infix);
+
+        // generate_bdd(infix, libhash[lhash].name[ldepth]);
+        generate_bdd_two(infix, libhash[lhash].name[ldepth]);
+
+        command = malloc(strlen("dot -Tpng ") + strlen(libhash[lhash].name[ldepth]) + strlen(".dot -o .png  ") + strlen(libhash[lhash].name[ldepth]) + strlen("bdd_output/") + strlen("bdd_output/_ "));
+        strcpy(command, "dot -Tpng ");
+        strcat(command, "bdd_output/");
+        strcat(command, libhash[lhash].name[ldepth]);
+        strcat(command, ".dot -o ");
+        strcat(command, "bdd_output/");
+        strcat(command, libhash[lhash].name[ldepth]);
+        strcat(command, "_");
+
+        snprintf(number, sizeof(number), "%d", i+1);
+        strcat(command, number);
+
+        strcat(command, ".png");
+        system(command);
+
+        #ifdef DEBUG
+        printf("command is %s\n", command);
+        #endif
+
+        strcpy(command, "xdg-open ");
+        strcat(command, "bdd_output/");
+        strcat(command, libhash[lhash].name[ldepth]);
+        strcat(command, "_");
+        strcat(command, number);
+        strcat(command, ".png");
+        system(command);
+
+        result = my_realloc(result, (size) * sizeof(char));
+        if(i == 0)
+        {
+            strcpy(result, "The BDD of ");
+        }
+        else
+        {
+            strcat(result, "The BDD of ");
+        }
+
+        strcat(result, infix);
+        strcat(result, " succesfully generated!\n");
+
+        free(infix);
+        free(postfix);
+        free(command);
+    }
+    
+    Tcl_SetObjResult(interp, Tcl_NewStringObj(result, -1));
+
+    free(result);
+
+    return TCL_OK;
+
+}
+
 int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
 {
     char *component = NULL;
@@ -972,7 +1080,6 @@ int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
         printf(ANSI_COLOR_RED "ERROR: Component NOT found" ANSI_COLOR_RESET);
         return TCL_ERROR; 
     }
-
 
     lhash = comphash[chash].lib_type[cdepth];
     ldepth = comphash[chash].lib_type_depth[cdepth];
@@ -1393,6 +1500,7 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "report_gatepins_levelized", report_gatepins_levelized, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_level_gatepins", report_level_gatepins, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_gatepin_level", report_gatepin_level, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "report_library_cell_BDD", report_library_cell_BDD, NULL, NULL);
 
 
     signal(SIGSEGV, segfault_handler);
