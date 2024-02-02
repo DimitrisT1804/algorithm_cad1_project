@@ -1452,6 +1452,13 @@ int report_gatepin_level(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
     return TCL_OK;
 }
 
+int annotate_bdd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    annotate_bdds();
+
+    return TCL_OK;
+}
+
 int main(int argc, char *argv[])
 {
     char *text = NULL; // readline result //
@@ -1501,6 +1508,7 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "report_level_gatepins", report_level_gatepins, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_gatepin_level", report_gatepin_level, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_library_cell_BDD", report_library_cell_BDD, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "annotate_bdd", annotate_bdd, NULL, NULL);
 
 
     signal(SIGSEGV, segfault_handler);

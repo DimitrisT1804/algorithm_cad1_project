@@ -117,4 +117,6 @@ void gatepinhashVisited_make_visited(int ghash, int gdepth);
 void gatepinhashVisited_remove_visited(int ghash, int gdepth);
 void gatepinhashVisited_free();
 
+int check_gatepin_type(int ghash, int gdepth);
+
 #endif

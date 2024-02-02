@@ -747,3 +747,50 @@ void get_predecessors_pin(char *gatepin, int *ghash, int *gdepth)
         }
     }
 }
+
+int check_gatepin_type(int ghash, int gdepth)
+{
+    int chash;
+    int cdepth;
+    int lhash;
+    int ldepth;
+    int k;
+    char *curr_pin = NULL;
+
+    chash = gatepinhash[ghash].parentComponent[gdepth];
+    cdepth = gatepinhash[ghash].parentComponentDepth[gdepth];
+    lhash = comphash[chash].lib_type[cdepth];
+    ldepth = comphash[chash].lib_type_depth[cdepth];
+
+
+    for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
+    {
+        curr_pin = (char *) calloc(strlen(comphash[chash].name[cdepth]) + 1 + strlen(libhash[lhash].pin_names[ldepth][k]), sizeof(char));
+        strcpy(curr_pin, comphash[chash].name[cdepth]);
+        strcat(curr_pin, libhash[lhash].pin_names[ldepth][k]);
+        if(strcmp(gatepinhash[ghash].name[gdepth], curr_pin) == 0)
+        {
+            free(curr_pin);
+            curr_pin = NULL;
+            break;
+        }
+        free(curr_pin);
+        curr_pin = NULL;
+    }
+
+    if(libhash[lhash].pin_type[ldepth][k] == OUTPUT)
+    {
+        return 1;
+    }
+    else if(libhash[lhash].pin_type[ldepth][k] == INPUT)
+    {
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }
+
+
+    return -1;
+}

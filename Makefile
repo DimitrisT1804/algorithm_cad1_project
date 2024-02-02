@@ -8,6 +8,7 @@ TARGET = cad_tool
 
 # Main rule
 all: $(TARGET)
+	@echo "'$(TARGET)' is up to date. Run './$(TARGET)' to execute."
 
 # Compile source files into object files
 %.o: %.c

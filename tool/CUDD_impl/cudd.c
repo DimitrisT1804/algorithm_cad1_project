@@ -501,7 +501,6 @@ void generate_bdd_two(char *infix, char *cell_name)
     postfix = parse_infix(infix);
 
     varNames = (char **) malloc(sizeof(char *) * 2);
-    // varNames[var_num] = (char *) malloc(sizeof(char) * 5);
     temp_name = (char *) malloc(sizeof(char) * 5);
     for(i = 0; i < strlen(infix); i++)
     {
@@ -649,10 +648,6 @@ void generate_bdd_two(char *infix, char *cell_name)
             pos_left_string = 0;
             for(j = 1; j < vars_size; j++)
             {
-                // if(varNames[j][0] == postfix[i])
-                // {
-                //     break;
-                // }
                 if(strcmp(varNames[j], left_string) == 0)
                 {
                     break;
@@ -781,48 +776,317 @@ void generate_bdd_two(char *infix, char *cell_name)
 
 
 
-// int main()
-// {
-//     DdNode *bdd;
-//     // DdNode *var_a;
-//     // DdNode *var_b;
-//     // DdNode *var_c;
-
-//     gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
-
-//     // var_a = Cudd_bddNewVar ( gbm ) ;
-//     // var_b = Cudd_bddNewVar ( gbm ) ;
-//     // var_c = Cudd_bddNewVar ( gbm ) ;
 
 
-//     // bdd = Cudd_bddAnd ( gbm , var_a , var_b ) ; 
-//     // bdd = Cudd_bddOr ( gbm , bdd , var_c ) ; 
+void concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, DdNode *temp_bdd_1, DdNode *temp_bdd_2, DdManager *gbm)
+{
+    int i;
+    // DdManager *gbm;
+    // DdNode *bdd;
+    DdNode *temp_bdd[2];
+    // DdNode **vars;
+    char *postfix = NULL;
+    stack_bdd *cur_stack;
+    int result = -5;
+    int seperate_vars = 1;
+    char *temp_name = NULL;
+    int pos = 0;
+    int var_exists = 0;
+    int j;
+    int vars_size = 0;
+    int temp_bdd_pos = 0;
+    char *out_name = NULL;
+    char *temp_string = NULL;
+    int pos_left_string = 0;
+    int var_num = 0;
+    char **vars_row = NULL;
+    int already_calculated = 0;
+    char **bdd_out_name = NULL;
 
-//     bdd = generate_bdd("((A*B)+C)");
-//     for(int i = 1; i < 5; i++)
-//     {
-//         //if(varNames[i] != NULL)
-//             printf("it is %s\n", varNames[i]);
-//     }
+    char left_string[100], right_string[100];
+
+
+
+    // bdd = Cudd_bddNewVar(gbm);
+    // temp_bdd[0] = Cudd_bddNewVar(gbm);
+    // temp_bdd[1] = Cudd_bddNewVar(gbm);
+    temp_bdd[0] = temp_bdd_1;
+    temp_bdd[1] = temp_bdd_2;
+
+    cur_stack = create_stack_bdd(100); // create stack //
+
+    postfix = parse_infix(infix);
+
+    varNames = (char **) malloc(sizeof(char *) * 2);
+    temp_name = (char *) malloc(sizeof(char) * 5);
+    for(i = 0; i < strlen(infix); i++)
+    {
+        if(identify_symbol(infix[i]) == 0 || identify_symbol(infix[i]) == -1)
+        {
+            temp_name[pos] = infix[i];
+            pos++;
+        }
+        else if(identify_symbol(infix[i]) != -2)  // it is operator //
+        {
+            temp_name[pos] = '\0';
+            var_exists = 0;
+            pos = 0;
+            if(strcmp(temp_name, "\0") == 0)
+            {
+                continue;
+            }
+            for(j = 1; j < seperate_vars; j++)
+            {
+                if(varNames[j] != NULL)
+                {
+                    if(strcmp(varNames[j], temp_name) == 0)
+                    {
+                        var_exists = 1;
+                    }
+                }
+            }
+            if(var_exists != 1)
+            {
+                varNames = (char **) realloc(varNames, sizeof(char *) * (seperate_vars + 2));
+                varNames[seperate_vars] = strdup(temp_name);
+                
+                seperate_vars++; 
+            }
+        }
+    }
+    temp_name[pos] = '\0';
+    var_exists = 0;
+    pos = 0;
+    for(j = 1; j < seperate_vars; j++)
+    {
+        if(varNames[j] != NULL)
+        {
+            if(strcmp(varNames[j], temp_name) == 0)
+            {
+                var_exists = 1;
+            }
+        }
+    }
+    if(var_exists != 1)
+    {
+        varNames = (char **) realloc(varNames, sizeof(char *) * (seperate_vars + 2));
+        varNames[seperate_vars] = strdup(temp_name);
+        
+        seperate_vars++; 
+    }
+    varNames[seperate_vars] = NULL;
+    varNames[0] = NULL;
+
+    vars_size = seperate_vars-1;
+
+    // vars = (DdNode **) malloc(vars_size * sizeof(DdNode*));
+    if(vars == NULL)
+    {
+        printf("System Failure!\n");
+    }
+    // for(i = 0; i < vars_size; i++)
+    // {
+    //     vars[i] = Cudd_bddNewVar(gbm);
+    // }
+
+    var_num = 0;
+    pos = 0;
+    vars_row = (char **) malloc(sizeof(char *) * 1);
+    for(i = 0; i < strlen(infix); i++) // keep variables in row from infix //
+    {
+        if(identify_symbol(infix[i]) == 0 || identify_symbol(infix[i]) == -1)
+        {
+            temp_name[pos] = infix[i];
+            pos++;
+        }
+        else  if (identify_symbol(infix[i]) != -2)
+        {
+            temp_name[pos] = '\0';
+            pos = 0;
+            if(strcmp(temp_name, "\0") == 0)
+            {
+                continue;
+            }
+            vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
+            vars_row[var_num] = strdup(temp_name);
+            
+            var_num++; 
+        }
+    }
+    if(identify_symbol(infix[i-1]) == 0 || identify_symbol(infix[i-1]) == -1)
+    {
+        temp_name[pos] = '\0';
+        vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
+        vars_row[var_num] = strdup(temp_name);
+        var_num++; 
+        vars_row[var_num] = NULL;
+    }
+
+    // var_found_counter = calloc(vars_size, sizeof(int));
+
+    // !!! add a sentinel between variables in postfix !!! //
+    already_calculated = 0;
+
+    postfix = (char *) realloc (postfix, strlen(postfix) * 2);
+    for(i = 0; i < var_num; i++)
+    {
+        temp_string = strstr(postfix + already_calculated, vars_row[i]);
+        for(j = 0; j < (temp_string - postfix) + strlen(vars_row[i]); j++)
+        {
+            left_string[j] = postfix[j];
+        }
+        left_string[j] = '/';
+        left_string[j+1] = '\0';
+
+        strcpy(right_string, (postfix + ( (temp_string - postfix) + strlen(vars_row[i]) )));
+        strcpy(postfix, left_string);
+
+        strcat(postfix, right_string);
+        
+        already_calculated = temp_string - postfix + strlen(vars_row[i]);
+    }
+
+    for(i = 0; i < strlen(postfix); i++)
+    {
+        if(temp_bdd_pos == 2)
+        {
+            temp_bdd_pos = 0;
+        }
+        result = identify_symbol(postfix[i]);
+        if(result == 0)    // is variable //
+        {
+            while(postfix[i] != '/')
+            {
+                left_string[pos_left_string] = postfix[i];
+                pos_left_string++;
+                i++;
+            }
+            left_string[pos_left_string] = '\0';
+            pos_left_string = 0;
+            for(j = 1; j < vars_size; j++)
+            {
+                if(strcmp(varNames[j], left_string) == 0)
+                {
+                    break;
+                }
+            }
+            push_bdd(cur_stack, vars[j-1]);
+        }
+        else if (result == 3)   // operator * //
+        {
+
+            temp_bdd[temp_bdd_pos] = Cudd_bddAnd(gbm, pop_bdd(cur_stack), pop_bdd(cur_stack));
+
+            push_bdd(cur_stack, temp_bdd[temp_bdd_pos]);
+            temp_bdd_pos++;
+        }
+        else if (result == 2)   // operator + //
+        {
+            temp_bdd[temp_bdd_pos] = Cudd_bddOr(gbm, pop_bdd(cur_stack), pop_bdd(cur_stack));
+
+            push_bdd(cur_stack, temp_bdd[temp_bdd_pos]);
+            temp_bdd_pos++;
+        }
+        else if (result == 1) // operator ^ //
+        {
+            temp_bdd[temp_bdd_pos] = Cudd_bddXor(gbm, pop_bdd(cur_stack), pop_bdd(cur_stack));
+
+            push_bdd(cur_stack, temp_bdd[temp_bdd_pos]);
+            temp_bdd_pos++;
+        }
+        else if (result == 4)
+        {
+            temp_bdd[temp_bdd_pos] = Cudd_Not(pop_bdd(cur_stack));
+
+            push_bdd(cur_stack, temp_bdd[temp_bdd_pos]);
+            temp_bdd_pos++;
+        }
+    }
+
+    if(isEmpty_bdd(cur_stack))
+    {
+        bdd = temp_bdd[0];
+    }
+    else
+    {
+        bdd = pop_bdd(cur_stack);
+    }
+
+    Cudd_Ref(bdd);
+
+    bdd = Cudd_BddToAdd(gbm, bdd);
+
+    out_name = malloc(sizeof(char) * (strlen(".dot ") + strlen(cell_name) + strlen("bdd_output/ ")) );
+    strcpy(out_name, "bdd_output/");
+    strcat(out_name, cell_name);
+    strcat(out_name, ".dot");
+
+    #ifdef DEBUG
+    printf("The out_name is %s\n", out_name);
+    #endif
+
+    bdd_out_name = malloc(2*sizeof(char *));
+    bdd_out_name[0] = malloc(strlen(cell_name) + 1);
+    strcpy(bdd_out_name[0], cell_name);
+    bdd_out_name[1] = NULL;
+
+    // varNames[0] = strdup("test");
+
+    // char **innamesArray = (char **)malloc(sizeof(char *) * (Cudd_ReadSize(gbm)));
     
+    // for (int i = 0; i < Cudd_ReadSize(gbm); i++) 
+    // {
+    //     //innamesArray[i] = (char *)malloc(strlen(innames[i]) + 1);
+    //     innamesArray[i] = (char *) malloc(10);
+    //     if(i > 2)
+    //     {
+    //         strcpy(innamesArray[i], varNames[i-2]);
+    //     }
+    //     else
+    //     {
+    //         strcpy(innamesArray[i], "test");
+    //     }
+    // }
 
+    FILE *dotFile;
+    dotFile = fopen(out_name, "w");
+    Cudd_DumpDot(gbm, 1, &bdd, NULL, (const char **) bdd_out_name, dotFile);
+    fclose(dotFile);
 
-//     Cudd_Ref(bdd);
+    // print_dd(gbm, bdd, 2, 2, out_name); // prints info about bdd //
+    Cudd_PrintMinterm(gbm, bdd); // prints minterms of bdd //
+    // Cudd_PrintDebug(gbm, bdd, 1, 3);
 
-//     bdd = Cudd_BddToAdd(gbm, bdd);
+    free(out_name);
 
-//     FILE *dotFile;
-//     dotFile = fopen("bdd.dot", "w");
-//     Cudd_DumpDot(gbm, 1, &bdd, (char **) varNames, NULL, dotFile);
-//     fclose(dotFile);
+    // for (int i = 0; i < Cudd_ReadSize(gbm); i++) 
+    // {
+    //     free(innamesArray[i]);
+    // }
+    // free(innamesArray);
 
-//     // write_dd(gbm, bdd, "bdd.dot");
+    Cudd_Quit(gbm);
+    gbm = NULL;
 
-//     print_dd(bdd, 2, 1, "test");
+    free(temp_name);
+    free(postfix);
+    free(vars);
 
-//     Cudd_PrintMinterm(gbm, bdd);
+    for(i = 0; i < var_num; i++)
+    {
+        free(vars_row[i]);
+    }
+    free(vars_row);
 
-//     Cudd_Quit(gbm);
+    for(i = 0; i < seperate_vars; i++)
+    {
+        free(varNames[i]);
+    }
+    free(varNames);
 
-//     return 0;
-// }
+    free (bdd_out_name[0]);
+    free(bdd_out_name);
+
+    delete_stack_bdd(cur_stack);
+}
+
