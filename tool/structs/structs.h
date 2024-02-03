@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
+#include <cudd.h>
 #include "../parser/custom_functions.h"
 
 #define HASHDEPTH 10
@@ -62,6 +63,7 @@ struct gatepinhashVisited
 {
     int isVisited[HASHDEPTH];
     int level[HASHDEPTH];
+    DdNode *gatepin_bdd[HASHDEPTH];
 };
 typedef struct gatepinhashVisited GatepinhashVisited;
 
@@ -115,6 +117,7 @@ void structs_free();
 void gatepinhashVisited_init();
 void gatepinhashVisited_make_visited(int ghash, int gdepth);
 void gatepinhashVisited_remove_visited(int ghash, int gdepth);
+void gatepinhashVisited_add_bdd(int ghash, int gdepth, DdNode *bdd, DdManager *gbm);
 void gatepinhashVisited_free();
 
 int check_gatepin_type(int ghash, int gdepth);

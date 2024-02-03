@@ -51,59 +51,81 @@ void annotate_bdds()
         }
     }
 
-    for(i = 0; i < gatepinhash_size; i++)
+    for(level = 2; level < max_design_level; level++)
     {
-        for(j = 0; j < HASHDEPTH; j++)
+        for(i = 0; i < gatepinhash_size; i++)
         {
-            //for(level = 1; level < max_design_level; level++)
-            //{                
-                if(gatepinhash[i].hashpresent[j] == 1 && gatepinhash[i].type[j] == WIRE)
-                {
-                    if (check_gatepin_type(i, j) == 1)  // it is Output //
+            for(j = 0; j < HASHDEPTH; j++)
+            {
+                //for(level = 2; level < max_design_level; level++)
+                //{                
+                    if(gatepinhash[i].hashpresent[j] == 1 && gatepinhash[i].type[j] == WIRE)
                     {
-                        if(gatepinhashv[i].level[j] == 2)
+                        if (check_gatepin_type(i, j) == 1)  // it is Output //
                         {
-                            chash = gatepinhash[i].parentComponent[j];
-                            cdepth = gatepinhash[i].parentComponentDepth[j];
-                            lhash = comphash[chash].lib_type[cdepth];
-                            ldepth = comphash[chash].lib_type_depth[cdepth];
-
-                            for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
+                            if(gatepinhashv[i].level[j] == level)
                             {
-                                if(libhash[lhash].pin_type[ldepth][k] == INPUT)
+                                chash = gatepinhash[i].parentComponent[j];
+                                cdepth = gatepinhash[i].parentComponentDepth[j];
+                                lhash = comphash[chash].lib_type[cdepth];
+                                ldepth = comphash[chash].lib_type_depth[cdepth];
+
+                                for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
                                 {
-                                    curr_pin = (char *) calloc(strlen(comphash[chash].name[cdepth]) + 1 + strlen(libhash[lhash].pin_names[ldepth][k]), sizeof(char));
-                                    strcpy(curr_pin, comphash[chash].name[cdepth]);
-                                    strcat(curr_pin, libhash[lhash].pin_names[ldepth][k]);
-                                    
-                                    get_predecessors_pin(curr_pin, &pghash, &pgdepth);
-                                    for(m = 0; m < ghash_added_size; m++)
+                                    if(libhash[lhash].pin_type[ldepth][k] == INPUT)
                                     {
-                                        if(pghash == ghash_added[m] && pgdepth == gdepth_added[m])
+                                        curr_pin = (char *) calloc(strlen(comphash[chash].name[cdepth]) + 1 + strlen(libhash[lhash].pin_names[ldepth][k]), sizeof(char));
+                                        strcpy(curr_pin, comphash[chash].name[cdepth]);
+                                        strcat(curr_pin, libhash[lhash].pin_names[ldepth][k]);
+                                        
+                                        get_predecessors_pin(curr_pin, &pghash, &pgdepth);
+                                        if(gatepinhash[pghash].type[pgdepth] == IO_TYPE)
                                         {
-                                            break;
+                                            for(m = 0; m < ghash_added_size; m++)
+                                            {
+                                                if(pghash == ghash_added[m] && pgdepth == gdepth_added[m])
+                                                {
+                                                    break;
+                                                }
+                                            }
+                                            vars = (DdNode **)realloc(vars, (vars_size + 1) * sizeof(DdNode *));
+                                            vars[vars_size] = IO_vars[m];
+                                            vars_size++;  
+
                                         }
+                                        else
+                                        {
+                                            vars = (DdNode **)realloc(vars, (vars_size + 1) * sizeof(DdNode *));
+                                            vars[vars_size] = gatepinhashv[pghash].gatepin_bdd[pgdepth];
+                                            vars_size++;
+                                        }
+
+                                        free(curr_pin);
+                                        curr_pin = NULL;    
                                     }
-                                    vars = (DdNode **)realloc(vars, (vars_size + 1) * sizeof(DdNode *));
-                                    vars[vars_size] = IO_vars[m];
-                                    vars_size++;  
-
-                                    free(curr_pin);
-                                    curr_pin = NULL;    
                                 }
+                                char *name = (char *) calloc(50, sizeof(char));
+                                sprintf(name, "kati_%d", rand());
+
+                                gatepinhashv[i].gatepin_bdd[j] = Cudd_bddNewVar(gbm);
+                                gatepinhashv[i].gatepin_bdd[j] = concat_bdds(libhash[lhash].function[ldepth][0], name, vars, bdd, temp_bdd_1, temp_bdd_2, gbm);
+                                printf("write bdd to gatepin %s\n", gatepinhash[i].name[j]);
+                                if(vars != NULL)
+                                {
+                                    free(vars);
+                                    vars = NULL;
+                                    vars_size = 0;
+                                }
+
+                                // only combinational cells //
                             }
-
-                            concat_bdds(libhash[lhash].function[ldepth][0], "kati", vars, bdd, temp_bdd_1, temp_bdd_2, gbm);
-                            free(vars);
-                            vars = NULL;
-                            vars_size = 0;
-
-                            // only combinational cells //
                         }
-                    }
 
-                }
-            //}
-        }
-    }   
+                    }
+                //}
+            }
+        }   
+    }
+
+    // edo mallon prepei na kano free ton manager i allios sto clear_design //
 }

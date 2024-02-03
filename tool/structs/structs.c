@@ -692,6 +692,7 @@ void gatepinhashVisited_init()
         {
             gatepinhashv[i].isVisited[j] = 0;
             gatepinhashv[i].level[j] = -1;
+            gatepinhashv[i].gatepin_bdd[j] = NULL;
         }
     }
 }
@@ -793,4 +794,10 @@ int check_gatepin_type(int ghash, int gdepth)
 
 
     return -1;
+}
+
+void gatepinhashVisited_add_bdd(int ghash, int gdepth, DdNode *bdd, DdManager *gbm)
+{
+    gatepinhashv[ghash].gatepin_bdd[gdepth] = Cudd_bddNewVar(gbm);
+    gatepinhashv[ghash].gatepin_bdd[gdepth] = bdd;
 }

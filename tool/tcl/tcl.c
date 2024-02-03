@@ -1170,7 +1170,6 @@ int compute_expression_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, 
         return TCL_ERROR;
     }
 
-
     result = NULL;
 
     size = size + strlen(infix) + 3 + strlen("The BDD of  is ") + strlen(" succesfully generated!");
@@ -1459,6 +1458,68 @@ int annotate_bdd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
     return TCL_OK;
 }
 
+int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    char *gatepin = NULL;
+    char *filename = NULL;
+    int ghash;
+    int gdepth;
+    int chash;
+    int cdepth;
+    int lhash;
+    int ldepth;
+    FILE *dotfile;
+    DdNode *temp_node = NULL;
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "gatepin");
+        return TCL_ERROR;
+    }
+
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    gatepin = Tcl_GetString(objv[1]);
+    if(gatepin == NULL)
+    {
+        printf("ERROR: Gatepin is NULL\n");
+        return TCL_ERROR;
+    }
+
+    get_gatepin_indices(gatepin, &ghash, &gdepth);
+    if(gdepth == -1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Gatepin NOT found" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    chash = gatepinhash[ghash].parentComponent[gdepth];
+    cdepth = gatepinhash[ghash].parentComponentDepth[gdepth];
+    lhash = comphash[chash].lib_type[cdepth];
+    ldepth = comphash[chash].lib_type_depth[cdepth];
+
+    filename = malloc(strlen(libhash[lhash].name[ldepth]) + strlen(".dot") + strlen("bdd_output/") + 1);
+    strcpy(filename, "bdd_output/");
+    strcat(filename, libhash[lhash].name[ldepth]);
+    strcat(filename, ".dot");
+
+    dotfile = fopen(filename, "w");
+
+    temp_node = gatepinhashv[ghash].gatepin_bdd[gdepth];
+    temp_node = Cudd_BddToAdd(gbm, temp_node);
+
+    Cudd_DumpDot(gbm , 1, &temp_node, NULL, NULL, dotfile);
+    fclose(dotfile);
+
+    free(filename);
+
+    return TCL_OK;
+}
+
 int main(int argc, char *argv[])
 {
     char *text = NULL; // readline result //
@@ -1509,6 +1570,7 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "report_gatepin_level", report_gatepin_level, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_library_cell_BDD", report_library_cell_BDD, NULL, NULL);
     Tcl_CreateObjCommand(interp, "annotate_bdd", annotate_bdd, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "report_bdd_dot_gatepin", report_bdd_dot_gatepin, NULL, NULL);
 
 
     signal(SIGSEGV, segfault_handler);

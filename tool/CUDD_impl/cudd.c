@@ -778,7 +778,7 @@ void generate_bdd_two(char *infix, char *cell_name)
 
 
 
-void concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, DdNode *temp_bdd_1, DdNode *temp_bdd_2, DdManager *gbm)
+DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, DdNode *temp_bdd_1, DdNode *temp_bdd_2, DdManager *gbm)
 {
     int i;
     // DdManager *gbm;
@@ -1014,50 +1014,50 @@ void concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, DdNod
 
     Cudd_Ref(bdd);
 
-    bdd = Cudd_BddToAdd(gbm, bdd);
+    // bdd = Cudd_BddToAdd(gbm, bdd);
 
-    out_name = malloc(sizeof(char) * (strlen(".dot ") + strlen(cell_name) + strlen("bdd_output/ ")) );
-    strcpy(out_name, "bdd_output/");
-    strcat(out_name, cell_name);
-    strcat(out_name, ".dot");
+    // out_name = malloc(sizeof(char) * (strlen(".dot ") + strlen(cell_name) + strlen("bdd_output/ ")) );
+    // strcpy(out_name, "bdd_output/");
+    // strcat(out_name, cell_name);
+    // strcat(out_name, ".dot");
 
-    #ifdef DEBUG
-    printf("The out_name is %s\n", out_name);
-    #endif
+    // #ifdef DEBUG
+    // printf("The out_name is %s\n", out_name);
+    // #endif
 
-    bdd_out_name = malloc(2*sizeof(char *));
-    bdd_out_name[0] = malloc(strlen(cell_name) + 1);
-    strcpy(bdd_out_name[0], cell_name);
-    bdd_out_name[1] = NULL;
+    // bdd_out_name = malloc(2*sizeof(char *));
+    // bdd_out_name[0] = malloc(strlen(cell_name) + 1);
+    // strcpy(bdd_out_name[0], cell_name);
+    // bdd_out_name[1] = NULL;
 
-    // varNames[0] = strdup("test");
+    // // varNames[0] = strdup("test");
 
-    // char **innamesArray = (char **)malloc(sizeof(char *) * (Cudd_ReadSize(gbm)));
+    // // char **innamesArray = (char **)malloc(sizeof(char *) * (Cudd_ReadSize(gbm)));
     
-    // for (int i = 0; i < Cudd_ReadSize(gbm); i++) 
-    // {
-    //     //innamesArray[i] = (char *)malloc(strlen(innames[i]) + 1);
-    //     innamesArray[i] = (char *) malloc(10);
-    //     if(i > 2)
-    //     {
-    //         strcpy(innamesArray[i], varNames[i-2]);
-    //     }
-    //     else
-    //     {
-    //         strcpy(innamesArray[i], "test");
-    //     }
-    // }
+    // // for (int i = 0; i < Cudd_ReadSize(gbm); i++) 
+    // // {
+    // //     //innamesArray[i] = (char *)malloc(strlen(innames[i]) + 1);
+    // //     innamesArray[i] = (char *) malloc(10);
+    // //     if(i > 2)
+    // //     {
+    // //         strcpy(innamesArray[i], varNames[i-2]);
+    // //     }
+    // //     else
+    // //     {
+    // //         strcpy(innamesArray[i], "test");
+    // //     }
+    // // }
 
-    FILE *dotFile;
-    dotFile = fopen(out_name, "w");
-    Cudd_DumpDot(gbm, 1, &bdd, NULL, (const char **) bdd_out_name, dotFile);
-    fclose(dotFile);
+    // FILE *dotFile;
+    // dotFile = fopen(out_name, "w");
+    // Cudd_DumpDot(gbm, 1, &bdd, NULL, (const char **) bdd_out_name, dotFile);
+    // fclose(dotFile);
 
-    // print_dd(gbm, bdd, 2, 2, out_name); // prints info about bdd //
-    Cudd_PrintMinterm(gbm, bdd); // prints minterms of bdd //
+    // // print_dd(gbm, bdd, 2, 2, out_name); // prints info about bdd //
+    // Cudd_PrintMinterm(gbm, bdd); // prints minterms of bdd //
     // Cudd_PrintDebug(gbm, bdd, 1, 3);
 
-    free(out_name);
+    // free(out_name);
 
     // for (int i = 0; i < Cudd_ReadSize(gbm); i++) 
     // {
@@ -1065,12 +1065,12 @@ void concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, DdNod
     // }
     // free(innamesArray);
 
-    Cudd_Quit(gbm);
-    gbm = NULL;
+    // Cudd_Quit(gbm);
+    // gbm = NULL;
 
     free(temp_name);
     free(postfix);
-    free(vars);
+    // free(vars);
 
     for(i = 0; i < var_num; i++)
     {
@@ -1084,9 +1084,11 @@ void concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, DdNod
     }
     free(varNames);
 
-    free (bdd_out_name[0]);
-    free(bdd_out_name);
+    // free (bdd_out_name[0]);
+    // free(bdd_out_name);
 
     delete_stack_bdd(cur_stack);
+
+    return bdd;
 }
 
