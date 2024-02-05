@@ -22,12 +22,17 @@ void annotate_bdds()
     char *curr_pin = NULL;
     int k;
     int m;
+    int l;
+    char **varNames = NULL;
+    char **vars_row = NULL;
+    int size_of_vars;
+    char *postfix = NULL;
 
     gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
-    DdNode *bdd = Cudd_bddNewVar(gbm);
-    DdNode *temp_bdd_1 = Cudd_bddNewVar(gbm);
-    DdNode *temp_bdd_2 = Cudd_bddNewVar(gbm);
+    // DdNode *bdd = Cudd_bddNewVar(gbm);
+    // DdNode *temp_bdd_1 = Cudd_bddNewVar(gbm);
+    // DdNode *temp_bdd_2 = Cudd_bddNewVar(gbm);
 
     for(i = 0; i < gatepinhash_size; i++)
     {
@@ -51,7 +56,7 @@ void annotate_bdds()
         }
     }
 
-    for(level = 2; level < max_design_level; level++)
+    for(level = 1; level < max_design_level; level++)
     {
         for(i = 0; i < gatepinhash_size; i++)
         {
@@ -70,6 +75,9 @@ void annotate_bdds()
                                 lhash = comphash[chash].lib_type[cdepth];
                                 ldepth = comphash[chash].lib_type_depth[cdepth];
 
+                                postfix = seperate_variables(libhash[lhash].function[ldepth][0], &varNames, &vars_row, &size_of_vars);
+
+                                vars = (DdNode **) realloc(vars, (size_of_vars + 1) * sizeof(DdNode *));
                                 for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
                                 {
                                     if(libhash[lhash].pin_type[ldepth][k] == INPUT)
@@ -77,6 +85,14 @@ void annotate_bdds()
                                         curr_pin = (char *) calloc(strlen(comphash[chash].name[cdepth]) + 1 + strlen(libhash[lhash].pin_names[ldepth][k]), sizeof(char));
                                         strcpy(curr_pin, comphash[chash].name[cdepth]);
                                         strcat(curr_pin, libhash[lhash].pin_names[ldepth][k]);
+
+                                        for(l = 1; l < size_of_vars; l++)
+                                        {
+                                            if(strcmp(curr_pin, varNames[l]) == 0)
+                                            {
+                                                break;
+                                            }
+                                        }
                                         
                                         get_predecessors_pin(curr_pin, &pghash, &pgdepth);
                                         if(gatepinhash[pghash].type[pgdepth] == IO_TYPE)
@@ -88,15 +104,14 @@ void annotate_bdds()
                                                     break;
                                                 }
                                             }
-                                            vars = (DdNode **)realloc(vars, (vars_size + 1) * sizeof(DdNode *));
-                                            vars[vars_size] = IO_vars[m];
+                                            //vars = (DdNode **)realloc(vars, (vars_size + 1) * sizeof(DdNode *));
+                                            vars[l - 1] = IO_vars[m];
                                             vars_size++;  
-
                                         }
                                         else
                                         {
-                                            vars = (DdNode **)realloc(vars, (vars_size + 1) * sizeof(DdNode *));
-                                            vars[vars_size] = gatepinhashv[pghash].gatepin_bdd[pgdepth];
+                                            //vars = (DdNode **)realloc(vars, (vars_size + 1) * sizeof(DdNode *));
+                                            vars[l - 1] = gatepinhashv[pghash].gatepin_bdd[pgdepth];
                                             vars_size++;
                                         }
 
@@ -107,8 +122,8 @@ void annotate_bdds()
                                 char *name = (char *) calloc(50, sizeof(char));
                                 sprintf(name, "kati_%d", rand());
 
-                                gatepinhashv[i].gatepin_bdd[j] = Cudd_bddNewVar(gbm);
-                                gatepinhashv[i].gatepin_bdd[j] = concat_bdds(libhash[lhash].function[ldepth][0], name, vars, bdd, temp_bdd_1, temp_bdd_2, gbm);
+                                // gatepinhashv[i].gatepin_bdd[j] = Cudd_bddNewVar(gbm);
+                                gatepinhashv[i].gatepin_bdd[j] = concat_bdds(libhash[lhash].function[ldepth][0], name, vars, varNames, vars_row, postfix);
                                 printf("write bdd to gatepin %s\n", gatepinhash[i].name[j]);
                                 if(vars != NULL)
                                 {
@@ -116,6 +131,10 @@ void annotate_bdds()
                                     vars = NULL;
                                     vars_size = 0;
                                 }
+
+                                varNames = NULL;
+                                vars_row = NULL;
+                                size_of_vars = 0;
 
                                 // only combinational cells //
                             }
@@ -126,6 +145,5 @@ void annotate_bdds()
             }
         }   
     }
-
     // edo mallon prepei na kano free ton manager i allios sto clear_design //
 }

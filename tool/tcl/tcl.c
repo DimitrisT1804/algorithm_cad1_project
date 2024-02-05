@@ -1509,6 +1509,8 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
 
     dotfile = fopen(filename, "w");
 
+    // gatepinhashv[ghash].gatepin_bdd[gdepth] = Cudd_Not(gatepinhashv[ghash].gatepin_bdd[gdepth]);
+
     temp_node = gatepinhashv[ghash].gatepin_bdd[gdepth];
     temp_node = Cudd_BddToAdd(gbm, temp_node);
 

@@ -774,17 +774,9 @@ void generate_bdd_two(char *infix, char *cell_name)
 
 }
 
-
-
-
-
-DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, DdNode *temp_bdd_1, DdNode *temp_bdd_2, DdManager *gbm)
+char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *size_of_vars)
 {
     int i;
-    // DdManager *gbm;
-    // DdNode *bdd;
-    DdNode *temp_bdd[2];
-    // DdNode **vars;
     char *postfix = NULL;
     stack_bdd *cur_stack;
     int result = -5;
@@ -799,25 +791,17 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, Dd
     char *temp_string = NULL;
     int pos_left_string = 0;
     int var_num = 0;
-    char **vars_row = NULL;
+    // char **vars_row = NULL;
     int already_calculated = 0;
     char **bdd_out_name = NULL;
 
     char left_string[100], right_string[100];
 
-
-
-    // bdd = Cudd_bddNewVar(gbm);
-    // temp_bdd[0] = Cudd_bddNewVar(gbm);
-    // temp_bdd[1] = Cudd_bddNewVar(gbm);
-    temp_bdd[0] = temp_bdd_1;
-    temp_bdd[1] = temp_bdd_2;
-
     cur_stack = create_stack_bdd(100); // create stack //
 
     postfix = parse_infix(infix);
 
-    varNames = (char **) malloc(sizeof(char *) * 2);
+    // *varNames = (char **) malloc(sizeof(char *) * 2);
     temp_name = (char *) malloc(sizeof(char) * 5);
     for(i = 0; i < strlen(infix); i++)
     {
@@ -837,9 +821,9 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, Dd
             }
             for(j = 1; j < seperate_vars; j++)
             {
-                if(varNames[j] != NULL)
+                if( (*varNames)[j] != NULL)
                 {
-                    if(strcmp(varNames[j], temp_name) == 0)
+                    if(strcmp((*varNames)[j], temp_name) == 0)
                     {
                         var_exists = 1;
                     }
@@ -847,8 +831,8 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, Dd
             }
             if(var_exists != 1)
             {
-                varNames = (char **) realloc(varNames, sizeof(char *) * (seperate_vars + 2));
-                varNames[seperate_vars] = strdup(temp_name);
+                *varNames = (char **) realloc(*varNames, sizeof(char *) * (seperate_vars + 2));
+                (*varNames)[seperate_vars] = strdup(temp_name);
                 
                 seperate_vars++; 
             }
@@ -859,9 +843,9 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, Dd
     pos = 0;
     for(j = 1; j < seperate_vars; j++)
     {
-        if(varNames[j] != NULL)
+        if((*varNames)[j] != NULL)
         {
-            if(strcmp(varNames[j], temp_name) == 0)
+            if(strcmp( (*varNames)[j], temp_name) == 0)
             {
                 var_exists = 1;
             }
@@ -869,29 +853,21 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, Dd
     }
     if(var_exists != 1)
     {
-        varNames = (char **) realloc(varNames, sizeof(char *) * (seperate_vars + 2));
-        varNames[seperate_vars] = strdup(temp_name);
+        *varNames = (char **) realloc(*varNames, sizeof(char *) * (seperate_vars + 2));
+        *varNames[seperate_vars] = strdup(temp_name);
         
         seperate_vars++; 
     }
-    varNames[seperate_vars] = NULL;
-    varNames[0] = NULL;
+    (*varNames)[seperate_vars] = NULL;
+    (*varNames)[0] = NULL;
 
-    vars_size = seperate_vars-1;
+    vars_size = seperate_vars - 1;
 
-    // vars = (DdNode **) malloc(vars_size * sizeof(DdNode*));
-    if(vars == NULL)
-    {
-        printf("System Failure!\n");
-    }
-    // for(i = 0; i < vars_size; i++)
-    // {
-    //     vars[i] = Cudd_bddNewVar(gbm);
-    // }
+    *size_of_vars = vars_size;
 
     var_num = 0;
     pos = 0;
-    vars_row = (char **) malloc(sizeof(char *) * 1);
+    (*vars_row) = (char **) malloc(sizeof(char *) * 1);
     for(i = 0; i < strlen(infix); i++) // keep variables in row from infix //
     {
         if(identify_symbol(infix[i]) == 0 || identify_symbol(infix[i]) == -1)
@@ -907,8 +883,8 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, Dd
             {
                 continue;
             }
-            vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
-            vars_row[var_num] = strdup(temp_name);
+            (*vars_row) = (char **) realloc((*vars_row), sizeof(char *) * (var_num + 2));
+            (*vars_row)[var_num] = strdup(temp_name);
             
             var_num++; 
         }
@@ -916,10 +892,10 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, Dd
     if(identify_symbol(infix[i-1]) == 0 || identify_symbol(infix[i-1]) == -1)
     {
         temp_name[pos] = '\0';
-        vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
-        vars_row[var_num] = strdup(temp_name);
+        (*vars_row) = (char **) realloc((*vars_row), sizeof(char *) * (var_num + 2));
+        (*vars_row)[var_num] = strdup(temp_name);
         var_num++; 
-        vars_row[var_num] = NULL;
+        (*vars_row)[var_num] = NULL;
     }
 
     // var_found_counter = calloc(vars_size, sizeof(int));
@@ -930,21 +906,194 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, DdNode *bdd, Dd
     postfix = (char *) realloc (postfix, strlen(postfix) * 2);
     for(i = 0; i < var_num; i++)
     {
-        temp_string = strstr(postfix + already_calculated, vars_row[i]);
-        for(j = 0; j < (temp_string - postfix) + strlen(vars_row[i]); j++)
+        temp_string = strstr(postfix + already_calculated, (*vars_row)[i]);
+        for(j = 0; j < (temp_string - postfix) + strlen((*vars_row)[i]); j++)
         {
             left_string[j] = postfix[j];
         }
         left_string[j] = '/';
         left_string[j+1] = '\0';
 
-        strcpy(right_string, (postfix + ( (temp_string - postfix) + strlen(vars_row[i]) )));
+        strcpy(right_string, (postfix + ( (temp_string - postfix) + strlen((*vars_row)[i]) )));
         strcpy(postfix, left_string);
 
         strcat(postfix, right_string);
         
-        already_calculated = temp_string - postfix + strlen(vars_row[i]);
+        already_calculated = temp_string - postfix + strlen((*vars_row)[i]);
     }
+
+    return postfix;
+}
+
+
+
+DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **varNames, char **vars_row, char *postfix)
+{
+    int i;
+    // DdManager *gbm;
+    DdNode *bdd;
+    DdNode *temp_bdd[2];
+    // DdNode **vars;
+    // char *postfix = NULL;
+    stack_bdd *cur_stack;
+    int result = -5;
+    int seperate_vars = 1;
+    char *temp_name = NULL;
+    int pos = 0;
+    int var_exists = 0;
+    int j;
+    int vars_size = 0;
+    int temp_bdd_pos = 0;
+    char *out_name = NULL;
+    char *temp_string = NULL;
+    int pos_left_string = 0;
+    int var_num = 0;
+    // char **vars_row = NULL;
+    int already_calculated = 0;
+    char **bdd_out_name = NULL;
+
+    char left_string[100], right_string[100];
+
+
+
+    // bdd = Cudd_bddNewVar(gbm);
+    // temp_bdd[0] = Cudd_bddNewVar(gbm);
+    // temp_bdd[1] = Cudd_bddNewVar(gbm);
+    // temp_bdd[0] = temp_bdd_1;
+    // temp_bdd[1] = temp_bdd_2;
+
+    cur_stack = create_stack_bdd(100); // create stack //
+
+    // postfix = parse_infix(infix);
+
+    // varNames = (char **) malloc(sizeof(char *) * 2);
+    // temp_name = (char *) malloc(sizeof(char) * 5);
+    // for(i = 0; i < strlen(infix); i++)
+    // {
+    //     if(identify_symbol(infix[i]) == 0 || identify_symbol(infix[i]) == -1)
+    //     {
+    //         temp_name[pos] = infix[i];
+    //         pos++;
+    //     }
+    //     else if(identify_symbol(infix[i]) != -2)  // it is operator //
+    //     {
+    //         temp_name[pos] = '\0';
+    //         var_exists = 0;
+    //         pos = 0;
+    //         if(strcmp(temp_name, "\0") == 0)
+    //         {
+    //             continue;
+    //         }
+    //         for(j = 1; j < seperate_vars; j++)
+    //         {
+    //             if(varNames[j] != NULL)
+    //             {
+    //                 if(strcmp(varNames[j], temp_name) == 0)
+    //                 {
+    //                     var_exists = 1;
+    //                 }
+    //             }
+    //         }
+    //         if(var_exists != 1)
+    //         {
+    //             varNames = (char **) realloc(varNames, sizeof(char *) * (seperate_vars + 2));
+    //             varNames[seperate_vars] = strdup(temp_name);
+                
+    //             seperate_vars++; 
+    //         }
+    //     }
+    // }
+    // temp_name[pos] = '\0';
+    // var_exists = 0;
+    // pos = 0;
+    // for(j = 1; j < seperate_vars; j++)
+    // {
+    //     if(varNames[j] != NULL)
+    //     {
+    //         if(strcmp(varNames[j], temp_name) == 0)
+    //         {
+    //             var_exists = 1;
+    //         }
+    //     }
+    // }
+    // if(var_exists != 1)
+    // {
+    //     varNames = (char **) realloc(varNames, sizeof(char *) * (seperate_vars + 2));
+    //     varNames[seperate_vars] = strdup(temp_name);
+        
+    //     seperate_vars++; 
+    // }
+    // varNames[seperate_vars] = NULL;
+    // varNames[0] = NULL;
+
+    // vars_size = seperate_vars-1;
+
+    // // vars = (DdNode **) malloc(vars_size * sizeof(DdNode*));
+    // if(vars == NULL)
+    // {
+    //     printf("System Failure!\n");
+    // }
+    // // for(i = 0; i < vars_size; i++)
+    // // {
+    // //     vars[i] = Cudd_bddNewVar(gbm);
+    // // }
+
+    // var_num = 0;
+    // pos = 0;
+    // vars_row = (char **) malloc(sizeof(char *) * 1);
+    // for(i = 0; i < strlen(infix); i++) // keep variables in row from infix //
+    // {
+    //     if(identify_symbol(infix[i]) == 0 || identify_symbol(infix[i]) == -1)
+    //     {
+    //         temp_name[pos] = infix[i];
+    //         pos++;
+    //     }
+    //     else  if (identify_symbol(infix[i]) != -2)
+    //     {
+    //         temp_name[pos] = '\0';
+    //         pos = 0;
+    //         if(strcmp(temp_name, "\0") == 0)
+    //         {
+    //             continue;
+    //         }
+    //         vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
+    //         vars_row[var_num] = strdup(temp_name);
+            
+    //         var_num++; 
+    //     }
+    // }
+    // if(identify_symbol(infix[i-1]) == 0 || identify_symbol(infix[i-1]) == -1)
+    // {
+    //     temp_name[pos] = '\0';
+    //     vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
+    //     vars_row[var_num] = strdup(temp_name);
+    //     var_num++; 
+    //     vars_row[var_num] = NULL;
+    // }
+
+    // // var_found_counter = calloc(vars_size, sizeof(int));
+
+    // // !!! add a sentinel between variables in postfix !!! //
+    // already_calculated = 0;
+
+    // postfix = (char *) realloc (postfix, strlen(postfix) * 2);
+    // for(i = 0; i < var_num; i++)
+    // {
+    //     temp_string = strstr(postfix + already_calculated, vars_row[i]);
+    //     for(j = 0; j < (temp_string - postfix) + strlen(vars_row[i]); j++)
+    //     {
+    //         left_string[j] = postfix[j];
+    //     }
+    //     left_string[j] = '/';
+    //     left_string[j+1] = '\0';
+
+    //     strcpy(right_string, (postfix + ( (temp_string - postfix) + strlen(vars_row[i]) )));
+    //     strcpy(postfix, left_string);
+
+    //     strcat(postfix, right_string);
+        
+    //     already_calculated = temp_string - postfix + strlen(vars_row[i]);
+    // }
 
     for(i = 0; i < strlen(postfix); i++)
     {
