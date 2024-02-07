@@ -25,7 +25,7 @@ void annotate_bdds()
     int l;
     char **varNames = NULL;
     char **vars_row = NULL;
-    int size_of_vars;
+    int size_of_vars = 0;
     char *postfix = NULL;
 
     gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
@@ -77,7 +77,12 @@ void annotate_bdds()
 
                                 postfix = seperate_variables(libhash[lhash].function[ldepth][0], &varNames, &vars_row, &size_of_vars);
 
-                                vars = (DdNode **) realloc(vars, (size_of_vars + 1) * sizeof(DdNode *));
+                                ghash_added[0] = 13;
+                                ghash_added[1] = 16;
+                                gdepth_added[0] = 0;
+                                gdepth_added[1] = 0;
+
+                                vars = (DdNode **) realloc(vars, size_of_vars * sizeof(DdNode *));
                                 for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
                                 {
                                     if(libhash[lhash].pin_type[ldepth][k] == INPUT)
@@ -88,7 +93,7 @@ void annotate_bdds()
 
                                         for(l = 1; l < size_of_vars; l++)
                                         {
-                                            if(strcmp(curr_pin, varNames[l]) == 0)
+                                            if(strcmp(libhash[lhash].pin_names[ldepth][k] + 1, varNames[l]) == 0)
                                             {
                                                 break;
                                             }
@@ -103,6 +108,10 @@ void annotate_bdds()
                                                 {
                                                     break;
                                                 }
+                                            }
+                                            if(m == ghash_added_size)
+                                            {
+                                                printf("Elousa\n");
                                             }
                                             //vars = (DdNode **)realloc(vars, (vars_size + 1) * sizeof(DdNode *));
                                             vars[l - 1] = IO_vars[m];
@@ -123,7 +132,7 @@ void annotate_bdds()
                                 sprintf(name, "kati_%d", rand());
 
                                 // gatepinhashv[i].gatepin_bdd[j] = Cudd_bddNewVar(gbm);
-                                gatepinhashv[i].gatepin_bdd[j] = concat_bdds(libhash[lhash].function[ldepth][0], name, vars, varNames, vars_row, postfix);
+                                gatepinhashv[i].gatepin_bdd[j] = concat_bdds(libhash[lhash].function[ldepth][0], name, vars, varNames, vars_row, postfix, size_of_vars - 1);
                                 printf("write bdd to gatepin %s\n", gatepinhash[i].name[j]);
                                 if(vars != NULL)
                                 {

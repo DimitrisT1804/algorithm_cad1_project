@@ -927,7 +927,7 @@ char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *s
 
 
 
-DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **varNames, char **vars_row, char *postfix)
+DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **varNames, char **vars_row, char *postfix, int vars_size)
 {
     int i;
     // DdManager *gbm;
@@ -942,7 +942,7 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **varNames
     int pos = 0;
     int var_exists = 0;
     int j;
-    int vars_size = 0;
+    // int vars_size = 0;
     int temp_bdd_pos = 0;
     char *out_name = NULL;
     char *temp_string = NULL;
@@ -1082,7 +1082,7 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **varNames
     //     temp_string = strstr(postfix + already_calculated, vars_row[i]);
     //     for(j = 0; j < (temp_string - postfix) + strlen(vars_row[i]); j++)
     //     {
-    //         left_string[j] = postfix[j];
+    //         left_string[j] =  postfix[j];
     //     }
     //     left_string[j] = '/';
     //     left_string[j+1] = '\0';
@@ -1227,7 +1227,7 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **varNames
     }
     free(vars_row);
 
-    for(i = 0; i < seperate_vars; i++)
+    for(i = 1; i < seperate_vars; i++)
     {
         free(varNames[i]);
     }

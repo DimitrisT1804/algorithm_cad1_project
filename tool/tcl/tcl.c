@@ -1514,6 +1514,8 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
     temp_node = gatepinhashv[ghash].gatepin_bdd[gdepth];
     temp_node = Cudd_BddToAdd(gbm, temp_node);
 
+    char *varNames[] = {"N1", "N2", "N3", "N6", "N7", "clk", NULL};
+
     Cudd_DumpDot(gbm , 1, &temp_node, NULL, NULL, dotfile);
     fclose(dotfile);
 
