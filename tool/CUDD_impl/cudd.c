@@ -851,13 +851,16 @@ char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *s
             }
         }
     }
-    if(var_exists != 1)
-    {
-        *varNames = (char **) realloc(*varNames, sizeof(char *) * (seperate_vars + 2));
-        *varNames[seperate_vars] = strdup(temp_name);
-        
-        seperate_vars++; 
-    }
+    // if(strcmp(temp_name, "\0") != 0)
+    // {
+        if(var_exists != 1)
+        {
+            *varNames = (char **) realloc(*varNames, sizeof(char *) * (seperate_vars + 2));
+            (*varNames)[seperate_vars] = strdup(temp_name);
+            
+            seperate_vars++; 
+        }
+    // }    
     (*varNames)[seperate_vars] = NULL;
     (*varNames)[0] = NULL;
 

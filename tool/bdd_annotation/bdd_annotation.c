@@ -77,8 +77,8 @@ void annotate_bdds()
 
                                 postfix = seperate_variables(libhash[lhash].function[ldepth][0], &varNames, &vars_row, &size_of_vars);
 
-                                ghash_added[0] = 13;
-                                ghash_added[1] = 16;
+                                ghash_added[0] = 17;
+                                ghash_added[1] = 22;
                                 gdepth_added[0] = 0;
                                 gdepth_added[1] = 0;
 
@@ -132,7 +132,7 @@ void annotate_bdds()
                                 sprintf(name, "kati_%d", rand());
 
                                 // gatepinhashv[i].gatepin_bdd[j] = Cudd_bddNewVar(gbm);
-                                gatepinhashv[i].gatepin_bdd[j] = concat_bdds(libhash[lhash].function[ldepth][0], name, vars, varNames, vars_row, postfix, size_of_vars - 1);
+                                gatepinhashv[i].gatepin_bdd[j] = concat_bdds(libhash[lhash].function[ldepth][0], name, vars, varNames, vars_row, postfix, size_of_vars);
                                 printf("write bdd to gatepin %s\n", gatepinhash[i].name[j]);
                                 if(vars != NULL)
                                 {
@@ -155,4 +155,6 @@ void annotate_bdds()
         }   
     }
     // edo mallon prepei na kano free ton manager i allios sto clear_design //
+
+    printf("Number of vars is %d\n", Cudd_ReadSize(gbm));
 }
