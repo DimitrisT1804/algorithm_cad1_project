@@ -4,6 +4,18 @@ of each pin, type, and in which component it exists */
 
 #include "structs.h"
 
+gatePins *gatepinhash;
+int gatepinhash_size;
+Lib *libhash; 
+int libhash_size;
+char **libarray; // array to store cells temporarily to count them //
+int libarray_size;
+Components *comphash;
+int comphash_size;
+GatepinhashVisited *gatepinhashv;
+int isLevelized;
+int max_design_level;
+
 /* #################### Gatepins_init() #################### */
 /* This function just initialize all fields of gatepin hash */
 void Gatepins_init()

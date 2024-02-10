@@ -1,5 +1,6 @@
 #include "bdd_annotation.h"
 
+DdManager *gbm;
 
 void annotate_bdds()
 {
@@ -56,6 +57,12 @@ void annotate_bdds()
         }
     }
 
+
+    for(i = 0; i < ghash_added_size; i++)
+    {
+        printf("IO_vars[%d] = %s\n", i, gatepinhash[ghash_added[i]].name[gdepth_added[i]]);
+    }
+
     for(level = 1; level < max_design_level; level++)
     {
         for(i = 0; i < gatepinhash_size; i++)
@@ -77,10 +84,10 @@ void annotate_bdds()
 
                                 postfix = seperate_variables(libhash[lhash].function[ldepth][0], &varNames, &vars_row, &size_of_vars);
 
-                                ghash_added[0] = 17;
-                                ghash_added[1] = 22;
-                                gdepth_added[0] = 0;
-                                gdepth_added[1] = 0;
+                                // ghash_added[0] = 60;
+                                // ghash_added[1] = 64;
+                                // gdepth_added[0] = 0;
+                                // gdepth_added[1] = 0;
 
                                 vars = (DdNode **) realloc(vars, size_of_vars * sizeof(DdNode *));
                                 for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)

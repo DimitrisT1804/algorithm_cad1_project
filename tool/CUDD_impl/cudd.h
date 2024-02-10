@@ -9,6 +9,7 @@
 #include "../convert_infix/parse_infix.h"
 #include "stack_bdd.h"
 #include "../bdd_annotation/bdd_annotation.h"
+#include "../structs/structs.h"
 
 enum operators 
 {
@@ -24,5 +25,7 @@ void generate_bdd(char *infix, char *cell_name);
 void generate_bdd_two(char *infix, char *cell_name);
 DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **, char **, char *, int);
 char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *size_of_vars);
+
+
 
 #endif

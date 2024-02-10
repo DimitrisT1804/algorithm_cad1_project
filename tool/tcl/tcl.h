@@ -5,7 +5,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <unistd.h>
-#include <tcl8.6/tcl.h>
+// #include <tcl8.6/tcl.h>
+#include <tcl.h>
 #include <limits.h>
 #include <syscall.h>
 #include <sys/types.h>
@@ -17,6 +18,7 @@
 #include "../signals/signals.h"
 #include "../CUDD_impl/toposort.h"
 #include "../bdd_annotation/bdd_annotation.h"
+#include "../structs/structs.h"
 
 
 /* Global array that stores all custom, system and TCL commands for tab-completion */

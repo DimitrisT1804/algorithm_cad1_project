@@ -1,5 +1,8 @@
 #include "signals.h"
 
+volatile bool exit_requested;
+volatile bool ctrl_c_pressed;
+
 void segfault_handler(int signum) 
 {
     fprintf(stderr, ANSI_COLOR_RED "It is a feaature not a bug!\n" ANSI_COLOR_RESET);

@@ -68,20 +68,17 @@ struct gatepinhashVisited
 typedef struct gatepinhashVisited GatepinhashVisited;
 
 
-gatePins *gatepinhash;
-int gatepinhash_size;
-
-Lib *libhash; 
-int libhash_size;
-char **libarray; // array to store cells temporarily to count them //
-int libarray_size;
-
-Components *comphash;
-int comphash_size;
-
-GatepinhashVisited *gatepinhashv;
-int isLevelized;
-int max_design_level;
+extern gatePins *gatepinhash;
+extern int gatepinhash_size;
+extern Lib *libhash; 
+extern int libhash_size;
+extern char **libarray; // array to store cells temporarily to count them //
+extern int libarray_size;
+extern Components *comphash;
+extern int comphash_size;
+extern GatepinhashVisited *gatepinhashv;
+extern int isLevelized;
+extern int max_design_level;
 
 /* gatepinhash functions*/
 void Gatepins_init();
@@ -94,7 +91,6 @@ void gatepin_characterize_IOs();
 void get_predecessors_pin(char *gatepin, int *ghash, int *gdepth);
 
 unsigned int hash_function(const char *str, unsigned int num_buckets);
-
 
 /* libhash function */
 void Lib_init();

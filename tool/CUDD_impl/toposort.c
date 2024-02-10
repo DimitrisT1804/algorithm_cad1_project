@@ -1,6 +1,9 @@
 // Toposort algorithm source file //
 #include "toposort.h"
 
+Gatepin_pos *sorted_gatepins;   // L //
+Gatepin_pos *input_nodes;       // S //
+
 Gatepin_pos* init_gatepin_pos(Gatepin_pos *gatepin)
 {
     gatepin = (Gatepin_pos *) malloc(sizeof(Gatepin_pos));
