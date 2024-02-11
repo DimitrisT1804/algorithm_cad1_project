@@ -724,6 +724,9 @@ void gatepinhashVisited_free()
     free(gatepinhashv);
 }
 
+
+// If pin is Input and predecessor is PO skip it and go to next //
+// predecessor                                                  //
 void get_predecessors_pin(char *gatepin, int *ghash, int *gdepth)
 {
     int i;
@@ -731,6 +734,14 @@ void get_predecessors_pin(char *gatepin, int *ghash, int *gdepth)
     int k;
     int con_ghash;
     int con_gdepth;
+    int cur_ghash;
+    int cur_gdepth;
+    int chash;
+    int cdepth;
+    int lhash;
+    int ldepth;
+    char *curr_gatepin = NULL;
+    int is_input = 0;
 
     *ghash = -1;
     *gdepth = -1;
@@ -738,6 +749,38 @@ void get_predecessors_pin(char *gatepin, int *ghash, int *gdepth)
     {
         return;
     }
+
+    get_gatepin_indices(gatepin, &cur_ghash, &cur_gdepth);
+    if(cur_gdepth == -1)
+    {
+        return;
+    }
+
+    // chash = gatepinhash[cur_ghash].parentComponent[cur_gdepth];
+    // cdepth = gatepinhash[cur_ghash].parentComponentDepth[cur_gdepth];
+    // lhash = comphash[chash].lib_type[cdepth];
+    // ldepth = comphash[chash].lib_type_depth[cdepth];
+
+    // for(i = 0; i < libhash[lhash].pin_count[ldepth]; i++)
+    // {
+    //     curr_gatepin = (char *) calloc(strlen(comphash[chash].name[cdepth]) + 1 + strlen(libhash[lhash].pin_names[ldepth][i]), sizeof(char));
+    //     strcpy(curr_gatepin, comphash[chash].name[cdepth]);
+    //     strcat(curr_gatepin, libhash[lhash].pin_names[ldepth][i]);
+    //     if(strcmp(curr_gatepin, gatepinhash[cur_ghash].name[cur_gdepth]) == 0)
+    //     {
+    //         free(curr_gatepin);
+    //         curr_gatepin = NULL;
+    //         break;
+    //     }
+    //     free(curr_gatepin);
+    //     curr_gatepin = NULL;
+    // }
+    // if(libhash[lhash].pin_type[ldepth][i] == INPUT)
+    // {
+    //     is_input = 1;   // gatepin is input //
+    // }
+
+    is_input = !(check_gatepin_type(cur_ghash, cur_gdepth));
 
     for(i = 0; i < gatepinhash_size; i++)
     {
@@ -751,6 +794,13 @@ void get_predecessors_pin(char *gatepin, int *ghash, int *gdepth)
                     con_gdepth = gatepinhash[i].pinConnDepth[j][k];
                     if(strcmp(gatepinhash[con_ghash].name[con_gdepth], gatepin) == 0)
                     {
+                        if(is_input == 1)
+                        {
+                            if(gatepinhash[i].type[j] == PO)
+                            {
+                                continue;
+                            }
+                        }
                         *ghash = i;
                         *gdepth = j;
                         return;

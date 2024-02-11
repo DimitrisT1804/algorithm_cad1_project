@@ -84,6 +84,10 @@ void annotate_bdds()
 
                                 postfix = seperate_variables(libhash[lhash].function[ldepth][0], &varNames, &vars_row, &size_of_vars);
 
+                                // for(i = 0; i < ghash_added_size; i++)
+                                // {
+                                //     printf("IO_vars[%d] = %s\n", i, gatepinhash[ghash_added[i]].name[gdepth_added[i]]);
+                                // }
                                 // ghash_added[0] = 60;
                                 // ghash_added[1] = 64;
                                 // gdepth_added[0] = 0;
