@@ -45,6 +45,7 @@ void annotate_bdds()
                 {
                     IO_vars = (DdNode **)realloc(IO_vars, (IO_vars_size + 1) * sizeof(DdNode *));
                     IO_vars[IO_vars_size] = Cudd_bddNewVar(gbm);
+                    Cudd_Ref(IO_vars[IO_vars_size]);
                     IO_vars_size++; 
 
                     ghash_added = (int *)realloc(ghash_added, (ghash_added_size + 1) * sizeof(int));
@@ -152,6 +153,8 @@ void annotate_bdds()
                                     vars_size = 0;
                                 }
 
+                                Cudd_ReduceHeap(gbm, CUDD_REORDER_SYMM_SIFT, 100);
+
                                 varNames = NULL;
                                 vars_row = NULL;
                                 size_of_vars = 0;
@@ -168,4 +171,15 @@ void annotate_bdds()
     // edo mallon prepei na kano free ton manager i allios sto clear_design //
 
     printf("Number of vars is %d\n", Cudd_ReadSize(gbm));
+
+    // for(i = 0; i < IO_vars_size; i++)
+    // {
+    //     Cudd_RecursiveDeref(gbm, IO_vars[i]);
+    // }
+    Cudd_DebugCheck(gbm);
+    
+
+    printf ("Nodes are %d\n", Cudd_CheckZeroRef(gbm));  
+
+    // Cudd_Quit(gbm);
 }

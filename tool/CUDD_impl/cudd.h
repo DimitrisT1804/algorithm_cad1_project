@@ -1,6 +1,8 @@
 #ifndef CUDD_H
 #define CUDD_H
 
+// #define DD_DEBUG
+
 #include <cudd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,6 +27,7 @@ void generate_bdd(char *infix, char *cell_name);
 void generate_bdd_two(char *infix, char *cell_name);
 DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **, char **, char *, int);
 char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *size_of_vars);
+int find_same_nodes(DdNode **, DdNode *, int);
 
 
 

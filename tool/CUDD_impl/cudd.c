@@ -928,7 +928,18 @@ char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *s
     return postfix;
 }
 
-
+int find_same_nodes(DdNode **vars, DdNode *node, int size)
+{
+    int i;
+    for(i = 0; i < size; i++)
+    {
+        if(vars[i] == node)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **varNames, char **vars_row, char *postfix, int vars_size)
 {
@@ -954,6 +965,8 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **varNames
     // char **vars_row = NULL;
     int already_calculated = 0;
     char **bdd_out_name = NULL;
+    DdNode *get_node_1;
+    DdNode *get_node_2;
 
     char left_string[100], right_string[100];
 
@@ -966,137 +979,6 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **varNames
     // temp_bdd[1] = temp_bdd_2;
 
     cur_stack = create_stack_bdd(100); // create stack //
-
-    // postfix = parse_infix(infix);
-
-    // varNames = (char **) malloc(sizeof(char *) * 2);
-    // temp_name = (char *) malloc(sizeof(char) * 5);
-    // for(i = 0; i < strlen(infix); i++)
-    // {
-    //     if(identify_symbol(infix[i]) == 0 || identify_symbol(infix[i]) == -1)
-    //     {
-    //         temp_name[pos] = infix[i];
-    //         pos++;
-    //     }
-    //     else if(identify_symbol(infix[i]) != -2)  // it is operator //
-    //     {
-    //         temp_name[pos] = '\0';
-    //         var_exists = 0;
-    //         pos = 0;
-    //         if(strcmp(temp_name, "\0") == 0)
-    //         {
-    //             continue;
-    //         }
-    //         for(j = 1; j < seperate_vars; j++)
-    //         {
-    //             if(varNames[j] != NULL)
-    //             {
-    //                 if(strcmp(varNames[j], temp_name) == 0)
-    //                 {
-    //                     var_exists = 1;
-    //                 }
-    //             }
-    //         }
-    //         if(var_exists != 1)
-    //         {
-    //             varNames = (char **) realloc(varNames, sizeof(char *) * (seperate_vars + 2));
-    //             varNames[seperate_vars] = strdup(temp_name);
-                
-    //             seperate_vars++; 
-    //         }
-    //     }
-    // }
-    // temp_name[pos] = '\0';
-    // var_exists = 0;
-    // pos = 0;
-    // for(j = 1; j < seperate_vars; j++)
-    // {
-    //     if(varNames[j] != NULL)
-    //     {
-    //         if(strcmp(varNames[j], temp_name) == 0)
-    //         {
-    //             var_exists = 1;
-    //         }
-    //     }
-    // }
-    // if(var_exists != 1)
-    // {
-    //     varNames = (char **) realloc(varNames, sizeof(char *) * (seperate_vars + 2));
-    //     varNames[seperate_vars] = strdup(temp_name);
-        
-    //     seperate_vars++; 
-    // }
-    // varNames[seperate_vars] = NULL;
-    // varNames[0] = NULL;
-
-    // vars_size = seperate_vars-1;
-
-    // // vars = (DdNode **) malloc(vars_size * sizeof(DdNode*));
-    // if(vars == NULL)
-    // {
-    //     printf("System Failure!\n");
-    // }
-    // // for(i = 0; i < vars_size; i++)
-    // // {
-    // //     vars[i] = Cudd_bddNewVar(gbm);
-    // // }
-
-    // var_num = 0;
-    // pos = 0;
-    // vars_row = (char **) malloc(sizeof(char *) * 1);
-    // for(i = 0; i < strlen(infix); i++) // keep variables in row from infix //
-    // {
-    //     if(identify_symbol(infix[i]) == 0 || identify_symbol(infix[i]) == -1)
-    //     {
-    //         temp_name[pos] = infix[i];
-    //         pos++;
-    //     }
-    //     else  if (identify_symbol(infix[i]) != -2)
-    //     {
-    //         temp_name[pos] = '\0';
-    //         pos = 0;
-    //         if(strcmp(temp_name, "\0") == 0)
-    //         {
-    //             continue;
-    //         }
-    //         vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
-    //         vars_row[var_num] = strdup(temp_name);
-            
-    //         var_num++; 
-    //     }
-    // }
-    // if(identify_symbol(infix[i-1]) == 0 || identify_symbol(infix[i-1]) == -1)
-    // {
-    //     temp_name[pos] = '\0';
-    //     vars_row = (char **) realloc(vars_row, sizeof(char *) * (var_num + 2));
-    //     vars_row[var_num] = strdup(temp_name);
-    //     var_num++; 
-    //     vars_row[var_num] = NULL;
-    // }
-
-    // // var_found_counter = calloc(vars_size, sizeof(int));
-
-    // // !!! add a sentinel between variables in postfix !!! //
-    // already_calculated = 0;
-
-    // postfix = (char *) realloc (postfix, strlen(postfix) * 2);
-    // for(i = 0; i < var_num; i++)
-    // {
-    //     temp_string = strstr(postfix + already_calculated, vars_row[i]);
-    //     for(j = 0; j < (temp_string - postfix) + strlen(vars_row[i]); j++)
-    //     {
-    //         left_string[j] =  postfix[j];
-    //     }
-    //     left_string[j] = '/';
-    //     left_string[j+1] = '\0';
-
-    //     strcpy(right_string, (postfix + ( (temp_string - postfix) + strlen(vars_row[i]) )));
-    //     strcpy(postfix, left_string);
-
-    //     strcat(postfix, right_string);
-        
-    //     already_calculated = temp_string - postfix + strlen(vars_row[i]);
-    // }
 
     for(i = 0; i < strlen(postfix); i++)
     {
@@ -1126,29 +1008,78 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **varNames
         }
         else if (result == 3)   // operator * //
         {
+            get_node_1 = pop_bdd(cur_stack);
+            get_node_2 = pop_bdd(cur_stack);
+            temp_bdd[temp_bdd_pos] = Cudd_bddAnd(gbm, get_node_1, get_node_2);
 
-            temp_bdd[temp_bdd_pos] = Cudd_bddAnd(gbm, pop_bdd(cur_stack), pop_bdd(cur_stack));
+            Cudd_Ref(temp_bdd[temp_bdd_pos]);
+
+            if(find_same_nodes(vars, get_node_1, vars_size) == 0)
+            {
+                Cudd_RecursiveDeref(gbm, get_node_1);
+            }
+
+            if(find_same_nodes(vars, get_node_2, vars_size) == 0)
+            {
+                Cudd_RecursiveDeref(gbm, get_node_2);
+            }
 
             push_bdd(cur_stack, temp_bdd[temp_bdd_pos]);
             temp_bdd_pos++;
         }
         else if (result == 2)   // operator + //
         {
-            temp_bdd[temp_bdd_pos] = Cudd_bddOr(gbm, pop_bdd(cur_stack), pop_bdd(cur_stack));
+            get_node_1 = pop_bdd(cur_stack);
+            get_node_2 = pop_bdd(cur_stack);
+            temp_bdd[temp_bdd_pos] = Cudd_bddOr(gbm, get_node_1, get_node_2);
+            // temp_bdd[temp_bdd_pos] = Cudd_bddOr(gbm, pop_bdd(cur_stack), pop_bdd(cur_stack));
+            Cudd_Ref(temp_bdd[temp_bdd_pos]);
+
+            if(find_same_nodes(vars, get_node_1, vars_size) == 0)
+            {
+                Cudd_RecursiveDeref(gbm, get_node_1);
+            }
+            
+            if(find_same_nodes(vars, get_node_2, vars_size) == 0)
+            {
+                Cudd_RecursiveDeref(gbm, get_node_2);
+            }
 
             push_bdd(cur_stack, temp_bdd[temp_bdd_pos]);
             temp_bdd_pos++;
         }
         else if (result == 1) // operator ^ //
         {
-            temp_bdd[temp_bdd_pos] = Cudd_bddXor(gbm, pop_bdd(cur_stack), pop_bdd(cur_stack));
+            get_node_1 = pop_bdd(cur_stack);
+            get_node_2 = pop_bdd(cur_stack);
+            temp_bdd[temp_bdd_pos] = Cudd_bddXor(gbm, get_node_1, get_node_2);
+            // temp_bdd[temp_bdd_pos] = Cudd_bddXor(gbm, pop_bdd(cur_stack), pop_bdd(cur_stack));
+            Cudd_Ref(temp_bdd[temp_bdd_pos]);
+
+            if(find_same_nodes(vars, get_node_1, vars_size) == 0)
+            {
+                Cudd_RecursiveDeref(gbm, get_node_1);
+            }
+            
+            if(find_same_nodes(vars, get_node_2, vars_size) == 0)
+            {
+                Cudd_RecursiveDeref(gbm, get_node_2);
+            }
 
             push_bdd(cur_stack, temp_bdd[temp_bdd_pos]);
             temp_bdd_pos++;
         }
         else if (result == 4)
         {
-            temp_bdd[temp_bdd_pos] = Cudd_Not(pop_bdd(cur_stack));
+            get_node_1 = pop_bdd(cur_stack);
+            // temp_bdd[temp_bdd_pos] = Cudd_Not(pop_bdd(cur_stack));
+            temp_bdd[temp_bdd_pos] = Cudd_Not(get_node_1);
+            Cudd_Ref(temp_bdd[temp_bdd_pos]);
+
+            if(find_same_nodes(vars, get_node_1, vars_size) == 0)
+            {
+                Cudd_RecursiveDeref(gbm, get_node_1);
+            }
 
             push_bdd(cur_stack, temp_bdd[temp_bdd_pos]);
             temp_bdd_pos++;
@@ -1158,13 +1089,18 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **varNames
     if(isEmpty_bdd(cur_stack))
     {
         bdd = temp_bdd[0];
+        // Cudd_RecursiveDeref(gbm, temp_bdd[0]);
     }
     else
     {
-        bdd = pop_bdd(cur_stack);
+        get_node_1 = pop_bdd(cur_stack);
+        bdd = get_node_1;
+        // Cudd_RecursiveDeref(gbm, get_node_1);
     }
 
     Cudd_Ref(bdd);
+
+    // Cudd_RecursiveDeref(gbm, bdd);
 
     // bdd = Cudd_BddToAdd(gbm, bdd);
 
