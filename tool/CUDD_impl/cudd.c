@@ -778,28 +778,20 @@ char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *s
 {
     int i;
     char *postfix = NULL;
-    stack_bdd *cur_stack;
-    int result = -5;
     int seperate_vars = 1;
     char *temp_name = NULL;
     int pos = 0;
     int var_exists = 0;
     int j;
     int vars_size = 0;
-    int temp_bdd_pos = 0;
-    char *out_name = NULL;
     char *temp_string = NULL;
-    int pos_left_string = 0;
     int var_num = 0;
-    // char **vars_row = NULL;
     int already_calculated = 0;
-    char **bdd_out_name = NULL;
 
     char left_string[100], right_string[100];
 
     postfix = parse_infix(infix);
 
-    // *varNames = (char **) malloc(sizeof(char *) * 2);
     temp_name = (char *) malloc(sizeof(char) * 5);
     for(i = 0; i < strlen(infix); i++)
     {
@@ -849,16 +841,15 @@ char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *s
             }
         }
     }
-    // if(strcmp(temp_name, "\0") != 0)
-    // {
-        if(var_exists != 1)
-        {
-            *varNames = (char **) realloc(*varNames, sizeof(char *) * (seperate_vars + 2));
-            (*varNames)[seperate_vars] = strdup(temp_name);
-            
-            seperate_vars++; 
-        }
-    // }    
+
+    if(var_exists != 1)
+    {
+        *varNames = (char **) realloc(*varNames, sizeof(char *) * (seperate_vars + 2));
+        (*varNames)[seperate_vars] = strdup(temp_name);
+        
+        seperate_vars++; 
+    }
+ 
     (*varNames)[seperate_vars] = NULL;
     (*varNames)[0] = NULL;
 
@@ -898,8 +889,6 @@ char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *s
         var_num++; 
         (*vars_row)[var_num] = NULL;
     }
-
-    // var_found_counter = calloc(vars_size, sizeof(int));
 
     // !!! add a sentinel between variables in postfix !!! //
     already_calculated = 0;
@@ -942,42 +931,23 @@ int find_same_nodes(DdNode **vars, DdNode *node, int size)
     return 0;
 }
 
-DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **varNames, char **vars_row, char *postfix, int vars_size)
+DdNode *concat_bdds(DdNode **vars, char **varNames, char **vars_row, char *postfix, int vars_size)
 {
     int i;
-    // DdManager *gbm;
     DdNode *bdd;
     DdNode *temp_bdd[2];
-    // DdNode **vars;
-    // char *postfix = NULL;
     stack_bdd *cur_stack;
     int result = -5;
     int seperate_vars = 1;
     char *temp_name = NULL;
-    int pos = 0;
-    int var_exists = 0;
     int j;
-    // int vars_size = 0;
     int temp_bdd_pos = 0;
-    char *out_name = NULL;
-    char *temp_string = NULL;
     int pos_left_string = 0;
     int var_num = 0;
-    // char **vars_row = NULL;
-    int already_calculated = 0;
-    char **bdd_out_name = NULL;
     DdNode *get_node_1;
     DdNode *get_node_2;
 
-    char left_string[100], right_string[100];
-
-
-
-    // bdd = Cudd_bddNewVar(gbm);
-    // temp_bdd[0] = Cudd_bddNewVar(gbm);
-    // temp_bdd[1] = Cudd_bddNewVar(gbm);
-    // temp_bdd[0] = temp_bdd_1;
-    // temp_bdd[1] = temp_bdd_2;
+    char left_string[100];
 
     cur_stack = create_stack_bdd(100); // create stack //
 
@@ -1101,65 +1071,8 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **varNames
 
     Cudd_Ref(bdd);
 
-    // Cudd_RecursiveDeref(gbm, bdd);
-
-    // bdd = Cudd_BddToAdd(gbm, bdd);
-
-    // out_name = malloc(sizeof(char) * (strlen(".dot ") + strlen(cell_name) + strlen("bdd_output/ ")) );
-    // strcpy(out_name, "bdd_output/");
-    // strcat(out_name, cell_name);
-    // strcat(out_name, ".dot");
-
-    // #ifdef DEBUG
-    // printf("The out_name is %s\n", out_name);
-    // #endif
-
-    // bdd_out_name = malloc(2*sizeof(char *));
-    // bdd_out_name[0] = malloc(strlen(cell_name) + 1);
-    // strcpy(bdd_out_name[0], cell_name);
-    // bdd_out_name[1] = NULL;
-
-    // // varNames[0] = strdup("test");
-
-    // // char **innamesArray = (char **)malloc(sizeof(char *) * (Cudd_ReadSize(gbm)));
-    
-    // // for (int i = 0; i < Cudd_ReadSize(gbm); i++) 
-    // // {
-    // //     //innamesArray[i] = (char *)malloc(strlen(innames[i]) + 1);
-    // //     innamesArray[i] = (char *) malloc(10);
-    // //     if(i > 2)
-    // //     {
-    // //         strcpy(innamesArray[i], varNames[i-2]);
-    // //     }
-    // //     else
-    // //     {
-    // //         strcpy(innamesArray[i], "test");
-    // //     }
-    // // }
-
-    // FILE *dotFile;
-    // dotFile = fopen(out_name, "w");
-    // Cudd_DumpDot(gbm, 1, &bdd, NULL, (const char **) bdd_out_name, dotFile);
-    // fclose(dotFile);
-
-    // // print_dd(gbm, bdd, 2, 2, out_name); // prints info about bdd //
-    // Cudd_PrintMinterm(gbm, bdd); // prints minterms of bdd //
-    // Cudd_PrintDebug(gbm, bdd, 1, 3);
-
-    // free(out_name);
-
-    // for (int i = 0; i < Cudd_ReadSize(gbm); i++) 
-    // {
-    //     free(innamesArray[i]);
-    // }
-    // free(innamesArray);
-
-    // Cudd_Quit(gbm);
-    // gbm = NULL;
-
     free(temp_name);
     free(postfix);
-    // free(vars);
 
     for(i = 0; i < var_num; i++)
     {
@@ -1172,10 +1085,6 @@ DdNode *concat_bdds(char *infix, char *cell_name, DdNode **vars, char **varNames
         free(varNames[i]);
     }
     free(varNames);
-
-    // free (bdd_out_name[0]);
-    // free(bdd_out_name);
-
     delete_stack_bdd(cur_stack);
 
     return bdd;

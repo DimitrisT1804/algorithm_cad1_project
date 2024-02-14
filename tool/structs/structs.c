@@ -736,11 +736,6 @@ void get_predecessors_pin(char *gatepin, int *ghash, int *gdepth)
     int con_gdepth;
     int cur_ghash;
     int cur_gdepth;
-    int chash;
-    int cdepth;
-    int lhash;
-    int ldepth;
-    char *curr_gatepin = NULL;
     int is_input = 0;
 
     *ghash = -1;

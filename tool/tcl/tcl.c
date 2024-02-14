@@ -556,6 +556,11 @@ int clear_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
 
     isLevelized = 0;
     max_design_level = -2;
+    if(gbm != NULL)
+    {
+        Cudd_Quit(gbm);
+        gbm = NULL;
+    }
     return TCL_OK;
 }
 
@@ -1515,13 +1520,29 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
     temp_node = Cudd_BddToAdd(gbm, temp_node);
 
     // const char *varNames[] = {"clk", "N3", "N2", "N1", "N7", "N6", NULL};
+    
+    char *convert_dot = malloc( (2 * strlen(libhash[lhash].name[ldepth]) ) + strlen("dot -Tpng -Gpdi=1000 -o bdd_output/ bdd_output/ .png .dot") + 5);
 
     Cudd_DumpDot(gbm , 1, &temp_node, (const char **) NamesDot, NULL, dotfile);
     fclose(dotfile);
+    strcpy(convert_dot, "dot -Tpng -Gdpi=1000 -o bdd_output/");
+    strcat(convert_dot, libhash[lhash].name[ldepth]);
+    strcat(convert_dot, ".png bdd_output/");
+    strcat(convert_dot, libhash[lhash].name[ldepth]);
+    strcat(convert_dot, ".dot");
 
+    system(convert_dot);
+
+    strcpy(convert_dot, "xdg-open bdd_output/");
+    strcat(convert_dot, libhash[lhash].name[ldepth]);
+    strcat(convert_dot, ".png");
+
+    system(convert_dot);
+
+    free(convert_dot);
     free(filename);
 
-    Cudd_PrintMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]);
+    // Cudd_PrintMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]);
 
     return TCL_OK;
 }
