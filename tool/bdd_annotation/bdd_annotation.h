@@ -4,5 +4,6 @@
 #include "../CUDD_impl/cudd.h"
 
 extern DdManager *gbm;
+extern char **NamesDot;
 
 void annotate_bdds();

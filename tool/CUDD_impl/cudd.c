@@ -797,8 +797,6 @@ char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *s
 
     char left_string[100], right_string[100];
 
-    cur_stack = create_stack_bdd(100); // create stack //
-
     postfix = parse_infix(infix);
 
     // *varNames = (char **) malloc(sizeof(char *) * 2);
@@ -933,9 +931,12 @@ int find_same_nodes(DdNode **vars, DdNode *node, int size)
     int i;
     for(i = 0; i < size; i++)
     {
-        if(vars[i] == node)
+        if(vars[i] != NULL)
         {
-            return 1;
+            if(vars[i] == node)
+            {
+                return 1;
+            }
         }
     }
     return 0;

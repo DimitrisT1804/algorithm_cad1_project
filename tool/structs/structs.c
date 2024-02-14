@@ -820,6 +820,15 @@ int check_gatepin_type(int ghash, int gdepth)
     int k;
     char *curr_pin = NULL;
 
+    if(gatepinhash[ghash].type[gdepth] == PO)
+    {
+        return 1;
+    }
+    else if(gatepinhash[ghash].type[gdepth] == IO_TYPE)
+    {
+        return 0;
+    }
+
     chash = gatepinhash[ghash].parentComponent[gdepth];
     cdepth = gatepinhash[ghash].parentComponentDepth[gdepth];
     lhash = comphash[chash].lib_type[cdepth];

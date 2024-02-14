@@ -1,6 +1,7 @@
 #include "bdd_annotation.h"
 
 DdManager *gbm;
+char **NamesDot = NULL;
 
 void annotate_bdds()
 {
@@ -152,6 +153,8 @@ void annotate_bdds()
                                     vars = NULL;
                                     vars_size = 0;
                                 }
+                                
+                                free(name);
 
                                 Cudd_ReduceHeap(gbm, CUDD_REORDER_SYMM_SIFT, 100);
 
@@ -181,5 +184,13 @@ void annotate_bdds()
 
     printf ("Nodes are %d\n", Cudd_CheckZeroRef(gbm));  
 
+    NamesDot = (char **)realloc(NamesDot, (IO_vars_size + 1) * sizeof(char *));
+    for(i = 0; i < IO_vars_size; i++)
+    {
+        NamesDot[i] = (char *)calloc(strlen(gatepinhash[ghash_added[i]].name[gdepth_added[i]]) + 1, sizeof(char));
+        strcpy(NamesDot[i], gatepinhash[ghash_added[i]].name[gdepth_added[i]]);
+    }
+
     // Cudd_Quit(gbm);
+    // return varNames;
 }

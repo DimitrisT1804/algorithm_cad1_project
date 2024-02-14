@@ -1514,12 +1514,14 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
     temp_node = gatepinhashv[ghash].gatepin_bdd[gdepth];
     temp_node = Cudd_BddToAdd(gbm, temp_node);
 
-    char *varNames[] = {"N1", "N2", "N3", "N6", "N7", "clk", NULL};
+    // const char *varNames[] = {"clk", "N3", "N2", "N1", "N7", "N6", NULL};
 
-    Cudd_DumpDot(gbm , 1, &temp_node, NULL, NULL, dotfile);
+    Cudd_DumpDot(gbm , 1, &temp_node, (const char **) NamesDot, NULL, dotfile);
     fclose(dotfile);
 
     free(filename);
+
+    Cudd_PrintMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]);
 
     return TCL_OK;
 }
