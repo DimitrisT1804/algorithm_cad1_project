@@ -1502,6 +1502,12 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
         return TCL_ERROR;
     }
 
+    if(check_gatepin_type(ghash, gdepth) == 0)  // it is input //
+    {
+        printf(ANSI_COLOR_RED "ERROR: Gatepin is input" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
     chash = gatepinhash[ghash].parentComponent[gdepth];
     cdepth = gatepinhash[ghash].parentComponentDepth[gdepth];
     lhash = comphash[chash].lib_type[cdepth];
@@ -1525,6 +1531,9 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
 
     Cudd_DumpDot(gbm , 1, &temp_node, (const char **) NamesDot, NULL, dotfile);
     fclose(dotfile);
+    
+    printf(ANSI_COLOR_GREEN "Done writing dot file for gatepin %s\n" ANSI_COLOR_RESET, gatepin);
+
     strcpy(convert_dot, "dot -Tpng -Gdpi=1000 -o bdd_output/");
     strcat(convert_dot, libhash[lhash].name[ldepth]);
     strcat(convert_dot, ".png bdd_output/");
