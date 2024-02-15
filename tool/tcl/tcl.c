@@ -1556,6 +1556,52 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
     return TCL_OK;
 }
 
+int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    char *gatepin = NULL;
+    int ghash;
+    int gdepth;
+    DdNode **path = NULL;
+
+    all_paths = NULL;
+    path_size = 0;
+    all_paths_size = 0;
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "gatepin");
+        return TCL_ERROR;
+    }
+
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    gatepin = Tcl_GetString(objv[1]);
+    if(gatepin == NULL)
+    {
+        printf("ERROR: Gatepin is NULL\n");
+        return TCL_ERROR;
+    }
+
+    get_gatepin_indices(gatepin, &ghash, &gdepth);
+    if(gdepth == -1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Gatepin NOT found" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    if(check_gatepin_type(ghash, gdepth) == 0)  // it is input //
+    {
+        printf(ANSI_COLOR_RED "ERROR: Gatepin is input" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    traverse_cudd(gatepinhashv[ghash].gatepin_bdd[gdepth], path);
+}
+
 int main(int argc, char *argv[])
 {
     char *text = NULL; // readline result //
@@ -1607,6 +1653,7 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "report_library_cell_BDD", report_library_cell_BDD, NULL, NULL);
     Tcl_CreateObjCommand(interp, "annotate_bdd", annotate_bdd, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_bdd_dot_gatepin", report_bdd_dot_gatepin, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "get_traverse_cudd", get_traverse_cudd, NULL, NULL);
 
 
     signal(SIGSEGV, segfault_handler);
