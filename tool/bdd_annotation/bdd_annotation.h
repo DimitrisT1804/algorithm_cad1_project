@@ -7,5 +7,8 @@
 
 extern DdManager *gbm;
 extern char **NamesDot;
+extern int *ghash_added;
+extern int *gdepth_added;
+extern int ghash_added_size;
 
 void annotate_bdds();

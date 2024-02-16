@@ -15,6 +15,7 @@ int comphash_size;
 GatepinhashVisited *gatepinhashv;
 int isLevelized;
 int max_design_level;
+GatepinhashProb *gatepinhash_prob;
 
 /* #################### Gatepins_init() #################### */
 /* This function just initialize all fields of gatepin hash */
@@ -660,6 +661,7 @@ void structs_init()
     Lib_init();
     comphash_init();
     gatepinhashVisited_init();
+    gatepinhashProb_init();
 }
 
 /* ######################## structs_free() ######################## */
@@ -674,6 +676,7 @@ void structs_free()
     libhash_free();
     comphash_free();
     gatepinhashVisited_free();
+    gatepinhashProb_free();
 
     for(i = 0; i < libarray_size; i++)
     {
@@ -688,6 +691,7 @@ void structs_free()
     comphash = NULL;
     libhash = NULL;
     gatepinhashv = NULL;
+    gatepinhash_prob = NULL;
 
     libarray = NULL;
     libarray_size = 0;
@@ -721,7 +725,10 @@ void gatepinhashVisited_remove_visited(int ghash, int gdepth)
 
 void gatepinhashVisited_free()
 {
-    free(gatepinhashv);
+    if(gatepinhashv != NULL)
+    {
+        free(gatepinhashv);
+    }
 }
 
 
@@ -750,30 +757,6 @@ void get_predecessors_pin(char *gatepin, int *ghash, int *gdepth)
     {
         return;
     }
-
-    // chash = gatepinhash[cur_ghash].parentComponent[cur_gdepth];
-    // cdepth = gatepinhash[cur_ghash].parentComponentDepth[cur_gdepth];
-    // lhash = comphash[chash].lib_type[cdepth];
-    // ldepth = comphash[chash].lib_type_depth[cdepth];
-
-    // for(i = 0; i < libhash[lhash].pin_count[ldepth]; i++)
-    // {
-    //     curr_gatepin = (char *) calloc(strlen(comphash[chash].name[cdepth]) + 1 + strlen(libhash[lhash].pin_names[ldepth][i]), sizeof(char));
-    //     strcpy(curr_gatepin, comphash[chash].name[cdepth]);
-    //     strcat(curr_gatepin, libhash[lhash].pin_names[ldepth][i]);
-    //     if(strcmp(curr_gatepin, gatepinhash[cur_ghash].name[cur_gdepth]) == 0)
-    //     {
-    //         free(curr_gatepin);
-    //         curr_gatepin = NULL;
-    //         break;
-    //     }
-    //     free(curr_gatepin);
-    //     curr_gatepin = NULL;
-    // }
-    // if(libhash[lhash].pin_type[ldepth][i] == INPUT)
-    // {
-    //     is_input = 1;   // gatepin is input //
-    // }
 
     is_input = !(check_gatepin_type(cur_ghash, cur_gdepth));
 
@@ -866,4 +849,29 @@ void gatepinhashVisited_add_bdd(int ghash, int gdepth, DdNode *bdd, DdManager *g
 {
     gatepinhashv[ghash].gatepin_bdd[gdepth] = Cudd_bddNewVar(gbm);
     gatepinhashv[ghash].gatepin_bdd[gdepth] = bdd;
+}
+
+void gatepinhashProb_init()
+{
+    int i, j;
+
+    gatepinhash_prob = (GatepinhashProb*) my_calloc(gatepinhash_size, sizeof(GatepinhashProb));
+
+    for(i = 0; i < gatepinhash_size; i++)
+    {   
+        for(j = 0; j < HASHDEPTH; j++) 
+        {
+            gatepinhash_prob[i].zero_prob[j] = 0.5;  // default   //
+            gatepinhash_prob[i].one_prob[j] = 0.5;  // default   //
+            gatepinhash_prob[i].valid[j] = 0;      // not valid //
+        }
+    }
+}
+
+void gatepinhashProb_free()
+{
+    if(gatepinhash_prob != NULL)
+    {
+        free(gatepinhash_prob);
+    }
 }

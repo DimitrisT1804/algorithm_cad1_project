@@ -2,6 +2,9 @@
 
 DdManager *gbm;
 char **NamesDot = NULL;
+int *ghash_added = NULL;
+int *gdepth_added = NULL;
+int ghash_added_size = 0;
 
 void annotate_bdds()
 {
@@ -11,12 +14,12 @@ void annotate_bdds()
     int pghash;
     int pgdepth;
     DdNode **IO_vars = NULL;
-    int *ghash_added = NULL;
-    int *gdepth_added = NULL;
+    // int *ghash_added = NULL;
+    // int *gdepth_added = NULL;
     DdNode **vars = NULL;
     int IO_vars_size = 0;
     int vars_size = 0;
-    int ghash_added_size = 0;
+    // int ghash_added_size = 0;
     int chash;
     int cdepth;
     int lhash;

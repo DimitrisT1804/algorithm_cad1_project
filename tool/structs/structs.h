@@ -67,6 +67,14 @@ struct gatepinhashVisited
 };
 typedef struct gatepinhashVisited GatepinhashVisited;
 
+struct gatepinhashProb
+{
+    double one_prob[HASHDEPTH];
+    double zero_prob[HASHDEPTH];
+    int valid[HASHDEPTH];
+};
+typedef struct gatepinhashProb GatepinhashProb;
+
 
 extern gatePins *gatepinhash;
 extern int gatepinhash_size;
@@ -79,6 +87,7 @@ extern int comphash_size;
 extern GatepinhashVisited *gatepinhashv;
 extern int isLevelized;
 extern int max_design_level;
+extern GatepinhashProb *gatepinhash_prob;
 
 /* gatepinhash functions*/
 void Gatepins_init();
@@ -115,6 +124,10 @@ void gatepinhashVisited_make_visited(int ghash, int gdepth);
 void gatepinhashVisited_remove_visited(int ghash, int gdepth);
 void gatepinhashVisited_add_bdd(int ghash, int gdepth, DdNode *bdd, DdManager *gbm);
 void gatepinhashVisited_free();
+
+/* GatepinhashProb functions */
+void gatepinhashProb_init();
+void gatepinhashProb_free();
 
 int check_gatepin_type(int ghash, int gdepth);
 

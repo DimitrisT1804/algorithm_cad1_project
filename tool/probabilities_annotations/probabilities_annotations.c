@@ -69,3 +69,69 @@ void traverse_cudd(DdNode *node)
 
     printf("Path: \n");
 }
+
+double calculate_probabilities(int *vars_value)
+{
+    int i;
+    double probability = 1.0;
+
+    for(i = 0; i < ghash_added_size; i++)
+    {
+        #ifdef DEBUG
+        printf("Variable: %s has value %d\n", NamesDot[i], vars_value[i]);
+        #endif
+        if(vars_value[i] == 0)
+        {
+            probability = probability * gatepinhash_prob[ghash_added[i]].one_prob[gdepth_added[i]];
+        }
+        else if(vars_value[i] == 1)
+        {
+            probability = probability * gatepinhash_prob[ghash_added[i]].zero_prob[gdepth_added[i]];
+        }
+    }
+
+    return probability;
+
+}
+
+void read_minterms()
+{
+    int read_length;
+    size_t line_size = 0;
+    char *line = NULL;
+    FILE *filename = fopen("minterms.txt", "r");
+    int *vars_value = NULL;
+    int i;
+    double probability_gatepin = 0.0;
+
+    while((read_length = (getline(&line, &line_size, filename) ) )!= -1)
+    {
+        printf("Line: %s\n", line);
+        for(i = 0; i < read_length; i++)
+        {
+            if(line[i] == ' ')
+            {
+                break;
+            }
+            else if(line[i] == '0')
+            {
+                vars_value = realloc(vars_value, sizeof(int) * (i + 1));
+                vars_value[i] = 0;
+            }
+            else if(line[i] == '1')
+            {
+                vars_value = realloc(vars_value, sizeof(int) * (i + 1));
+                vars_value[i] = 1;
+            }
+            else if(line[i] == '-')
+            {
+                vars_value = realloc(vars_value, sizeof(int) * (i + 1));
+                vars_value[i] = -1; // '-' means that the variable is not present in the minterm //
+            }
+        }
+
+        probability_gatepin += calculate_probabilities(vars_value);
+    }
+
+    printf("Probability: %f\n", probability_gatepin);
+}

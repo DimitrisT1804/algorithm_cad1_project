@@ -1550,10 +1550,71 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
 
     free(convert_dot);
     free(filename);
+    printf("Number of Minterms is %lf\n", Cudd_CountMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth], Cudd_ReadSize(gbm)));
+
+    freopen("minterms.txt", "w", stdout);
 
     Cudd_PrintMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]);
 
+    freopen("/dev/tty", "w", stdout);
+
+    read_minterms();
+
     return TCL_OK;
+}
+
+int set_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int value_found;
+    int allstartpoints_found;
+    int gatepins_found;
+    int i;
+    int j;
+
+
+    if(objc < 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "probability -value <probability value> -gatepins {gatepins list} | -allstartpoints");
+        return TCL_ERROR;
+    }
+
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    value_found = findparammeter(objc, objv, "-value");
+    allstartpoints_found = findparammeter(objc, objv, "-allstartpoints");
+    gatepins_found = findparammeter(objc, objv, "-gatepins");
+
+    if(gatepins_found >= 1 && allstartpoints_found >= 1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: -gatepins and -allstartpoints cannot be assigned in same command\n" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    if(allstartpoints_found >= 0)
+    {
+        for(i = 0; i < gatepinhash_size; i++)
+        {
+            for(j = 0; j < HASHDEPTH; j++)
+            {
+                if(gatepinhash[i].hashpresent[j] == 1)
+                {
+                    if(check_gatepin_type(i, j) == 0)  // it is input //
+                    {
+                        printf(ANSI_COLOR_RED "ERROR: Gatepin %s is input\n" ANSI_COLOR_RESET, gatepinhash[i].name[j]);
+                        return TCL_ERROR;
+                    }
+                    gatepinhash_prob[i].one_prob[j] = atof(Tcl_GetString(objv[value_found + 1]));
+                    gatepinhash_prob[i].zero_prob[j] = 1 - gatepinhash_prob[i].one_prob[j];
+                }
+            }
+        }
+    }
+
+
 }
 
 int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
