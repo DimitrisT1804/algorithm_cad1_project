@@ -1551,7 +1551,7 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
     free(convert_dot);
     free(filename);
 
-    // Cudd_PrintMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]);
+    Cudd_PrintMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]);
 
     return TCL_OK;
 }
@@ -1561,7 +1561,8 @@ int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_O
     char *gatepin = NULL;
     int ghash;
     int gdepth;
-    DdNode **path = NULL;
+    // DdNode **path = NULL;
+    path = NULL;
 
     all_paths = NULL;
     path_size = 0;
@@ -1599,7 +1600,10 @@ int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_O
         return TCL_ERROR;
     }
 
-    traverse_cudd(gatepinhashv[ghash].gatepin_bdd[gdepth], path);
+    traverse_cudd(gatepinhashv[ghash].gatepin_bdd[gdepth]);
+
+
+    return TCL_OK;
 }
 
 int main(int argc, char *argv[])

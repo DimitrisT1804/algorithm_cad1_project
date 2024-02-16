@@ -7,7 +7,9 @@
 extern DdNode ***all_paths;
 extern int path_size;
 extern int all_paths_size;
+extern DdNode **path;
 
-void insert_node(DdNode *node, DdNode ***path, int path_size);
-void traverse_cudd(DdNode *node, DdNode **path);
+void insert_node(DdNode *node, DdNode ***path);
+void remove_node(DdNode ***path, DdNode *node);
+void traverse_cudd(DdNode *node);
 

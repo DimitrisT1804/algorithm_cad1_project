@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../../Downloads/cudd-release"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"stdio.h": "c",
+			"cudd.h": "c"
+		}
+	}
+}
