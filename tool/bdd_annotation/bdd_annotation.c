@@ -222,6 +222,21 @@ void annotate_bdds()
     }
     // edo mallon prepei na kano free ton manager i allios sto clear_design //
 
+    for(i = 0; i < gatepinhash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] == 1)
+            {
+                if(gatepinhash[i].type[j] == PO)
+                {
+                    get_predecessors_pin(gatepinhash[i].name[j], &pghash, &pgdepth);
+                    gatepinhashv[i].gatepin_bdd[j] = gatepinhashv[pghash].gatepin_bdd[pgdepth];
+                }
+            }
+        }
+    }
+
     printf("Number of vars is %d\n", Cudd_ReadSize(gbm));
 
     // for(i = 0; i < IO_vars_size; i++)

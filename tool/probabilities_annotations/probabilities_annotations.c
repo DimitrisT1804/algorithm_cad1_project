@@ -70,6 +70,17 @@ void traverse_cudd(DdNode *node)
     printf("Path: \n");
 }
 
+void write_minterms(int ghash, int gdepth)
+{
+    freopen("minterms.txt", "w", stdout);
+
+    Cudd_PrintMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]);
+
+    freopen("/dev/tty", "w", stdout);
+
+    // read_minterms(gatepinhash[ghash].name[gdepth]);
+}
+
 double calculate_probabilities(int *vars_value)
 {
     int i;
@@ -94,7 +105,7 @@ double calculate_probabilities(int *vars_value)
 
 }
 
-void read_minterms()
+void read_minterms(char *gatepin_name)
 {
     int read_length;
     size_t line_size = 0;
@@ -104,9 +115,18 @@ void read_minterms()
     int i;
     double probability_gatepin = 0.0;
 
+    if(gatepin_name == NULL)
+    {
+        printf("Gatepin name is NULL\n");
+        return;
+    }
+
     while((read_length = (getline(&line, &line_size, filename) ) )!= -1)
     {
+        #ifdef DEBUG
         printf("Line: %s\n", line);
+        #endif 
+
         for(i = 0; i < read_length; i++)
         {
             if(line[i] == ' ')
@@ -132,6 +152,7 @@ void read_minterms()
 
         probability_gatepin += calculate_probabilities(vars_value);
     }
-
-    printf("Probability: %f\n", probability_gatepin);
+    remove("minterms.txt");
+    printf(ANSI_COLOR_GREEN "Probability of %s to be on logic-1 is: %lf\n" ANSI_COLOR_RESET, gatepin_name, probability_gatepin);
+    free(vars_value);
 }

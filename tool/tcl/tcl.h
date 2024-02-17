@@ -5,8 +5,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <unistd.h>
-// #include <tcl8.6/tcl.h>
-#include <tcl.h>
+#include <tcl8.6/tcl.h>
+// #include <tcl.h>
 #include <limits.h>
 #include <syscall.h>
 #include <sys/types.h>
@@ -69,7 +69,7 @@ static const char *commands[] =
     "report_component_postfix_boolean_function", "report_component_BDD", "compute_expression_BDD", 
     "get_toposort", "get_predecessor_pin", "report_gatepins_levelized", "report_level_gatepins", 
     "report_gatepin_level", "report_library_cell_BDD", "annotate_bdd", "report_bdd_dot_gatepin",
-    "get_traverse_cudd",  
+    "get_traverse_cudd",  "set_static_probability", "list_static_probability", 
      
     NULL    // should terminate with NULL //
 
@@ -77,11 +77,8 @@ static const char *commands[] =
 
 // tab completion functions //
 char *custom_generator(const char *text, int state);
-
 char **custom_completer(const char *text, int start, int end);
-
 void help_command();
-
 int read_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
-
 int list_IO(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
+int findparameter(int objc, Tcl_Obj *const* objv, char *parameter);

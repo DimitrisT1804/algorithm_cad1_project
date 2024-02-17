@@ -551,11 +551,20 @@ int clear_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
     gatepinhash = NULL;
     comphash = NULL;
     libhash = NULL;
+    gatepinhashv = NULL;
+    gatepinhash_prob = NULL;
 
     printf(ANSI_COLOR_GREEN "Design succesfully cleared!" ANSI_COLOR_RESET);
 
     isLevelized = 0;
     max_design_level = -2;
+
+    free(ghash_added);
+    free(gdepth_added);
+    ghash_added = NULL;
+    gdepth_added = NULL;
+    ghash_added_size = 0;
+
     if(gbm != NULL)
     {
         Cudd_Quit(gbm);
@@ -1550,7 +1559,7 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
 
     free(convert_dot);
     free(filename);
-    printf("Number of Minterms is %lf\n", Cudd_CountMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth], Cudd_ReadSize(gbm)));
+    // printf("Number of Minterms is %lf\n", Cudd_CountMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth], Cudd_ReadSize(gbm)));
 
     freopen("minterms.txt", "w", stdout);
 
@@ -1558,9 +1567,22 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
 
     freopen("/dev/tty", "w", stdout);
 
-    read_minterms();
+    read_minterms(gatepinhash[ghash].name[gdepth]);
 
     return TCL_OK;
+}
+
+int findparameter(int objc, Tcl_Obj *const* objv, char *parameter)
+{
+    int i;
+    for(i = 0; i < objc; i++)
+    {
+        if(strcmp(Tcl_GetString(objv[i]), parameter) == 0)
+        {
+            return i;
+        }
+    }
+    return 0;
 }
 
 int set_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
@@ -1570,11 +1592,17 @@ int set_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc, 
     int gatepins_found;
     int i;
     int j;
+    char *list_gatepins = NULL;
+    char **gatepins_name = NULL;
+    int list_size;
+    int ghash;
+    int gdepth;
+    double value = 0.0;
 
 
     if(objc < 2)
     {
-        Tcl_WrongNumArgs(interp, 1, objv, "probability -value <probability value> -gatepins {gatepins list} | -allstartpoints");
+        Tcl_WrongNumArgs(interp, 1, objv, "-value <probability value> -gatepins {gatepins list} | -allstartpoints");
         return TCL_ERROR;
     }
 
@@ -1584,37 +1612,179 @@ int set_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc, 
         return TCL_ERROR;
     }
 
-    value_found = findparammeter(objc, objv, "-value");
-    allstartpoints_found = findparammeter(objc, objv, "-allstartpoints");
-    gatepins_found = findparammeter(objc, objv, "-gatepins");
+    value_found = findparameter(objc, objv, "-value");
+    allstartpoints_found = findparameter(objc, objv, "-allstartpoints");
+    gatepins_found = findparameter(objc, objv, "-gatepins");
 
     if(gatepins_found >= 1 && allstartpoints_found >= 1)
     {
         printf(ANSI_COLOR_RED "ERROR: -gatepins and -allstartpoints cannot be assigned in same command\n" ANSI_COLOR_RESET);
         return TCL_ERROR;
     }
+    if(gatepins_found == 0 && allstartpoints_found == 0)
+    {
+        printf(ANSI_COLOR_RED "ERROR: -gatepins or -allstartpoints parameter is obligatory\n" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+    if(value_found == 0)
+    {
+        printf(ANSI_COLOR_RED "ERROR: -value parameter is obligatory\n" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
 
-    if(allstartpoints_found >= 0)
+    value = atof(Tcl_GetString(objv[value_found + 1]));
+    if(value < 0 || value > 1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Probability value out of bounds\n" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    if(isLevelized == 0)    // check if design is levelized //
+    {
+        printf(ANSI_COLOR_ORANGE "ERROR: Design is not levelized\nCall get_toposort to levelize design!" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    if(allstartpoints_found > 0)
     {
         for(i = 0; i < gatepinhash_size; i++)
         {
             for(j = 0; j < HASHDEPTH; j++)
             {
                 if(gatepinhash[i].hashpresent[j] == 1)
-                {
-                    if(check_gatepin_type(i, j) == 0)  // it is input //
+                {   
+                    if(gatepinhashv[i].level[j] == 0)
                     {
-                        printf(ANSI_COLOR_RED "ERROR: Gatepin %s is input\n" ANSI_COLOR_RESET, gatepinhash[i].name[j]);
-                        return TCL_ERROR;
+                        gatepinhash_prob[i].one_prob[j] = value;
+                        gatepinhash_prob[i].zero_prob[j] = 1 - value;
                     }
-                    gatepinhash_prob[i].one_prob[j] = atof(Tcl_GetString(objv[value_found + 1]));
-                    gatepinhash_prob[i].zero_prob[j] = 1 - gatepinhash_prob[i].one_prob[j];
                 }
             }
         }
     }
 
+    if(gatepins_found > 0)
+    {
+        list_gatepins = Tcl_GetString(objv[gatepins_found + 1]);
+        if(Tcl_SplitList(interp, (const char *) list_gatepins, &list_size,  (const char ***) &gatepins_name) != TCL_OK)
+        {
+            return TCL_ERROR;
+        }
+        for(i = 0; i < list_size; i++)
+        {
+            get_gatepin_indices(gatepins_name[i], &ghash, &gdepth);
+            if(gdepth == -1)
+            {
+                printf(ANSI_COLOR_ORANGE "Warning: Gatepin %s NOT found\n" ANSI_COLOR_RESET, gatepins_name[i]);
+                continue;
+            }
+            if(gatepinhashv[i].level[j] != 0)
+            {
+                printf(ANSI_COLOR_ORANGE "Warning: Gatepin %s is not a startpoint\n" ANSI_COLOR_RESET, gatepins_name[i]);
+                continue;
+            }
+            gatepinhash_prob[ghash].one_prob[gdepth] = atof(Tcl_GetString(objv[value_found + 1]));
+            gatepinhash_prob[ghash].zero_prob[gdepth] = 1 - gatepinhash_prob[ghash].one_prob[gdepth];
+        }
+    }
 
+    printf(ANSI_COLOR_GREEN "Static probabilities are set\n" ANSI_COLOR_RESET);
+    
+    return TCL_OK;
+}
+
+int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int allgatepins_found;
+    int gatepins_found;
+    int i;
+    int j;
+    char *list_gatepins = NULL;
+    char **gatepins_name = NULL;
+    int list_size;
+    int ghash;
+    int gdepth;
+    double value = 0.0;
+
+
+    if(objc < 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "-gatepins {gatepins list} | -allgatepins");
+        return TCL_ERROR;
+    }
+
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    allgatepins_found = findparameter(objc, objv, "-allgatepins");
+    gatepins_found = findparameter(objc, objv, "-gatepins");
+
+    if(gatepins_found >= 1 && allgatepins_found >= 1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: -gatepins and -allgatepins cannot be assigned in same command\n" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+    if(gatepins_found == 0 && allgatepins_found == 0)
+    {
+        printf(ANSI_COLOR_RED "ERROR: -gatepins or -allgatepins parameter is obligatory\n" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    if(isLevelized == 0)    // check if design is levelized //
+    {
+        printf(ANSI_COLOR_ORANGE "ERROR: Design is not levelized\nCall get_toposort to levelize design!" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    if(allgatepins_found > 0)
+    {
+        for(i = 0; i < gatepinhash_size; i++)
+        {
+            for(j = 0; j < HASHDEPTH; j++)
+            {
+                if(gatepinhash[i].hashpresent[j] == 1)
+                {   
+                    if(check_gatepin_type(i, j) == 1)
+                    {
+                        write_minterms(i, j);    // calculate probabilities //
+                        read_minterms(gatepinhash[i].name[j]);    // calculate probabilities //
+                    }
+                }
+            }
+        }
+    }
+
+    if(gatepins_found > 0)
+    {
+        list_gatepins = Tcl_GetString(objv[gatepins_found + 1]);
+        if(Tcl_SplitList(interp, (const char *) list_gatepins, &list_size,  (const char ***) &gatepins_name) != TCL_OK)
+        {
+            return TCL_ERROR;
+        }
+        for(i = 0; i < list_size; i++)
+        {
+            get_gatepin_indices(gatepins_name[i], &ghash, &gdepth);
+            if(gdepth == -1)
+            {
+                printf(ANSI_COLOR_ORANGE "Warning: Gatepin %s NOT found\n" ANSI_COLOR_RESET, gatepins_name[i]);
+                continue;
+            }
+            if(check_gatepin_type(ghash, gdepth) != 1)
+            {
+                printf(ANSI_COLOR_ORANGE "Warning: Gatepin %s is not an Output\n" ANSI_COLOR_RESET, gatepins_name[i]);
+                continue;
+            }
+            write_minterms(ghash, gdepth);
+            read_minterms(gatepinhash[ghash].name[gdepth]);    // calculate probabilities //
+        }
+    }
+
+    // printf(ANSI_COLOR_GREEN "Static probabilities are set\n" ANSI_COLOR_RESET);
+    
+    return TCL_OK;
 }
 
 int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
@@ -1719,6 +1889,8 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "annotate_bdd", annotate_bdd, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_bdd_dot_gatepin", report_bdd_dot_gatepin, NULL, NULL);
     Tcl_CreateObjCommand(interp, "get_traverse_cudd", get_traverse_cudd, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "set_static_probability", set_static_probability, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "list_static_probability", list_static_probability, NULL, NULL);
 
 
     signal(SIGSEGV, segfault_handler);

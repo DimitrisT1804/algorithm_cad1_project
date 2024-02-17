@@ -757,6 +757,19 @@ void get_predecessors_pin(char *gatepin, int *ghash, int *gdepth)
     {
         return;
     }
+    if(gatepinhash[cur_ghash].type[cur_gdepth] == PO)   // it is Primary Outupt //
+    {
+        for(i = 0; i < gatepinhash[cur_ghash].connections_size[cur_gdepth]; i++)
+        {
+            if(check_gatepin_type(gatepinhash[cur_ghash].pinConn[cur_gdepth][i], gatepinhash[cur_ghash].pinConnDepth[cur_gdepth][i]) == 1)
+            {
+                get_gatepin_indices(gatepinhash[gatepinhash[cur_ghash].pinConn[cur_gdepth][i]].name[gatepinhash[cur_ghash].pinConnDepth[cur_gdepth][i]], &con_ghash, &con_gdepth);
+                *ghash = con_ghash;     // get the output //
+                *gdepth = con_gdepth;
+                return;
+            }
+        }
+    }
 
     is_input = !(check_gatepin_type(cur_ghash, cur_gdepth));
 
