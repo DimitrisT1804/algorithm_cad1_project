@@ -206,7 +206,10 @@ void annotate_bdds()
                             
                             postfix = NULL;
 
-                            Cudd_ReduceHeap(gbm, CUDD_REORDER_SYMM_SIFT, 100);
+                            // Cudd_ReduceHeap(gbm, CUDD_REORDER_SYMM_SIFT, 0);
+                            // Cudd_ReduceHeap(gbm, 3, 0);
+                            Cudd_ReduceHeap(gbm, 0, 0);
+                            // gatepinhashv[i].gatepin_bdd[j] = Cudd_ReduceHeap(gbm, CUDD_REORDER_SAME, 0);
 
                             varNames = NULL;
                             vars_row = NULL;

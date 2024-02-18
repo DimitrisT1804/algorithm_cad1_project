@@ -93,11 +93,11 @@ double calculate_probabilities(int *vars_value)
         #endif
         if(vars_value[i] == 0)
         {
-            probability = probability * gatepinhash_prob[ghash_added[i]].one_prob[gdepth_added[i]];
+            probability = probability * gatepinhash_prob[ghash_added[i]].zero_prob[gdepth_added[i]];
         }
         else if(vars_value[i] == 1)
         {
-            probability = probability * gatepinhash_prob[ghash_added[i]].zero_prob[gdepth_added[i]];
+            probability = probability * gatepinhash_prob[ghash_added[i]].one_prob[gdepth_added[i]];
         }
     }
 

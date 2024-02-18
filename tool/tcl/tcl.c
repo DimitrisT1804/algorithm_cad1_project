@@ -1559,15 +1559,18 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
 
     free(convert_dot);
     free(filename);
-    // printf("Number of Minterms is %lf\n", Cudd_CountMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth], Cudd_ReadSize(gbm)));
 
-    freopen("minterms.txt", "w", stdout);
+    printf("Number of Minterms is %lf\n", Cudd_CountMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth], Cudd_ReadSize(gbm)));
 
-    Cudd_PrintMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]);
+    // freopen("minterms.txt", "w", stdout);
+    printf("Number of paths to 1 is %lf\n", Cudd_CountPathsToNonZero(gatepinhashv[ghash].gatepin_bdd[gdepth]));
 
-    freopen("/dev/tty", "w", stdout);
+    // Cudd_PrintMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]);
+    // Cudd_PrintMinterm(gbm, Cudd_FindEssential(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]));
 
-    read_minterms(gatepinhash[ghash].name[gdepth]);
+    // freopen("/dev/tty", "w", stdout);
+    // read_minterms(gatepinhash[ghash].name[gdepth]);
+    // printf("Cudd simplified is %s\n", Cudd_bddPrintCover(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth], gatepinhashv[ghash].gatepin_bdd[gdepth]));
 
     return TCL_OK;
 }
@@ -1678,7 +1681,7 @@ int set_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc, 
                 printf(ANSI_COLOR_ORANGE "Warning: Gatepin %s NOT found\n" ANSI_COLOR_RESET, gatepins_name[i]);
                 continue;
             }
-            if(gatepinhashv[i].level[j] != 0)
+            if(gatepinhashv[ghash].level[gdepth] != 0)
             {
                 printf(ANSI_COLOR_ORANGE "Warning: Gatepin %s is not a startpoint\n" ANSI_COLOR_RESET, gatepins_name[i]);
                 continue;
@@ -1749,6 +1752,11 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
                 {   
                     if(check_gatepin_type(i, j) == 1)
                     {
+                        if(gatepinhashv[i].gatepin_bdd[j] == NULL)
+                        {
+                            printf(ANSI_COLOR_RED "ERROR: BDD for gatepin %s is not generated\nBe sure to run annotate_bdd command" ANSI_COLOR_RESET, gatepinhash[i].name[j]);
+                            return TCL_ERROR;
+                        }
                         write_minterms(i, j);    // calculate probabilities //
                         read_minterms(gatepinhash[i].name[j]);    // calculate probabilities //
                     }
@@ -1776,6 +1784,11 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
             {
                 printf(ANSI_COLOR_ORANGE "Warning: Gatepin %s is not an Output\n" ANSI_COLOR_RESET, gatepins_name[i]);
                 continue;
+            }
+            if(gatepinhashv[ghash].gatepin_bdd[gdepth] == NULL)
+            {
+                printf(ANSI_COLOR_RED "ERROR: BDD for gatepin %s is not generated\nBe sure to run annotate_bdd command" ANSI_COLOR_RESET, gatepinhash[ghash].name[gdepth]);
+                return TCL_ERROR;
             }
             write_minterms(ghash, gdepth);
             read_minterms(gatepinhash[ghash].name[gdepth]);    // calculate probabilities //
