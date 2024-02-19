@@ -4,6 +4,8 @@ DdNode ***all_paths;
 DdNode **path;
 int path_size;
 int all_paths_size;
+int *nodes_array;
+double probability_gatepin;
 
 void insert_node(DdNode *node, DdNode ***path)
 {
@@ -55,6 +57,7 @@ double number_of_paths;
 
 void traverse_cudd(DdNode *node)
 {
+    int i;
     DdNode *NT, *NE;
     if(node == NULL)
     {
@@ -76,10 +79,24 @@ void traverse_cudd(DdNode *node)
         // all_paths = realloc(all_paths, sizeof(DdNode **) * (all_paths_size + 1));
         // all_paths[all_paths_size] = new_path;
         // all_paths_size++;
+        for(int i = 0; i < ghash_added_size; i++)
+        {
+            nodes_array[i] = -1;
+        }
+
+        for(i = 0; i < path_size; i++)
+        {
+            nodes_array[Cudd_NodeReadIndex(path[i])] = 1;
+        }
+        if(path_size > 0)
+        {
+            probability_gatepin += calculate_probabilities(nodes_array);
+        }
+
         number_of_paths++;
         return;
     }
-    // insert_node(node, &path);
+    insert_node(node, &path);
 
     NT = Cudd_T(node);
     NE = Cudd_E(node);
@@ -95,7 +112,7 @@ void traverse_cudd(DdNode *node)
     traverse_cudd(NE);
 
     // remove node from path because it is not a final node to constant 1 //
-    // remove_node(&path, node);
+    remove_node(&path, node);
 
     // printf("Path: \n");
 

@@ -1844,12 +1844,19 @@ int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_O
         return TCL_ERROR;
     }
     number_of_paths = 0;
-    traverse_cudd(Cudd_BddToAdd(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth] ));
+    nodes_array = realloc(nodes_array, (ghash_added_size + 1) * sizeof(int) );
+    for(int i = 0; i < ghash_added_size; i++)
+    {
+        nodes_array[i] = -1;
+    }
+    probability_gatepin = 0;
+    traverse_cudd(Cudd_BddToAdd(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]));
 
     print_paths();
 
-    // printf("Total paths are %lf\n", number_of_paths);
+    printf("Total paths are %lf\n", number_of_paths);
     printf("Paths from system are %lf\n", Cudd_CountPathsToNonZero(gatepinhashv[ghash].gatepin_bdd[gdepth]));
+    printf("Total probability is %lf\n", probability_gatepin);
 
     return TCL_OK;
 }

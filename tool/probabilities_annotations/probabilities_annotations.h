@@ -18,6 +18,9 @@ extern int path_size;
 extern int all_paths_size;
 extern DdNode **path;
 extern double number_of_paths;
+extern int *nodes_array;
+extern double probability_gatepin;
+
 
 void insert_node(DdNode *node, DdNode ***path);
 void remove_node(DdNode ***path, DdNode *node);
