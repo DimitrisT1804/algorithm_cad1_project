@@ -1844,8 +1844,12 @@ int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_O
         return TCL_ERROR;
     }
 
-    traverse_cudd(gatepinhashv[ghash].gatepin_bdd[gdepth]);
+    traverse_cudd(Cudd_BddToAdd(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth] ));
 
+    // print_paths();
+
+    // printf("Total paths are %d\n", all_paths_size);
+    printf("Paths from system are %lf\n", Cudd_CountPathsToNonZero(gatepinhashv[ghash].gatepin_bdd[gdepth]));
 
     return TCL_OK;
 }

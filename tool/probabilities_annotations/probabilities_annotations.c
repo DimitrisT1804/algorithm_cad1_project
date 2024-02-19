@@ -36,8 +36,24 @@ void remove_node(DdNode ***path, DdNode *node)
     
 }
 
+void print_paths()
+{
+    int i, j;
+
+    for(i = 0; i < all_paths_size; i++)
+    {
+        for(j = 0; all_paths[i][j] != NULL; j++)
+        {
+            printf("%d ", Cudd_NodeReadIndex(all_paths[i][j]));
+        }
+        printf("\n");
+    }
+
+}
+
 void traverse_cudd(DdNode *node)
 {
+    DdNode *NT, *NE;
     if(node == NULL)
     {
         return;
@@ -49,10 +65,15 @@ void traverse_cudd(DdNode *node)
         {
             return;
         }
-        all_paths = realloc(all_paths, sizeof(DdNode **) * (all_paths_size + 1));
-        all_paths[all_paths_size] = path;
-        all_paths_size++;
 
+        // Allocate memory for the new path and copy the current path into it
+        DdNode **new_path = malloc( (path_size + 1) * sizeof(DdNode *) );
+        memcpy(new_path, path, path_size * sizeof(DdNode *));
+        new_path[path_size] = NULL;
+
+        all_paths = realloc(all_paths, sizeof(DdNode **) * (all_paths_size + 1));
+        all_paths[all_paths_size] = new_path;
+        all_paths_size++;
         // path = NULL;
         // path_size = 0;
         return;
@@ -61,13 +82,29 @@ void traverse_cudd(DdNode *node)
     insert_node(node, &path);
     // path_size++;
 
-    traverse_cudd(Cudd_T(node));
-    traverse_cudd(Cudd_Not( Cudd_E(node) ) );
+    NT = Cudd_T(node);
+    NE = Cudd_E(node);
+	if (Cudd_IsComplement(node)) 
+    {
+	    NT  = Cudd_Not(NT);
+	    NE = Cudd_Not(NE);
+	}
+
+    // traverse_cudd(Cudd_T(node));
+    // traverse_cudd(Cudd_Not( Cudd_E(node) ) );
+    traverse_cudd(NT);
+    traverse_cudd(NE);
 
     // remove node from path because it is not a final node to constant 1 //
     remove_node(&path, node);
 
-    printf("Path: \n");
+    // printf("Path: \n");
+    
+    // for (int i = 0; i < path_size; i++)
+    // {
+    //     printf("%d ", Cudd_NodeReadIndex(path[i]));
+    // }
+    // printf("\n");
 }
 
 void write_minterms(int ghash, int gdepth)
