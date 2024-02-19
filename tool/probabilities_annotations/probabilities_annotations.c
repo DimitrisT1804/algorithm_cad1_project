@@ -51,6 +51,8 @@ void print_paths()
 
 }
 
+double number_of_paths;
+
 void traverse_cudd(DdNode *node)
 {
     DdNode *NT, *NE;
@@ -67,20 +69,17 @@ void traverse_cudd(DdNode *node)
         }
 
         // Allocate memory for the new path and copy the current path into it
-        DdNode **new_path = malloc( (path_size + 1) * sizeof(DdNode *) );
-        memcpy(new_path, path, path_size * sizeof(DdNode *));
-        new_path[path_size] = NULL;
+        // DdNode **new_path = malloc( (path_size + 1) * sizeof(DdNode *) );
+        // memcpy(new_path, path, path_size * sizeof(DdNode *));
+        // new_path[path_size] = NULL;
 
-        all_paths = realloc(all_paths, sizeof(DdNode **) * (all_paths_size + 1));
-        all_paths[all_paths_size] = new_path;
-        all_paths_size++;
-        // path = NULL;
-        // path_size = 0;
+        // all_paths = realloc(all_paths, sizeof(DdNode **) * (all_paths_size + 1));
+        // all_paths[all_paths_size] = new_path;
+        // all_paths_size++;
+        number_of_paths++;
         return;
     }
-    // int path_size = 0;
-    insert_node(node, &path);
-    // path_size++;
+    // insert_node(node, &path);
 
     NT = Cudd_T(node);
     NE = Cudd_E(node);
@@ -96,10 +95,10 @@ void traverse_cudd(DdNode *node)
     traverse_cudd(NE);
 
     // remove node from path because it is not a final node to constant 1 //
-    remove_node(&path, node);
+    // remove_node(&path, node);
 
     // printf("Path: \n");
-    
+
     // for (int i = 0; i < path_size; i++)
     // {
     //     printf("%d ", Cudd_NodeReadIndex(path[i]));

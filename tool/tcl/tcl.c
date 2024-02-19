@@ -1843,12 +1843,12 @@ int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_O
         printf(ANSI_COLOR_RED "ERROR: Gatepin is input" ANSI_COLOR_RESET);
         return TCL_ERROR;
     }
-
+    number_of_paths = 0;
     traverse_cudd(Cudd_BddToAdd(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth] ));
 
-    // print_paths();
+    print_paths();
 
-    // printf("Total paths are %d\n", all_paths_size);
+    // printf("Total paths are %lf\n", number_of_paths);
     printf("Paths from system are %lf\n", Cudd_CountPathsToNonZero(gatepinhashv[ghash].gatepin_bdd[gdepth]));
 
     return TCL_OK;
