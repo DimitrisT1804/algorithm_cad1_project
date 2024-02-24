@@ -1,5 +1,7 @@
 #include "tcl.h"
 
+int probability_calculated = 0;
+
 char *custom_generator(const char *text, int state)
 {
     static int list_index;      // should be static to has the same value in all iterations //
@@ -1652,6 +1654,8 @@ int set_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc, 
         return TCL_ERROR;
     }
 
+    probability_calculated = 0;
+
     if(allstartpoints_found > 0)
     {
         for(i = 0; i < gatepinhash_size; i++)
@@ -1728,6 +1732,8 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
     int ghash;
     int gdepth;
     double value = 0.0;
+    st_table *table = NULL;
+    clock_t start, end;
 
 
     if(objc < 2)
@@ -1755,12 +1761,29 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
         printf(ANSI_COLOR_RED "ERROR: -gatepins or -allgatepins parameter is obligatory\n" ANSI_COLOR_RESET);
         return TCL_ERROR;
     }
+    if(gatepins_found > 0)
+    {
+        if(objc <= 2)
+        {
+            printf(ANSI_COLOR_RED "ERROR: -gatepins needs a TCL list\n" ANSI_COLOR_RESET);
+            return TCL_ERROR;
+        }
+    }
 
     if(isLevelized == 0)    // check if design is levelized //
     {
         printf(ANSI_COLOR_ORANGE "ERROR: Design is not levelized\nCall get_toposort to levelize design!" ANSI_COLOR_RESET);
         return TCL_ERROR;
     }
+
+    printf(ANSI_COLOR_ORANGE "---------------- Static Probabilities ----------------\n" ANSI_COLOR_RESET);
+    // printf(ANSI_COLOR_ORANGE "Gatepin Name          One Probability          Zero Probability\n" ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_MAGENDA "%-20s%-12s%-12s%-12s\n", "Gatepin Name", "Level", "Logic-1", "Logic-0" ANSI_COLOR_RESET);
+
+    nodes_array = realloc(nodes_array, (ghash_added_size + 1) * sizeof(int) );
+
+
+    start = clock();
 
     if(allgatepins_found > 0)
     {
@@ -1777,8 +1800,25 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
                             printf(ANSI_COLOR_RED "ERROR: BDD for gatepin %s is not generated\nBe sure to run annotate_bdd command" ANSI_COLOR_RESET, gatepinhash[i].name[j]);
                             return TCL_ERROR;
                         }
-                        write_minterms(i, j);    // calculate probabilities //
-                        read_minterms(gatepinhash[i].name[j]);    // calculate probabilities //
+                        // write_minterms(i, j);    // calculate probabilities //
+                        // read_minterms(gatepinhash[i].name[j]);    // calculate probabilities //
+                        for(int i = 0; i < ghash_added_size; i++)
+                        {
+                            nodes_array[i] = -1;
+                        }
+                        probability_gatepin = 0;
+                        
+                        if(probability_calculated != 1)
+                        {
+                            table = st_init_table(st_ptrcmp, st_ptrhash);
+                            my_ddCountPathsToNonZero(Cudd_BddToAdd(gbm, gatepinhashv[i].gatepin_bdd[j]), table);
+                            gatepinhash_prob[i].one_prob[j] = probability_gatepin;
+                            gatepinhash_prob[i].zero_prob[j] = 1 - probability_gatepin;
+                            probability_gatepin = 0;
+                            st_free_table(table);
+                        }
+                        // printf(ANSI_COLOR_GREEN "• Gatepin %s          %lf          %lf\n" ANSI_COLOR_RESET, gatepinhash[i].name[j], gatepinhash_prob[i].one_prob[j], gatepinhash_prob[i].zero_prob[j]);
+                        printf(ANSI_COLOR_GREEN "• %-20s%-12d%-12.6lf%-12.6lf\n" ANSI_COLOR_RESET, gatepinhash[i].name[j], gatepinhashv[i].level[j], gatepinhash_prob[i].one_prob[j], gatepinhash_prob[i].zero_prob[j]);
                     }
                 }
             }
@@ -1810,13 +1850,33 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
                 printf(ANSI_COLOR_RED "ERROR: BDD for gatepin %s is not generated\nBe sure to run annotate_bdd command" ANSI_COLOR_RESET, gatepinhash[ghash].name[gdepth]);
                 return TCL_ERROR;
             }
-            write_minterms(ghash, gdepth);
-            read_minterms(gatepinhash[ghash].name[gdepth]);    // calculate probabilities //
+            // write_minterms(ghash, gdepth);
+            // read_minterms(gatepinhash[ghash].name[gdepth]);    // calculate probabilities //
+            for(int i = 0; i < ghash_added_size; i++)
+            {
+                nodes_array[i] = -1;
+            }
+            probability_gatepin = 0;
+
+            table = st_init_table(st_ptrcmp, st_ptrhash);
+
+            my_ddCountPathsToNonZero(Cudd_BddToAdd(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]), table);
+            gatepinhash_prob[ghash].one_prob[gdepth] = probability_gatepin;
+            gatepinhash_prob[ghash].zero_prob[gdepth] = 1 - probability_gatepin;
+            probability_gatepin = 0;
+            st_free_table(table);
+            printf(ANSI_COLOR_GREEN "• %-20s%-12d%-12.6lf%-12.6lf\n" ANSI_COLOR_RESET, gatepinhash[ghash].name[gdepth], gatepinhashv[ghash].level[gdepth], gatepinhash_prob[ghash].one_prob[gdepth], gatepinhash_prob[ghash].zero_prob[gdepth]);
         }
     }
 
-    // printf(ANSI_COLOR_GREEN "Static probabilities are set\n" ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_ORANGE "-------------- End Static Probabilities --------------\n\n" ANSI_COLOR_RESET);
     
+    probability_calculated = 1;
+    // free(nodes_array);
+
+    end = clock();
+    printf(ANSI_COLOR_ORANGE "Calculation time is %lf\n" ANSI_COLOR_RESET, (double)(end - start) / CLOCKS_PER_SEC);
+
     return TCL_OK;
 }
 
@@ -1827,6 +1887,8 @@ int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_O
     int gdepth;
     // DdNode **path = NULL;
     path = NULL;
+    st_table	*table;
+    double	i;
 
     clock_t start, end;
 
@@ -1877,9 +1939,6 @@ int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_O
     // traverse_cudd(Cudd_BddToAdd(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]));
 
     // print_paths();
-
-    st_table	*table;
-    double	i;
 
     table = st_init_table(st_ptrcmp, st_ptrhash);
 

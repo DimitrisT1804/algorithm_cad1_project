@@ -5,8 +5,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <unistd.h>
-#include <tcl8.6/tcl.h>
-// #include <tcl.h>
+// #include <tcl8.6/tcl.h>
+#include <tcl.h>
 #include <limits.h>
 #include <syscall.h>
 #include <sys/types.h>
@@ -74,6 +74,9 @@ static const char *commands[] =
     NULL    // should terminate with NULL //
 
 };
+
+// global variables //
+extern int probability_calculated;
 
 // tab completion functions //
 char *custom_generator(const char *text, int state);

@@ -4,7 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../bdd_annotation/bdd_annotation.h"
-#include "/home/dimitris-zorin/Downloads/cudd-release/cudd/cuddInt.h"
+// #include "/home/dimitris-zorin/Downloads/cudd-release/cudd/cuddInt.h"
+#include "/home/dimitris/Downloads/cudd-release/cudd/cuddInt.h"
 #include <omp.h>
 
 #define ANSI_COLOR_RED     "\x1b[31m"   // define color codes to print TCL messages //
