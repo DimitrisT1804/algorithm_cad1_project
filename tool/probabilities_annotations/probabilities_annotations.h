@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../bdd_annotation/bdd_annotation.h"
+#include "/home/dimitris-zorin/Downloads/cudd-release/cudd/cuddInt.h"
+#include <omp.h>
 
 #define ANSI_COLOR_RED     "\x1b[31m"   // define color codes to print TCL messages //
 #define ANSI_COLOR_RESET   "\x1b[0m"
@@ -22,6 +24,7 @@ extern int *nodes_array;
 extern double probability_gatepin;
 
 
+double my_ddCountPathsToNonZero(DdNode * N, st_table * table);
 void insert_node(DdNode *node, DdNode ***path);
 void remove_node(DdNode ***path, DdNode *node);
 void traverse_cudd(DdNode *node);

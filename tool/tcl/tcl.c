@@ -1601,6 +1601,10 @@ int set_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc, 
     int ghash;
     int gdepth;
     double value = 0.0;
+    int chash;
+    int cdepth;
+    int lhash;
+    int ldepth;
 
 
     if(objc < 2)
@@ -1658,6 +1662,22 @@ int set_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc, 
                 {   
                     if(gatepinhashv[i].level[j] == 0)
                     {
+                        if(gatepinhash[i].type[j] == WIRE)
+                        {
+                            chash = gatepinhash[i].parentComponent[j];
+                            cdepth = gatepinhash[i].parentComponentDepth[j];
+                            lhash = comphash[chash].lib_type[cdepth];
+                            ldepth = comphash[chash].lib_type_depth[cdepth];
+                            if(strcmp(libhash[lhash].function[ldepth][0], "1") == 0)
+                            {
+                                continue;
+                            }
+                            if(strcmp(libhash[lhash].function[ldepth][0], "0") == 0)
+                            {
+                                continue;
+                            }
+                        }
+
                         gatepinhash_prob[i].one_prob[j] = value;
                         gatepinhash_prob[i].zero_prob[j] = 1 - value;
                     }
@@ -1808,6 +1828,10 @@ int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_O
     // DdNode **path = NULL;
     path = NULL;
 
+    clock_t start, end;
+
+    start = clock();
+
     all_paths = NULL;
     path_size = 0;
     all_paths_size = 0;
@@ -1850,13 +1874,25 @@ int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_O
         nodes_array[i] = -1;
     }
     probability_gatepin = 0;
-    traverse_cudd(Cudd_BddToAdd(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]));
+    // traverse_cudd(Cudd_BddToAdd(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]));
 
-    print_paths();
+    // print_paths();
 
-    printf("Total paths are %lf\n", number_of_paths);
+    st_table	*table;
+    double	i;
+
+    table = st_init_table(st_ptrcmp, st_ptrhash);
+
+    printf("Testing function paths is %lf\n", my_ddCountPathsToNonZero(Cudd_BddToAdd(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]), table));
+    // printf("Testing function paths is %lf\n", my_ddCountPathsToNonZero(gatepinhashv[ghash].gatepin_bdd[gdepth], table));
+    // printf("Total paths are %lf\n", number_of_paths);
     printf("Paths from system are %lf\n", Cudd_CountPathsToNonZero(gatepinhashv[ghash].gatepin_bdd[gdepth]));
     printf("Total probability is %lf\n", probability_gatepin);
+
+    st_free_table(table);
+
+    end = clock();
+    printf(ANSI_COLOR_ORANGE "Calculation time is %lf\n" ANSI_COLOR_RESET, (double)(end - start) / CLOCKS_PER_SEC);
 
     return TCL_OK;
 }

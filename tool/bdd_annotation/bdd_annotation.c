@@ -36,6 +36,8 @@ void annotate_bdds()
     int pchdepth;
     int plhash;
     int pldepth;
+    int vars_row_size = 0;
+    int size = 0;
 
     gbm = Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
 
@@ -112,11 +114,15 @@ void annotate_bdds()
                             if(strcmp(libhash[lhash].function[ldepth][0], "1") == 0)     // Logic 1 //
                             {
                                 gatepinhashv[i].gatepin_bdd[j] = Cudd_ReadOne(gbm);
+                                gatepinhash_prob[i].one_prob[j] = 1.0;
+                                gatepinhash_prob[i].zero_prob[j] = 0.0;
                                 continue;
                             }
                             if(strcmp(libhash[lhash].function[ldepth][0], "0") == 0)    // Logic 0 //
                             {
                                 gatepinhashv[i].gatepin_bdd[j] = Cudd_Not(Cudd_ReadOne(gbm));
+                                gatepinhash_prob[i].one_prob[j] = 0.0;
+                                gatepinhash_prob[i].zero_prob[j] = 1.0;
                                 continue;
                             }
                             
@@ -124,7 +130,7 @@ void annotate_bdds()
                             // {
 
                             // }
-                            postfix = seperate_variables(libhash[lhash].function[ldepth][0], &varNames, &vars_row, &size_of_vars);
+                            postfix = seperate_variables(libhash[lhash].function[ldepth][0], &varNames, &vars_row, &size_of_vars, &vars_row_size);
 
                             vars = (DdNode **) realloc(vars, size_of_vars * sizeof(DdNode *));
                             for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
@@ -144,6 +150,11 @@ void annotate_bdds()
                                     }
                                     
                                     get_predecessors_pin(curr_pin, &pghash, &pgdepth);
+                                    // if(gatepinhash[pghash].type[pgdepth] == IO_TYPE)
+                                    // {
+                                    //     continue;
+                                    //     // break;
+                                    // } 
                                     pchash = gatepinhash[pghash].parentComponent[pgdepth];
                                     pchdepth = gatepinhash[pghash].parentComponentDepth[pgdepth];
                                     plhash = comphash[pchash].lib_type[pchdepth];
@@ -195,10 +206,11 @@ void annotate_bdds()
                                 }
                             }
 
-                            gatepinhashv[i].gatepin_bdd[j] = concat_bdds(vars, varNames, vars_row, postfix, size_of_vars);
-                            printf("write bdd to gatepin %s\n", gatepinhash[i].name[j]);
                             if(vars != NULL)
                             {
+                                size = vars_row_size;
+                                gatepinhashv[i].gatepin_bdd[j] = concat_bdds(vars, varNames, vars_row, postfix, size, vars_row_size);
+                                printf("write bdd to gatepin %s\n", gatepinhash[i].name[j]);
                                 free(vars);
                                 vars = NULL;
                                 vars_size = 0;
@@ -246,7 +258,7 @@ void annotate_bdds()
     // {
     //     Cudd_RecursiveDeref(gbm, IO_vars[i]);
     // }
-    Cudd_DebugCheck(gbm);
+    // Cudd_DebugCheck(gbm);
     
 
     printf ("Nodes are %d\n", Cudd_CheckZeroRef(gbm));  
@@ -258,6 +270,7 @@ void annotate_bdds()
         strcpy(NamesDot[i], gatepinhash[ghash_added[i]].name[gdepth_added[i]]);
     }
 
+    free(IO_vars);
     // Cudd_Quit(gbm);
     // return varNames;
 }

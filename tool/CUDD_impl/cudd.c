@@ -774,7 +774,7 @@ void generate_bdd_two(char *infix, char *cell_name)
 
 }
 
-char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *size_of_vars)
+char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *size_of_vars, int *vars_row_size)
 {
     int i;
     char *postfix = NULL;
@@ -911,6 +911,9 @@ char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *s
         
         already_calculated = temp_string - postfix + strlen((*vars_row)[i]);
     }
+    free (temp_name);
+
+    *vars_row_size = var_num;
 
     return postfix;
 }
@@ -931,14 +934,13 @@ int find_same_nodes(DdNode **vars, DdNode *node, int size)
     return 0;
 }
 
-DdNode *concat_bdds(DdNode **vars, char **varNames, char **vars_row, char *postfix, int vars_size)
+DdNode *concat_bdds(DdNode **vars, char **varNames, char **vars_row, char *postfix, int vars_size, int vars_row_size)
 {
     int i;
     DdNode *bdd;
     DdNode *temp_bdd[2];
     stack_bdd *cur_stack;
     int result = -5;
-    int seperate_vars = 1;
     char *temp_name = NULL;
     int j;
     int temp_bdd_pos = 0;
@@ -1074,16 +1076,16 @@ DdNode *concat_bdds(DdNode **vars, char **varNames, char **vars_row, char *postf
     free(temp_name);
     free(postfix);
 
-    for(i = 0; i < var_num; i++)
+    for(i = 0; i < vars_row_size; i++)
     {
         free(vars_row[i]);
     }
     free(vars_row);
 
-    for(i = 1; i < seperate_vars; i++)
-    {
-        free(varNames[i]);
-    }
+    // for(i = 1; i < vars_size + 1; i++)
+    // {
+    //     free(varNames[i]);
+    // }
     free(varNames);
     delete_stack_bdd(cur_stack);
 

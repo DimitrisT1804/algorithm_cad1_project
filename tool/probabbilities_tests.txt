@@ -1,0 +1,63 @@
+-------------------------------------------------
+design: c1355
+gatepin: c1355/g2844__4319/Q
+Paths to 1 is: 9.861.497.856
+all IOs are to 0.5 probability, result: 0.5
+Time for calculation: 1418.360215 sec (23.6 minutes)
+-------------------------------------------------
+
+-------------------------------------------------
+design: c432
+gatepin: c432/g3354__5107/Q
+Paths to 1 is: 1.914.968
+all IOs are to 0.5 probability, result: 0.481379
+Time for calculation: 0.207342 sec
+-------------------------------------------------
+
+-------------------------------------------------
+design: c499
+gatepin: c499/g2839__3680/Q
+Paths to 1 is: 10.512.016.384
+all IOs are to 0.5 probability, result: 0.5
+Time for calculation: 1472.518644 sec (24.5 minutes)
+-------------------------------------------------
+
+-------------------------------------------------
+design: c1908
+gatepin: c1908/g4608__6260/Q
+Paths to 1 is: 618.496
+all IOs are to 0.5 probability, result: 0.375
+Time for calculation: 0.061748 sec
+-------------------------------------------------
+
+-------------------------------------------------
+design: c880
+gatepin: c880/g3403__2398/Q
+Paths to 1 is: 191.306.297
+all IOs are to 0.5 probability, result: 0.638963
+Time for calculation: 27.56 sec
+-------------------------------------------------
+
+-------------------------------------------------
+design: c3540
+gatepin: c3540/g14729__2398/Q
+Paths to 1 is: 9.234.210
+all IOs are to 0.5 probability, result: 0.535956
+Time for calculation: 1.218599 sec
+-------------------------------------------------
+
+-------------------------------------------------
+design: c6288
+gatepin: 
+Paths to 1 is: 
+all IOs are to 0.5 probability, result: 
+Time for calculation: 
+-------------------------------------------------
+
+-------------------------------------------------
+design: lpffir
+gatepin: fa_1/U2/Q
+Paths to 1 is: 
+all IOs are to 0.5 probability, result: 
+Time for calculation: 
+-------------------------------------------------

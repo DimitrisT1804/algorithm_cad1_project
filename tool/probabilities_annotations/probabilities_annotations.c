@@ -58,6 +58,7 @@ double number_of_paths;
 void traverse_cudd(DdNode *node)
 {
     int i;
+    int index;
     DdNode *NT, *NE;
     if(node == NULL)
     {
@@ -66,10 +67,11 @@ void traverse_cudd(DdNode *node)
 
     if(Cudd_IsConstant(node))   // value 1 final node //
     {
-        if(Cudd_V(node) == 0)
+        if(cuddV(node) == 0)
         {
             return;
         }
+        
 
         // Allocate memory for the new path and copy the current path into it
         // DdNode **new_path = malloc( (path_size + 1) * sizeof(DdNode *) );
@@ -79,24 +81,24 @@ void traverse_cudd(DdNode *node)
         // all_paths = realloc(all_paths, sizeof(DdNode **) * (all_paths_size + 1));
         // all_paths[all_paths_size] = new_path;
         // all_paths_size++;
-        for(int i = 0; i < ghash_added_size; i++)
-        {
-            nodes_array[i] = -1;
-        }
+        // for(int i = 0; i < ghash_added_size; i++)
+        // {
+        //     nodes_array[i] = -1;
+        // }
 
-        for(i = 0; i < path_size; i++)
-        {
-            nodes_array[Cudd_NodeReadIndex(path[i])] = 1;
-        }
-        if(path_size > 0)
-        {
+        // for(i = 0; i < path_size; i++)
+        // {
+        //     nodes_array[Cudd_NodeReadIndex(path[i])] = 1;
+        // }
+        // if(path_size > 0)
+        // {
             probability_gatepin += calculate_probabilities(nodes_array);
-        }
+        // }
 
         number_of_paths++;
         return;
     }
-    insert_node(node, &path);
+    // insert_node(node, &path);
 
     NT = Cudd_T(node);
     NE = Cudd_E(node);
@@ -105,14 +107,18 @@ void traverse_cudd(DdNode *node)
 	    NT  = Cudd_Not(NT);
 	    NE = Cudd_Not(NE);
 	}
+    index = Cudd_NodeReadIndex(node);
+    nodes_array[index] = 0;
 
     // traverse_cudd(Cudd_T(node));
     // traverse_cudd(Cudd_Not( Cudd_E(node) ) );
     traverse_cudd(NT);
+    nodes_array[index] = 1;
     traverse_cudd(NE);
+    nodes_array[index] = -1;
 
     // remove node from path because it is not a final node to constant 1 //
-    remove_node(&path, node);
+    // remove_node(&path, node);
 
     // printf("Path: \n");
 
@@ -122,6 +128,159 @@ void traverse_cudd(DdNode *node)
     // }
     // printf("\n");
 }
+
+double my_ddCountPathsToNonZero(DdNode * N, st_table * table)
+{
+
+    DdNode	*node, *Nt, *Ne;
+    double	paths, *ppaths, paths1, paths2;
+    void	*dummy;
+    int index;
+
+    node = Cudd_Regular(N);
+    if (cuddIsConstant(node)) 
+    {
+        // if( (Cudd_IsComplement(N)) || (cuddV(node)==DD_ZERO_VAL) )
+        // {
+        //     return 0;
+        // }
+        if(cuddV(node) == DD_ZERO_VAL)
+        {
+            return 0;
+        }
+        probability_gatepin += calculate_probabilities(nodes_array);
+	    // return((double) !(Cudd_IsComplement(N) || cuddV(node)==DD_ZERO_VAL));
+        return 1;
+    }
+    // if (st_lookup(table, N, &dummy)) 
+    // {
+    //     paths = *(double *) dummy;
+    //     return(paths);
+    // }
+
+    Nt = cuddT(node);
+    Ne = cuddE(node);
+    if (node != N) 
+    {
+	    Nt = Cudd_Not(Nt);
+        Ne = Cudd_Not(Ne);
+    }
+    index = Cudd_NodeReadIndex(node);
+    nodes_array[index] = 0;
+
+    paths1 = my_ddCountPathsToNonZero(Nt,table);
+    nodes_array[index] = 1;
+    if (paths1 == (double)CUDD_OUT_OF_MEM)
+    {
+        return((double)CUDD_OUT_OF_MEM);
+    }
+    paths2 = my_ddCountPathsToNonZero(Ne,table);
+    nodes_array[index] = -1;
+    if (paths2 == (double)CUDD_OUT_OF_MEM)
+    {
+        return((double)CUDD_OUT_OF_MEM);
+    }
+    // paths = paths1 + paths2;
+
+    // ppaths = malloc(sizeof(double));
+    // if (ppaths == NULL) 
+    // {
+	//     return((double)CUDD_OUT_OF_MEM);
+    // }
+
+    // *ppaths = paths;
+
+    // if (st_add_direct(table, N, ppaths) == ST_OUT_OF_MEM) 
+    // {
+    //     free(ppaths);
+    //     ppaths = NULL;
+    //     return((double)CUDD_OUT_OF_MEM);
+    // }
+    // // if(ppaths != NULL)
+    // // {
+    // //     free(ppaths);
+    // // }
+    // return(paths);
+    return 0;
+
+} /* end of ddCountPathsToNonZero */
+
+// double my_ddCountPathsToNonZero(DdNode* N, st_table* table) 
+// {
+//     DdNode* node, *Nt, *Ne;
+//     double paths, *ppaths, paths1, paths2;
+//     void* dummy;
+//     int index;
+
+//     node = Cudd_Regular(N);
+//     if (cuddIsConstant(node)) {
+//         if (cuddV(node) == DD_ZERO_VAL) {
+//             return 0;
+//         }
+//         probability_gatepin += calculate_probabilities(nodes_array);
+//         return 1;
+//     }
+
+//     // if (st_lookup(table, N, &dummy)) {
+//     //     paths = *(double*)dummy;
+//     //     return paths;
+//     // }
+
+//     Nt = cuddT(node);
+//     Ne = cuddE(node);
+//     if (node != N) {
+//         Nt = Cudd_Not(Nt);
+//         Ne = Cudd_Not(Ne);
+//     }
+//     index = Cudd_NodeReadIndex(node);
+//     nodes_array[index] = 0;
+
+//     omp_set_num_threads(8);
+
+//     // Parallelize the recursive calls using OpenMP tasks
+//     #pragma omp parallel
+//     {
+//         #pragma omp single nowait
+//         {
+//             #pragma omp task
+//             {
+//                 paths1 = my_ddCountPathsToNonZero(Nt, table);
+//                 nodes_array[index] = 1;
+//                 // nodes_array[index] = 0; // Reset the value
+//             }
+
+//             #pragma omp task
+//             {
+//                 paths2 = my_ddCountPathsToNonZero(Ne, table);
+//                 nodes_array[index] = -1;
+//                 // nodes_array[index] = 0; // Reset the value
+//             }
+//         }
+//     }
+
+//     // Wait for all tasks to complete before continuing
+//     #pragma omp taskwait
+
+//     // paths = paths1 + paths2;
+
+//     // ppaths = malloc(sizeof(double));
+//     // if (ppaths == NULL) {
+//     //     return (double)CUDD_OUT_OF_MEM;
+//     // }
+
+//     // *ppaths = paths;
+
+//     // if (st_add_direct(table, N, ppaths) == ST_OUT_OF_MEM) {
+//     //     free(ppaths);
+//     //     ppaths = NULL;
+//     //     return (double)CUDD_OUT_OF_MEM;
+//     // }
+
+//     // return paths;
+//     return 0;
+// }
+
+
 
 void write_minterms(int ghash, int gdepth)
 {
