@@ -1942,12 +1942,13 @@ int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_O
 
     table = st_init_table(st_ptrcmp, st_ptrhash);
 
-    printf("Testing function paths is %lf\n", my_ddCountPathsToNonZero(Cudd_BddToAdd(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]), table));
+    // printf("Testing function paths is %lf\n", my_ddCountPathsToNonZero(Cudd_BddToAdd(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]), table));
     // printf("Testing function paths is %lf\n", my_ddCountPathsToNonZero(gatepinhashv[ghash].gatepin_bdd[gdepth], table));
     // printf("Total paths are %lf\n", number_of_paths);
     printf("Paths from system are %lf\n", Cudd_CountPathsToNonZero(gatepinhashv[ghash].gatepin_bdd[gdepth]));
     printf("Total probability is %lf\n", probability_gatepin);
-    Cudd_PrintMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]);
+    // Cudd_PrintMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]);
+    printInorder(Cudd_Regular(gatepinhashv[ghash].gatepin_bdd[gdepth]));
 
     st_free_table(table);
 

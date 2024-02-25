@@ -142,6 +142,37 @@ void traverse_cudd(DdNode *node)
     // printf("\n");
 }
 
+/* Given a binary tree, print its nodes in inorder*/
+void printInorder(DdNode* N)
+{
+    DdNode *node, *Nt, *Ne;
+
+    node = Cudd_Regular(N);
+
+    if(cuddIsConstant(node))
+    {
+        return;
+    }
+ 
+
+    Nt = cuddT(node);
+    Ne = cuddE(node);
+    if (node != N) 
+    {
+	    Nt = Cudd_Not(Nt);
+        Ne = Cudd_Not(Ne);
+    }
+    /* first recur on left child */
+    printInorder(Nt);
+ 
+    /* then print the data of node */
+    // printf("%d ", Cudd_NodeReadIndex(node));
+ 
+    /* now recur on right child */
+    printInorder(Ne);
+}
+ 
+
 double my_ddCountPathsToNonZero(DdNode * N, st_table * table)
 {
 
@@ -250,7 +281,6 @@ double my_ddCountPathsToNonZero(DdNode * N, st_table * table)
 //     index = Cudd_NodeReadIndex(node);
 //     nodes_array[index] = 0;
 
-//     omp_set_num_threads(8);
 
 //     // Parallelize the recursive calls using OpenMP tasks
 //     #pragma omp parallel

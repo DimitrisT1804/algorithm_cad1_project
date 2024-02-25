@@ -155,31 +155,8 @@ void annotate_bdds()
                                     //     continue;
                                     //     // break;
                                     // } 
-                                    pchash = gatepinhash[pghash].parentComponent[pgdepth];
-                                    pchdepth = gatepinhash[pghash].parentComponentDepth[pgdepth];
-                                    plhash = comphash[pchash].lib_type[pchdepth];
-                                    pldepth = comphash[pchash].lib_type_depth[pchdepth];
-
-                                    if(libhash[plhash].cell_type[pldepth] == SEQUENTIAL)
-                                    {
-                                        if(check_gatepin_type(pghash, pgdepth) == 1) // it is Output pin of flip flop //
-                                        {
-                                            for(m = 0; m < ghash_added_size; m++)
-                                            {
-                                                if(pghash == ghash_added[m] && pgdepth == gdepth_added[m])
-                                                {
-                                                    break;
-                                                }
-                                            }
-                                            if(m == ghash_added_size)
-                                            {
-                                                printf("Error IO DdNode not found!\n");
-                                            }
-                                            vars[l - 1] = IO_vars[m];
-                                            vars_size++;  
-                                        }
-                                    }
-                                    else if(gatepinhash[pghash].type[pgdepth] == IO_TYPE)
+                                    
+                                    if(gatepinhash[pghash].type[pgdepth] == IO_TYPE)
                                     {
                                         for(m = 0; m < ghash_added_size; m++)
                                         {
@@ -197,9 +174,37 @@ void annotate_bdds()
                                     }
                                     else
                                     {
-                                        vars[l - 1] = gatepinhashv[pghash].gatepin_bdd[pgdepth];
-                                        vars_size++;
+                                        pchash = gatepinhash[pghash].parentComponent[pgdepth];
+                                        pchdepth = gatepinhash[pghash].parentComponentDepth[pgdepth];
+                                        plhash = comphash[pchash].lib_type[pchdepth];
+                                        pldepth = comphash[pchash].lib_type_depth[pchdepth];
+
+                                        if(libhash[plhash].cell_type[pldepth] == SEQUENTIAL)
+                                        {
+                                            if(check_gatepin_type(pghash, pgdepth) == 1) // it is Output pin of flip flop //
+                                            {
+                                                for(m = 0; m < ghash_added_size; m++)
+                                                {
+                                                    if(pghash == ghash_added[m] && pgdepth == gdepth_added[m])
+                                                    {
+                                                        break;
+                                                    }
+                                                }
+                                                if(m == ghash_added_size)
+                                                {
+                                                    printf("Error IO DdNode not found!\n");
+                                                }
+                                                vars[l - 1] = IO_vars[m];
+                                                vars_size++;  
+                                            }
+                                        }
+                                        else
+                                        {
+                                            vars[l - 1] = gatepinhashv[pghash].gatepin_bdd[pgdepth];
+                                            vars_size++;
+                                        }
                                     }
+
 
                                     free(curr_pin);
                                     curr_pin = NULL;    
@@ -208,7 +213,8 @@ void annotate_bdds()
 
                             if(vars != NULL)
                             {
-                                size = vars_row_size;
+                                // size = vars_row_size;
+                                size = vars_size;
                                 gatepinhashv[i].gatepin_bdd[j] = concat_bdds(vars, varNames, vars_row, postfix, size, vars_row_size);
                                 printf("write bdd to gatepin %s\n", gatepinhash[i].name[j]);
                                 free(vars);

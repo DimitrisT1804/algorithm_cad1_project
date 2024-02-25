@@ -47,6 +47,14 @@ Time for calculation: 1.218599 sec
 -------------------------------------------------
 
 -------------------------------------------------
+design: c7552
+gatepin: c7552/g22318__2398/Q
+Paths to 1 is: 150.443.665.718
+all IOs are to 0.5 probability, result: 0.648415
+Time for calculation: 56229.121 sec (15.6 hours)
+-------------------------------------------------
+
+-------------------------------------------------
 design: c6288
 gatepin: 
 Paths to 1 is: 
@@ -60,4 +68,20 @@ gatepin: fa_1/U2/Q
 Paths to 1 is: 
 all IOs are to 0.5 probability, result: 
 Time for calculation: 
+-------------------------------------------------
+
+-------------------------------------------------
+design: PID
+gatepin: multiplier_16x16bit_pipelined/U88/Q
+Paths to 1 is: 140.169.117
+all IOs are to 0.5 probability, result: 0.515894
+Time for calculation: 168.591 sec (2.8 minutes)
+-------------------------------------------------
+
+-------------------------------------------------
+design: three_counters
+gatepin: multiplier_16x16bit_pipelined/U88/Q
+Paths to 1 is: 140.169.117
+all IOs are to 0.5 probability, result: 0.515894
+Time for calculation: 168.591 sec (2.8 minutes)
 -------------------------------------------------

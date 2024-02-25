@@ -33,3 +33,4 @@ void write_minterms(int ghash, int gdepth);
 double calculate_probabilities(int *vars_value);
 void read_minterms(char *gatepin_name);
 void print_paths();
+void printInorder(DdNode* node);

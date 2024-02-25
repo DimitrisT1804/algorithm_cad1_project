@@ -256,7 +256,6 @@ Gatepin_pos *toposort(int *startpoins_ghash, int *startpoints_gdepth)
                     }
                 } 
             }
-
         }
     }
     free_gatepin_pos(S);

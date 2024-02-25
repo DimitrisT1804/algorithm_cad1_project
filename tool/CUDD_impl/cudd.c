@@ -893,7 +893,7 @@ char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *s
     // !!! add a sentinel between variables in postfix !!! //
     already_calculated = 0;
 
-    postfix = (char *) realloc (postfix, strlen(postfix) * 2);
+    postfix = (char *) realloc (postfix, (strlen(postfix) + 1) * 2);
     for(i = 0; i < var_num; i++)
     {
         temp_string = strstr(postfix + already_calculated, (*vars_row)[i]);
