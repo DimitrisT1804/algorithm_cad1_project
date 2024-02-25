@@ -42,14 +42,27 @@ void print_paths()
 {
     int i, j;
 
-    for(i = 0; i < all_paths_size; i++)
+    for(i = 0; i < ghash_added_size; i++)
     {
-        for(j = 0; all_paths[i][j] != NULL; j++)
+        // for(j = 0; all_paths[i][j] != NULL; j++)
+        // {
+        //     printf("%d ", Cudd_NodeReadIndex(all_paths[i][j]));
+        // }
+        // printf("\n");
+        if(nodes_array[i] == 0)
         {
-            printf("%d ", Cudd_NodeReadIndex(all_paths[i][j]));
+            printf("0 ");
         }
-        printf("\n");
+        else if(nodes_array[i] == 1)
+        {
+            printf("1 ");
+        }
+        else
+        {
+            printf("- ");
+        }
     }
+    printf("\n");
 
 }
 
@@ -148,8 +161,10 @@ double my_ddCountPathsToNonZero(DdNode * N, st_table * table)
         {
             return 0;
         }
+
         probability_gatepin += calculate_probabilities(nodes_array);
 	    // return((double) !(Cudd_IsComplement(N) || cuddV(node)==DD_ZERO_VAL));
+        // print_paths();
         return 1;
     }
     // if (st_lookup(table, N, &dummy)) 
@@ -166,10 +181,10 @@ double my_ddCountPathsToNonZero(DdNode * N, st_table * table)
         Ne = Cudd_Not(Ne);
     }
     index = Cudd_NodeReadIndex(node);
-    nodes_array[index] = 0;
+    nodes_array[index] = 1;
 
     paths1 = my_ddCountPathsToNonZero(Nt,table);
-    nodes_array[index] = 1;
+    nodes_array[index] = 0;
     if (paths1 == (double)CUDD_OUT_OF_MEM)
     {
         return((double)CUDD_OUT_OF_MEM);

@@ -1877,7 +1877,7 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
     end = clock();
     printf(ANSI_COLOR_ORANGE "Calculation time is %lf\n" ANSI_COLOR_RESET, (double)(end - start) / CLOCKS_PER_SEC);
 
-    return TCL_OK;
+    return TCL_OK;  
 }
 
 int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
@@ -1947,6 +1947,7 @@ int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_O
     // printf("Total paths are %lf\n", number_of_paths);
     printf("Paths from system are %lf\n", Cudd_CountPathsToNonZero(gatepinhashv[ghash].gatepin_bdd[gdepth]));
     printf("Total probability is %lf\n", probability_gatepin);
+    Cudd_PrintMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]);
 
     st_free_table(table);
 
