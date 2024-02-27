@@ -40,7 +40,7 @@ void remove_node(DdNode ***path, DdNode *node)
 
 void print_paths()
 {
-    int i, j;
+    int i;
 
     for(i = 0; i < ghash_added_size; i++)
     {
@@ -70,7 +70,6 @@ double number_of_paths;
 
 void traverse_cudd(DdNode *node)
 {
-    int i;
     int index;
     DdNode *NT, *NE;
     if(node == NULL)
@@ -177,8 +176,6 @@ double my_ddCountPathsToNonZero(DdNode * N, st_table * table)
 {
 
     DdNode	*node, *Nt, *Ne;
-    double	paths, *ppaths, paths1, paths2;
-    void	*dummy;
     int index;
 
     node = Cudd_Regular(N);
@@ -214,18 +211,18 @@ double my_ddCountPathsToNonZero(DdNode * N, st_table * table)
     index = Cudd_NodeReadIndex(node);
     nodes_array[index] = 1;
 
-    paths1 = my_ddCountPathsToNonZero(Nt,table);
+    my_ddCountPathsToNonZero(Nt,table);
     nodes_array[index] = 0;
-    if (paths1 == (double)CUDD_OUT_OF_MEM)
-    {
-        return((double)CUDD_OUT_OF_MEM);
-    }
-    paths2 = my_ddCountPathsToNonZero(Ne,table);
+    // if (paths1 == (double)CUDD_OUT_OF_MEM)
+    // {
+    //     return((double)CUDD_OUT_OF_MEM);
+    // }
+    my_ddCountPathsToNonZero(Ne,table);
     nodes_array[index] = -1;
-    if (paths2 == (double)CUDD_OUT_OF_MEM)
-    {
-        return((double)CUDD_OUT_OF_MEM);
-    }
+    // if (paths2 == (double)CUDD_OUT_OF_MEM)
+    // {
+    //     return((double)CUDD_OUT_OF_MEM);
+    // }
     // paths = paths1 + paths2;
 
     // ppaths = malloc(sizeof(double));

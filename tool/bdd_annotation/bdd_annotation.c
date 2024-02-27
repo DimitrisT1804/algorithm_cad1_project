@@ -126,112 +126,111 @@ void annotate_bdds()
                                 continue;
                             }
                             
-                            // for (int f = 0; f < libhash[lhash].out_pins_count[ldepth]; f++)
-                            // {
-
-                            // }
-                            postfix = seperate_variables(libhash[lhash].function[ldepth][0], &varNames, &vars_row, &size_of_vars, &vars_row_size);
-
-                            vars = (DdNode **) realloc(vars, size_of_vars * sizeof(DdNode *));
-                            for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
+                            for(int f = 0; f < libhash[lhash].out_pins_count[ldepth]; f++)
                             {
-                                if(libhash[lhash].pin_type[ldepth][k] == INPUT)
-                                {
-                                    curr_pin = (char *) calloc(strlen(comphash[chash].name[cdepth]) + 1 + strlen(libhash[lhash].pin_names[ldepth][k]), sizeof(char));
-                                    strcpy(curr_pin, comphash[chash].name[cdepth]);
-                                    strcat(curr_pin, libhash[lhash].pin_names[ldepth][k]);
+                                postfix = seperate_variables(libhash[lhash].function[ldepth][f], &varNames, &vars_row, &size_of_vars, &vars_row_size);
 
-                                    for(l = 1; l < size_of_vars; l++)
+                                vars = (DdNode **) realloc(vars, size_of_vars * sizeof(DdNode *));
+                                for(k = 0; k < libhash[lhash].pin_count[ldepth]; k++)
+                                {
+                                    if(libhash[lhash].pin_type[ldepth][k] == INPUT)
                                     {
-                                        if(strcmp(libhash[lhash].pin_names[ldepth][k] + 1, varNames[l]) == 0)
+                                        curr_pin = (char *) calloc(strlen(comphash[chash].name[cdepth]) + 1 + strlen(libhash[lhash].pin_names[ldepth][k]), sizeof(char));
+                                        strcpy(curr_pin, comphash[chash].name[cdepth]);
+                                        strcat(curr_pin, libhash[lhash].pin_names[ldepth][k]);
+
+                                        for(l = 1; l < size_of_vars; l++)
                                         {
-                                            break;
-                                        }
-                                    }
-                                    
-                                    get_predecessors_pin(curr_pin, &pghash, &pgdepth);
-                                    // if(gatepinhash[pghash].type[pgdepth] == IO_TYPE)
-                                    // {
-                                    //     continue;
-                                    //     // break;
-                                    // } 
-                                    
-                                    if(gatepinhash[pghash].type[pgdepth] == IO_TYPE)
-                                    {
-                                        for(m = 0; m < ghash_added_size; m++)
-                                        {
-                                            if(pghash == ghash_added[m] && pgdepth == gdepth_added[m])
+                                            if(strcmp(libhash[lhash].pin_names[ldepth][k] + 1, varNames[l]) == 0)
                                             {
                                                 break;
                                             }
                                         }
-                                        if(m == ghash_added_size)
+                                        
+                                        get_predecessors_pin(curr_pin, &pghash, &pgdepth);
+                                        // if(gatepinhash[pghash].type[pgdepth] == IO_TYPE)
+                                        // {
+                                        //     continue;
+                                        //     // break;
+                                        // } 
+                                        
+                                        if(gatepinhash[pghash].type[pgdepth] == IO_TYPE)
                                         {
-                                            printf("Error IO DdNode not found!\n");
-                                        }
-                                        vars[l - 1] = IO_vars[m];
-                                        vars_size++;  
-                                    }
-                                    else
-                                    {
-                                        pchash = gatepinhash[pghash].parentComponent[pgdepth];
-                                        pchdepth = gatepinhash[pghash].parentComponentDepth[pgdepth];
-                                        plhash = comphash[pchash].lib_type[pchdepth];
-                                        pldepth = comphash[pchash].lib_type_depth[pchdepth];
-
-                                        if(libhash[plhash].cell_type[pldepth] == SEQUENTIAL)
-                                        {
-                                            if(check_gatepin_type(pghash, pgdepth) == 1) // it is Output pin of flip flop //
+                                            for(m = 0; m < ghash_added_size; m++)
                                             {
-                                                for(m = 0; m < ghash_added_size; m++)
+                                                if(pghash == ghash_added[m] && pgdepth == gdepth_added[m])
                                                 {
-                                                    if(pghash == ghash_added[m] && pgdepth == gdepth_added[m])
-                                                    {
-                                                        break;
-                                                    }
+                                                    break;
                                                 }
-                                                if(m == ghash_added_size)
-                                                {
-                                                    printf("Error IO DdNode not found!\n");
-                                                }
-                                                vars[l - 1] = IO_vars[m];
-                                                vars_size++;  
                                             }
+                                            if(m == ghash_added_size)
+                                            {
+                                                printf("Error IO DdNode not found!\n");
+                                            }
+                                            vars[l - 1] = IO_vars[m];
+                                            vars_size++;  
                                         }
                                         else
                                         {
-                                            vars[l - 1] = gatepinhashv[pghash].gatepin_bdd[pgdepth];
-                                            vars_size++;
+                                            pchash = gatepinhash[pghash].parentComponent[pgdepth];
+                                            pchdepth = gatepinhash[pghash].parentComponentDepth[pgdepth];
+                                            plhash = comphash[pchash].lib_type[pchdepth];
+                                            pldepth = comphash[pchash].lib_type_depth[pchdepth];
+
+                                            if(libhash[plhash].cell_type[pldepth] == SEQUENTIAL)
+                                            {
+                                                if(check_gatepin_type(pghash, pgdepth) == 1) // it is Output pin of flip flop //
+                                                {
+                                                    for(m = 0; m < ghash_added_size; m++)
+                                                    {
+                                                        if(pghash == ghash_added[m] && pgdepth == gdepth_added[m])
+                                                        {
+                                                            break;
+                                                        }
+                                                    }
+                                                    if(m == ghash_added_size)
+                                                    {
+                                                        printf("Error IO DdNode not found!\n");
+                                                    }
+                                                    vars[l - 1] = IO_vars[m];
+                                                    vars_size++;  
+                                                }
+                                            }
+                                            else
+                                            {
+                                                vars[l - 1] = gatepinhashv[pghash].gatepin_bdd[pgdepth];
+                                                vars_size++;
+                                            }
                                         }
+
+
+                                        free(curr_pin);
+                                        curr_pin = NULL;    
                                     }
-
-
-                                    free(curr_pin);
-                                    curr_pin = NULL;    
                                 }
+
+                                if(vars != NULL)
+                                {
+                                    // size = vars_row_size;
+                                    size = vars_size;
+                                    gatepinhashv[i].gatepin_bdd[j] = concat_bdds(vars, varNames, vars_row, postfix, size, vars_row_size);
+                                    printf("write bdd to gatepin %s\n", gatepinhash[i].name[j]);
+                                    free(vars);
+                                    vars = NULL;
+                                    vars_size = 0;
+                                }
+                                
+                                postfix = NULL;
+
+                                // Cudd_ReduceHeap(gbm, CUDD_REORDER_SYMM_SIFT, 0);
+                                // Cudd_ReduceHeap(gbm, 3, 0);
+                                Cudd_ReduceHeap(gbm, 0, 0);
+                                // gatepinhashv[i].gatepin_bdd[j] = Cudd_ReduceHeap(gbm, CUDD_REORDER_SAME, 0);
+
+                                varNames = NULL;
+                                vars_row = NULL;
+                                size_of_vars = 0;
                             }
-
-                            if(vars != NULL)
-                            {
-                                // size = vars_row_size;
-                                size = vars_size;
-                                gatepinhashv[i].gatepin_bdd[j] = concat_bdds(vars, varNames, vars_row, postfix, size, vars_row_size);
-                                printf("write bdd to gatepin %s\n", gatepinhash[i].name[j]);
-                                free(vars);
-                                vars = NULL;
-                                vars_size = 0;
-                            }
-                            
-                            postfix = NULL;
-
-                            // Cudd_ReduceHeap(gbm, CUDD_REORDER_SYMM_SIFT, 0);
-                            // Cudd_ReduceHeap(gbm, 3, 0);
-                            Cudd_ReduceHeap(gbm, 0, 0);
-                            // gatepinhashv[i].gatepin_bdd[j] = Cudd_ReduceHeap(gbm, CUDD_REORDER_SAME, 0);
-
-                            varNames = NULL;
-                            vars_row = NULL;
-                            size_of_vars = 0;
 
                             // only combinational cells //
                         }

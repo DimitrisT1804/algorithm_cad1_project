@@ -945,7 +945,6 @@ DdNode *concat_bdds(DdNode **vars, char **varNames, char **vars_row, char *postf
     int j;
     int temp_bdd_pos = 0;
     int pos_left_string = 0;
-    int var_num = 0;
     DdNode *get_node_1;
     DdNode *get_node_2;
 

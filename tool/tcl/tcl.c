@@ -1015,7 +1015,7 @@ int report_library_cell_BDD(ClientData clientdata, Tcl_Interp *interp, int objc,
         strcat(command, libhash[lhash].name[ldepth]);
         strcat(command, "_");
 
-        snprintf(number, sizeof(number), "%d", i+1);
+        snprintf(number, strlen(number) + 2, "%d", i+1);
         strcat(command, number);
 
         strcat(command, ".png");
@@ -1124,7 +1124,7 @@ int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
         strcat(command, libhash[lhash].name[ldepth]);
         strcat(command, "_");
 
-        snprintf(number, sizeof(number), "%d", i+1);
+        snprintf(number, strlen(number) + 2, "%d", i+1);
         strcat(command, number);
 
         strcat(command, ".png");
@@ -1731,9 +1731,12 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
     int list_size;
     int ghash;
     int gdepth;
-    double value = 0.0;
     st_table *table = NULL;
     clock_t start, end;
+    int chash;
+    int cdepth;
+    int lhash;
+    int ldepth;
 
 
     if(objc < 2)
@@ -1795,6 +1798,14 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
                 {   
                     if(check_gatepin_type(i, j) == 1)
                     {
+                        chash = gatepinhash[i].parentComponent[j];
+                        cdepth = gatepinhash[i].parentComponentDepth[j];
+                        lhash = comphash[chash].lib_type[cdepth];
+                        ldepth = comphash[chash].lib_type_depth[cdepth];
+                        if(libhash[lhash].cell_type[ldepth] == SEQUENTIAL)
+                        {
+                            continue;
+                        }
                         if(gatepinhashv[i].gatepin_bdd[j] == NULL)
                         {
                             printf(ANSI_COLOR_RED "ERROR: BDD for gatepin %s is not generated\nBe sure to run annotate_bdd command" ANSI_COLOR_RESET, gatepinhash[i].name[j]);
@@ -1885,15 +1896,12 @@ int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_O
     char *gatepin = NULL;
     int ghash;
     int gdepth;
-    // DdNode **path = NULL;
-    path = NULL;
     st_table	*table;
-    double	i;
-
     clock_t start, end;
 
     start = clock();
 
+    path = NULL;
     all_paths = NULL;
     path_size = 0;
     all_paths_size = 0;
