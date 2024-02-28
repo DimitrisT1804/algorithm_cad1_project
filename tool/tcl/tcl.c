@@ -1519,6 +1519,11 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
         return TCL_ERROR;
     }
 
+    if(gatepinhash[ghash].type[gdepth] == PO)
+    {
+        get_predecessors_pin(gatepin, &ghash, &gdepth);
+    }
+
     chash = gatepinhash[ghash].parentComponent[gdepth];
     cdepth = gatepinhash[ghash].parentComponentDepth[gdepth];
     lhash = comphash[chash].lib_type[cdepth];
@@ -1715,7 +1720,7 @@ int set_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc, 
         }
     }
 
-    printf(ANSI_COLOR_GREEN "Static probabilities are set\n" ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_GREEN "Static probabilities updated\n" ANSI_COLOR_RESET);
     
     return TCL_OK;
 }
@@ -1802,10 +1807,14 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
                         cdepth = gatepinhash[i].parentComponentDepth[j];
                         lhash = comphash[chash].lib_type[cdepth];
                         ldepth = comphash[chash].lib_type_depth[cdepth];
-                        if(libhash[lhash].cell_type[ldepth] == SEQUENTIAL)
+                        if(libhash[lhash].cell_type[ldepth] == SEQUENTIAL)  // if it is Sequential just skip it //
                         {
                             continue;
                         }
+                        // if(gatepinhash[i].type[j] == PO)
+                        // {
+                        //     get_predecessors_pin(gatepinhash[i].name[j], &i, &j);
+                        // }
                         if(gatepinhashv[i].gatepin_bdd[j] == NULL)
                         {
                             printf(ANSI_COLOR_RED "ERROR: BDD for gatepin %s is not generated\nBe sure to run annotate_bdd command" ANSI_COLOR_RESET, gatepinhash[i].name[j]);
@@ -1856,6 +1865,16 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
                 printf(ANSI_COLOR_ORANGE "Warning: Gatepin %s is not an Output\n" ANSI_COLOR_RESET, gatepins_name[i]);
                 continue;
             }
+            
+            chash = gatepinhash[ghash].parentComponent[gdepth];
+            cdepth = gatepinhash[ghash].parentComponentDepth[gdepth];
+            lhash = comphash[chash].lib_type[cdepth];
+            ldepth = comphash[chash].lib_type_depth[cdepth];
+            if(libhash[lhash].cell_type[ldepth] == SEQUENTIAL)  // if it is Sequential just skip it //
+            {
+                printf(ANSI_COLOR_ORANGE "Warning: Gatepin %s is of type SEQUENTIAL. Skipping...\n" ANSI_COLOR_RESET, gatepins_name[i]);
+                continue;
+            }
             if(gatepinhashv[ghash].gatepin_bdd[gdepth] == NULL)
             {
                 printf(ANSI_COLOR_RED "ERROR: BDD for gatepin %s is not generated\nBe sure to run annotate_bdd command" ANSI_COLOR_RESET, gatepinhash[ghash].name[gdepth]);
@@ -1887,6 +1906,27 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
 
     end = clock();
     printf(ANSI_COLOR_ORANGE "Calculation time is %lf\n" ANSI_COLOR_RESET, (double)(end - start) / CLOCKS_PER_SEC);
+
+    // what should i do on flip-flops and bdds annotation? just skip it? //
+
+    #ifdef DEBUG
+    for(i = 0; i < gatepinhash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] == 1)
+            {
+                if (check_gatepin_type(i, j) == 1)
+                {
+                    if(gatepinhashv[i].gatepin_bdd[j] == NULL)
+                    {
+                        printf("it is %s\n", gatepinhash[i].name[j]);
+                    }
+                }
+            }
+        }
+    }  
+    #endif 
 
     return TCL_OK;  
 }
