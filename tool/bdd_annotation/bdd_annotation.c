@@ -226,7 +226,17 @@ void annotate_bdds()
                                 // Cudd_ReduceHeap(gbm, 3, 0);
                                 Cudd_ReduceHeap(gbm, 0, 0);
                                 // gatepinhashv[i].gatepin_bdd[j] = Cudd_ReduceHeap(gbm, CUDD_REORDER_SAME, 0);
-
+                                // if(varNames != NULL)
+                                // {
+                                //     for(i = 1; i < size; i++)
+                                //     {
+                                //         if(varNames[i] != NULL)
+                                //         {
+                                //             free(varNames[i]);
+                                //         }
+                                //     }
+                                //     free(varNames);
+                                // }
                                 varNames = NULL;
                                 vars_row = NULL;
                                 size_of_vars = 0;
@@ -241,6 +251,47 @@ void annotate_bdds()
         }   
     }
     // edo mallon prepei na kano free ton manager i allios sto clear_design //
+
+    for(i = 0; i < gatepinhash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] == 1)
+            {
+                if(gatepinhash[i].type[j] == WIRE)
+                {
+                    if(check_gatepin_type(i, j) == 0)  // it is Output //
+                    {
+                        continue;;
+                    }
+                    chash = gatepinhash[i].parentComponent[j];
+                    cdepth = gatepinhash[i].parentComponentDepth[j];
+                    lhash = comphash[chash].lib_type[cdepth];
+                    ldepth = comphash[chash].lib_type_depth[cdepth];
+                    if(libhash[lhash].cell_type[ldepth] == COMBINATIONAL)
+                    {
+                        continue;;
+                    }
+                    if(curr_pin != NULL)
+                    {
+                        free(curr_pin);
+                        curr_pin = NULL;
+                    }
+                    curr_pin = (char *) calloc(strlen(comphash[chash].name[cdepth]) + 3, sizeof(char));
+                    strcpy(curr_pin, comphash[chash].name[cdepth]);
+                    strcat(curr_pin, "/D");
+
+                    get_predecessors_pin(curr_pin, &pghash, &pgdepth);
+                    // get_predecessors_pin(gatepinhash[pghash].name[pgdepth], &pghash, &pgdepth);
+
+                    gatepinhashv[i].gatepin_bdd[j] = gatepinhashv[pghash].gatepin_bdd[pgdepth];
+
+                    free(curr_pin);
+                    curr_pin = NULL;
+                }
+            }
+        }
+    }
 
     for(i = 0; i < gatepinhash_size; i++)
     {

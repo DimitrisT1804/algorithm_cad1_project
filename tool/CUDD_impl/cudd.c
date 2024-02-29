@@ -1081,10 +1081,13 @@ DdNode *concat_bdds(DdNode **vars, char **varNames, char **vars_row, char *postf
     }
     free(vars_row);
 
-    // for(i = 1; i < vars_size + 1; i++)
-    // {
-    //     free(varNames[i]);
-    // }
+    for(i = 1; i < vars_size; i++)
+    {
+        if(varNames[i] != NULL)
+        {
+            free(varNames[i]);
+        }
+    }
     free(varNames);
     delete_stack_bdd(cur_stack);
 

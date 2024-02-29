@@ -1790,6 +1790,25 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
 
     nodes_array = realloc(nodes_array, (ghash_added_size + 1) * sizeof(int) );
 
+    // #ifdef DEBUG
+    for(i = 0; i < gatepinhash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] == 1)
+            {
+                if (check_gatepin_type(i, j) == 1)
+                {
+                    if(gatepinhashv[i].gatepin_bdd[j] == NULL)
+                    {
+                        printf("it is %s\n", gatepinhash[i].name[j]);
+                    }
+                }
+            }
+        }
+    }  
+    // #endif 
+
 
     start = clock();
 
@@ -1908,25 +1927,6 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
     printf(ANSI_COLOR_ORANGE "Calculation time is %lf\n" ANSI_COLOR_RESET, (double)(end - start) / CLOCKS_PER_SEC);
 
     // what should i do on flip-flops and bdds annotation? just skip it? //
-
-    #ifdef DEBUG
-    for(i = 0; i < gatepinhash_size; i++)
-    {
-        for(j = 0; j < HASHDEPTH; j++)
-        {
-            if(gatepinhash[i].hashpresent[j] == 1)
-            {
-                if (check_gatepin_type(i, j) == 1)
-                {
-                    if(gatepinhashv[i].gatepin_bdd[j] == NULL)
-                    {
-                        printf("it is %s\n", gatepinhash[i].name[j]);
-                    }
-                }
-            }
-        }
-    }  
-    #endif 
 
     return TCL_OK;  
 }
