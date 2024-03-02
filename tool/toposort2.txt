@@ -1,0 +1,1558 @@
+   ____    _    ____    _____ ___   ___  _     
+  / ___|  / \  |  _ \  |_   _/ _ \ / _ \| |    
+ | |     / _ \ | | | |   | || | | | | | | |    
+ | |___ / ___ \| |_| |   | || |_| | |_| | |___ 
+  \____/_/   \_\____/    |_| \___/ \___/|_____|
+
+
+
+PR> read_design practical_formats/lpffir.practicalformat 
+[34m####### Summary of Design: practical_formats/lpffir.practicalformat #######
+[0m[32mComponents: 402
+[0m[32mIOs: 33
+[0m[32mCells: 6
+[0m[32mTotal gatepins: 1395
+[0m[34m##########################################################################
+
+[0m[38;5;208mTotal elapsed time for parsing is 0.0060 sec
+[0m[32m
+[0mPR> get_toposort 
+[34mMax depth of design is: 43
+[0m[38;5;208mTime calculation for toposort is 0.043028
+[0m[32m
+[0mPR> report_gatepins_levelized 
+[1;35m------ Level -1: ------
+[0m[1;35m----------------------
+
+[0m[1;35m------ Level 0: ------
+[0m[32m• lpffir_core/\x3_reg[11]/Q
+[0m[32m• lpffir_core/\x2_reg[7]/Q
+[0m[32m• lpffir_core/\x4_reg[5]/Q
+[0m[32m• lpffir_core/\x3_reg[0]/Q
+[0m[32m• lpffir_core/\x3_reg[7]/Q
+[0m[32m• lpffir_core/\x5_reg[5]/Q
+[0m[32m• lpffir_core/\x2_reg[15]/Q
+[0m[32m• lpffir_core/\x2_reg[14]/Q
+[0m[32m• lpffir_core/\x2_reg[3]/Q
+[0m[32m• lpffir_core/\x4_reg[9]/Q
+[0m[32m• lpffir_core/\x3_reg[12]/Q
+[0m[32m• lpffir_core/\x3_reg[3]/Q
+[0m[32m• lpffir_core/\x2_reg[8]/Q
+[0m[32m• lpffir_core/\x5_reg[9]/Q
+[0m[32m• lpffir_core/\x2_reg[11]/Q
+[0m[32m• lpffir_core/\x2_reg[10]/Q
+[0m[32m• lpffir_core/\x2_reg[13]/Q
+[0m[32m• lpffir_core/\x1_reg[9]/Q
+[0m[32m• lpffir_core/\x5_reg[13]/Q
+[0m[32m• lpffir_core/\x2_reg[12]/Q
+[0m[32m• lpffir_core/\x3_reg[8]/Q
+[0m[32m• lpffir_core/\x1_reg[13]/Q
+[0m[32m• lpffir_core/\x1_reg[14]/Q
+[0m[32m• lpffir_core/\x5_reg[10]/Q
+[0m[32m• x_i|7
+[0m[32m• x_i|6
+[0m[32m• x_i|5
+[0m[32m• x_i|4
+[0m[32m• x_i|3
+[0m[32m• x_i|2
+[0m[32m• x_i|1
+[0m[32m• x_i|0
+[0m[32m• x_i|9
+[0m[32m• x_i|8
+[0m[32m• lpffir_core/\x1_reg[10]/Q
+[0m[32m• lpffir_core/\x1_reg[7]/Q
+[0m[32m• lpffir_core/\x4_reg[3]/Q
+[0m[32m• lpffir_core/\x5_reg[14]/Q
+[0m[32m• lpffir_core/\x5_reg[3]/Q
+[0m[32m• lpffir_core/\x5_reg[12]/Q
+[0m[32m• lpffir_core/\x1_reg[3]/Q
+[0m[32m• lpffir_core/\x2_reg[5]/Q
+[0m[32m• lpffir_core/\x4_reg[7]/Q
+[0m[32m• lpffir_core/\x3_reg[14]/Q
+[0m[32m• lpffir_core/\x1_reg[12]/Q
+[0m[32m• lpffir_core/\x4_reg[0]/Q
+[0m[32m• lpffir_core/\x4_reg[13]/Q
+[0m[32m• lpffir_core/\x3_reg[5]/Q
+[0m[32m• lpffir_core/\x5_reg[7]/Q
+[0m[32m• lpffir_core/\x4_reg[12]/Q
+[0m[32m• lpffir_core/\x1_reg[4]/Q
+[0m[32m• lpffir_core/\x1_reg[15]/Q
+[0m[32m• lpffir_core/\x2_reg[1]/Q
+[0m[32m• lpffir_core/\x5_reg[0]/Q
+[0m[32m• lpffir_core/\x3_reg[10]/Q
+[0m[32m• lpffir_core/\x2_reg[6]/Q
+[0m[32m• lpffir_core/\x4_reg[4]/Q
+[0m[32m• lpffir_core/\x5_reg[11]/Q
+[0m[32m• lpffir_core/\x3_reg[1]/Q
+[0m[32m• lpffir_core/\x1_reg[0]/Q
+[0m[32m• lpffir_core/\x4_reg[2]/Q
+[0m[32m• lpffir_core/\x1_reg[11]/Q
+[0m[32m• lpffir_core/\x1_reg[6]/Q
+[0m[32m• lpffir_core/\x3_reg[6]/Q
+[0m[32m• x_i|14
+[0m[32m• x_i|15
+[0m[32m• lpffir_core/\x5_reg[4]/Q
+[0m[32m• x_i|12
+[0m[32m• x_i|13
+[0m[32m• x_i|10
+[0m[32m• x_i|11
+[0m[32m• lpffir_core/\x2_reg[2]/Q
+[0m[32m• lpffir_core/\x4_reg[8]/Q
+[0m[32m• lpffir_core/\x5_reg[15]/Q
+[0m[32m• lpffir_core/\x5_reg[2]/Q
+[0m[32m• lpffir_core/\x2_reg[4]/Q
+[0m[32m• lpffir_core/\x4_reg[6]/Q
+[0m[32m• lpffir_core/\x4_reg[11]/Q
+[0m[32m• lpffir_core/\x3_reg[13]/Q
+[0m[32m• lpffir_core/\x1_reg[2]/Q
+[0m[32m• lpffir_core/\x1_reg[5]/Q
+[0m[32m• lpffir_core/\x2_reg[9]/Q
+[0m[32m• lpffir_core/\x3_reg[2]/Q
+[0m[32m• lpffir_core/\x4_reg[10]/Q
+[0m[32m• lpffir_core/\x5_reg[8]/Q
+[0m[32m• lpffir_core/\x3_reg[15]/Q
+[0m[32m• clk_i
+[0m[32m• lpffir_core/\x4_reg[1]/Q
+[0m[32m• lpffir_core/\x3_reg[4]/Q
+[0m[32m• lpffir_core/\x3_reg[9]/Q
+[0m[32m• lpffir_core/\x5_reg[6]/Q
+[0m[32m• lpffir_core/\x2_reg[0]/Q
+[0m[32m• lpffir_core/\x1_reg[8]/Q
+[0m[32m• lpffir_core/\x5_reg[1]/Q
+[0m[32m• lpffir_core/\x4_reg[15]/Q
+[0m[32m• lpffir_core/\x1_reg[1]/Q
+[0m[32m• lpffir_core/\x4_reg[14]/Q
+[0m[1;35m----------------------
+
+[0m[1;35m------ Level 1: ------
+[0m[32m• lpffir_core/\x4_reg[5]/C
+[0m[32m• lpffir_core/\x4_reg[14]/C
+[0m[32m• fa_41/U3/B
+[0m[32m• lpffir_core/\x4_reg[5]/D
+[0m[32m• lpffir_core/\x4_reg[14]/D
+[0m[32m• fa_41/U3/A
+[0m[32m• fa_43/U3/A
+[0m[32m• fa_43/U3/B
+[0m[32m• lpffir_core/\x3_reg[11]/C
+[0m[32m• lpffir_core/\x3_reg[0]/C
+[0m[32m• lpffir_core/\x3_reg[11]/D
+[0m[32m• lpffir_core/\x3_reg[0]/D
+[0m[32m• lpffir_core/\x3_reg[7]/D
+[0m[32m• lpffir_core/\x3_reg[7]/C
+[0m[32m• lpffir_core/\x5_reg[5]/C
+[0m[32m• lpffir_core/\x5_reg[5]/D
+[0m[32m• fa_73/U3/B
+[0m[32m• fa_60/U4/B
+[0m[32m• fa_73/U3/A
+[0m[32m• fa_60/U4/A
+[0m[32m• fa_74/U4/B
+[0m[32m• fa_74/U4/A
+[0m[32m• fa_78/U3/A
+[0m[32m• fa_78/U3/B
+[0m[32m• lpffir_core/\x2_reg[15]/D
+[0m[32m• lpffir_core/\x2_reg[15]/C
+[0m[32m• fa_0/U3/B
+[0m[32m• fa_0/U3/A
+[0m[32m• fa_52/U4/B
+[0m[32m• fa_52/U4/A
+[0m[32m• fa_58/U4/A
+[0m[32m• fa_58/U4/B
+[0m[32m• fa_42/U3/A
+[0m[32m• fa_42/U3/B
+[0m[32m• lpffir_core/\x2_reg[14]/D
+[0m[32m• fa_34/U4/B
+[0m[32m• fa_34/U4/A
+[0m[32m• lpffir_core/\x2_reg[14]/C
+[0m[32m• lpffir_core/\x2_reg[3]/C
+[0m[32m• lpffir_core/\x2_reg[3]/D
+[0m[32m• lpffir_core/\x4_reg[9]/D
+[0m[32m• lpffir_core/\x4_reg[9]/C
+[0m[32m• fa_33/U3/B
+[0m[32m• fa_33/U3/A
+[0m[32m• fa_62/U4/A
+[0m[32m• fa_62/U4/B
+[0m[32m• fa_67/U4/A
+[0m[32m• fa_67/U4/B
+[0m[32m• fa_70/U3/A
+[0m[32m• fa_70/U3/B
+[0m[32m• fa_38/U3/A
+[0m[32m• fa_38/U3/B
+[0m[32m• lpffir_core/\x3_reg[12]/C
+[0m[32m• lpffir_core/\x3_reg[3]/C
+[0m[32m• fa_77/U4/A
+[0m[32m• lpffir_core/\x2_reg[8]/C
+[0m[32m• fa_77/U4/B
+[0m[32m• lpffir_core/\x3_reg[12]/D
+[0m[32m• lpffir_core/\x2_reg[8]/D
+[0m[32m• lpffir_core/\x3_reg[3]/D
+[0m[32m• lpffir_core/\x5_reg[9]/D
+[0m[32m• lpffir_core/\x5_reg[9]/C
+[0m[32m• fa_43/U4/B
+[0m[32m• fa_43/U4/A
+[0m[32m• fa_50/U4/A
+[0m[32m• fa_49/U4/A
+[0m[32m• fa_50/U4/B
+[0m[32m• fa_49/U4/B
+[0m[32m• fa_53/U4/B
+[0m[32m• fa_53/U4/A
+[0m[32m• fa_59/U4/A
+[0m[32m• fa_59/U4/B
+[0m[32m• lpffir_core/\x2_reg[11]/C
+[0m[32m• fa_37/U4/A
+[0m[32m• lpffir_core/\x2_reg[11]/D
+[0m[32m• fa_37/U4/B
+[0m[32m• lpffir_core/\x1_reg[9]/C
+[0m[32m• fa_48/U3/B
+[0m[32m• lpffir_core/U83/Q
+[0m[32m• fa_48/U3/A
+[0m[32m• lpffir_core/\x1_reg[9]/D
+[0m[32m• lpffir_core/\x2_reg[10]/C
+[0m[32m• lpffir_core/\x2_reg[10]/D
+[0m[32m• lpffir_core/\x2_reg[13]/C
+[0m[32m• lpffir_core/\x2_reg[13]/D
+[0m[32m• fa_41/U4/A
+[0m[32m• fa_41/U4/B
+[0m[32m• fa_65/U4/B
+[0m[32m• fa_65/U4/A
+[0m[32m• lpffir_core/\x5_reg[13]/D
+[0m[32m• fa_69/U3/A
+[0m[32m• fa_69/U3/B
+[0m[32m• lpffir_core/\x3_reg[8]/C
+[0m[32m• fa_51/U4/A
+[0m[32m• fa_51/U4/B
+[0m[32m• lpffir_core/\x3_reg[8]/D
+[0m[32m• lpffir_core/\x5_reg[13]/C
+[0m[32m• lpffir_core/\x2_reg[12]/C
+[0m[32m• fa_75/U4/B
+[0m[32m• lpffir_core/\x2_reg[12]/D
+[0m[32m• fa_75/U4/A
+[0m[32m• fa_40/U3/B
+[0m[32m• fa_40/U3/A
+[0m[32m• fa_75/U3/A
+[0m[32m• fa_75/U3/B
+[0m[32m• fa_35/U4/B
+[0m[32m• fa_35/U4/A
+[0m[32m• fa_61/U3/A
+[0m[32m• fa_61/U3/B
+[0m[32m• fa_72/U3/B
+[0m[32m• fa_72/U3/A
+[0m[32m• lpffir_core/\x1_reg[13]/C
+[0m[32m• lpffir_core/\x1_reg[13]/D
+[0m[32m• lpffir_core/\x1_reg[14]/D
+[0m[32m• lpffir_core/\x1_reg[14]/C
+[0m[32m• fa_72/U4/A
+[0m[32m• fa_72/U4/B
+[0m[32m• fa_54/U3/B
+[0m[32m• fa_54/U3/A
+[0m[32m• lpffir_core/\x5_reg[10]/D
+[0m[32m• lpffir_core/\x5_reg[10]/C
+[0m[32m• fa_56/U3/A
+[0m[32m• fa_56/U3/B
+[0m[32m• fa_44/U4/A
+[0m[32m• fa_44/U4/B
+[0m[32m• fa_78/U4/B
+[0m[32m• fa_78/U4/A
+[0m[32m• fa_68/U3/A
+[0m[32m• fa_68/U3/B
+[0m[32m• lpffir_core/\x1_reg[7]/D
+[0m[32m• lpffir_core/\x1_reg[7]/C
+[0m[32m• fa_45/U3/B
+[0m[32m• fa_45/U3/A
+[0m[32m• fa_47/U3/A
+[0m[32m• fa_47/U3/B
+[0m[32m• lpffir_core/\x4_reg[3]/D
+[0m[32m• lpffir_core/\x1_reg[10]/C
+[0m[32m• lpffir_core/\x4_reg[3]/C
+[0m[32m• lpffir_core/\x1_reg[10]/D
+[0m[32m• fa_70/U4/B
+[0m[32m• fa_70/U4/A
+[0m[32m• fa_62/U3/B
+[0m[32m• fa_62/U3/A
+[0m[32m• fa_77/U3/B
+[0m[32m• fa_60/U3/A
+[0m[32m• fa_77/U3/A
+[0m[32m• fa_60/U3/B
+[0m[32m• lpffir_core/\x5_reg[3]/D
+[0m[32m• lpffir_core/\x5_reg[3]/C
+[0m[32m• lpffir_core/\x5_reg[14]/C
+[0m[32m• fa_63/U3/B
+[0m[32m• fa_46/U4/B
+[0m[32m• fa_63/U3/A
+[0m[32m• fa_46/U4/A
+[0m[32m• lpffir_core/\x5_reg[14]/D
+[0m[32m• fa_59/U3/B
+[0m[32m• fa_59/U3/A
+[0m[32m• fa_46/U3/A
+[0m[32m• lpffir_core/\x5_reg[12]/D
+[0m[32m• fa_46/U3/B
+[0m[32m• lpffir_core/\x5_reg[12]/C
+[0m[32m• fa_63/U4/A
+[0m[32m• fa_63/U4/B
+[0m[32m• lpffir_core/\x1_reg[3]/C
+[0m[32m• lpffir_core/\x1_reg[3]/D
+[0m[32m• fa_73/U4/A
+[0m[32m• lpffir_core/U84/Q
+[0m[32m• fa_35/U3/A
+[0m[32m• fa_73/U4/B
+[0m[32m• fa_35/U3/B
+[0m[32m• lpffir_core/\x2_reg[5]/D
+[0m[32m• lpffir_core/\x2_reg[5]/C
+[0m[32m• lpffir_core/\x4_reg[7]/C
+[0m[32m• fa_74/U3/A
+[0m[32m• fa_74/U3/B
+[0m[32m• lpffir_core/\x4_reg[7]/D
+[0m[32m• fa_69/U4/B
+[0m[32m• fa_69/U4/A
+[0m[32m• lpffir_core/\x4_reg[0]/D
+[0m[32m• lpffir_core/\x4_reg[0]/C
+[0m[32m• fa_79/U4/B
+[0m[32m• fa_79/U4/A
+[0m[32m• lpffir_core/\x3_reg[14]/D
+[0m[32m• lpffir_core/\x3_reg[5]/D
+[0m[32m• fa_51/U3/B
+[0m[32m• fa_51/U3/A
+[0m[32m• lpffir_core/\x3_reg[14]/C
+[0m[32m• lpffir_core/\x3_reg[5]/C
+[0m[32m• lpffir_core/\x1_reg[12]/C
+[0m[32m• fa_53/U3/A
+[0m[32m• lpffir_core/\x1_reg[12]/D
+[0m[32m• lpffir_core/\x5_reg[7]/C
+[0m[32m• fa_53/U3/B
+[0m[32m• lpffir_core/\x5_reg[7]/D
+[0m[32m• lpffir_core/\x4_reg[13]/D
+[0m[32m• lpffir_core/\x4_reg[13]/C
+[0m[32m• lpffir_core/\x1_reg[4]/D
+[0m[32m• lpffir_core/\x1_reg[4]/C
+[0m[32m• lpffir_core/\x4_reg[12]/D
+[0m[32m• lpffir_core/\x4_reg[12]/C
+[0m[32m• fa_61/U4/B
+[0m[32m• fa_61/U4/A
+[0m[32m• fa_71/U4/B
+[0m[32m• fa_71/U4/A
+[0m[32m• fa_38/U4/B
+[0m[32m• fa_38/U4/A
+[0m[32m• lpffir_core/\x1_reg[15]/D
+[0m[32m• lpffir_core/\x2_reg[1]/C
+[0m[32m• lpffir_core/\x2_reg[1]/D
+[0m[32m• lpffir_core/\x1_reg[15]/C
+[0m[32m• lpffir_core/\x5_reg[0]/D
+[0m[32m• lpffir_core/\x5_reg[0]/C
+[0m[32m• fa_64/U4/B
+[0m[32m• fa_64/U4/A
+[0m[32m• lpffir_core/\x2_reg[6]/D
+[0m[32m• lpffir_core/\x2_reg[6]/C
+[0m[32m• lpffir_core/\x4_reg[4]/C
+[0m[32m• lpffir_core/\x4_reg[4]/D
+[0m[32m• fa_44/U3/B
+[0m[32m• fa_44/U3/A
+[0m[32m• lpffir_core/\x3_reg[10]/C
+[0m[32m• lpffir_core/\x3_reg[1]/C
+[0m[32m• lpffir_core/\x3_reg[10]/D
+[0m[32m• fa_48/U4/A
+[0m[32m• lpffir_core/\x3_reg[1]/D
+[0m[32m• fa_48/U4/B
+[0m[32m• lpffir_core/\x5_reg[11]/D
+[0m[32m• fa_56/U4/B
+[0m[32m• fa_56/U4/A
+[0m[32m• lpffir_core/\x5_reg[11]/C
+[0m[32m• fa_37/U3/B
+[0m[32m• fa_37/U3/A
+[0m[32m• lpffir_core/\x1_reg[0]/C
+[0m[32m• lpffir_core/\x4_reg[2]/D
+[0m[32m• lpffir_core/\x1_reg[0]/D
+[0m[32m• lpffir_core/\x4_reg[2]/C
+[0m[32m• fa_65/U3/A
+[0m[32m• fa_65/U3/B
+[0m[32m• fa_76/U3/B
+[0m[32m• fa_76/U3/A
+[0m[32m• fa_66/U4/A
+[0m[32m• fa_66/U4/B
+[0m[32m• lpffir_core/\x1_reg[6]/D
+[0m[32m• lpffir_core/\x1_reg[6]/C
+[0m[32m• lpffir_core/\x3_reg[6]/D
+[0m[32m• fa_40/U4/A
+[0m[32m• lpffir_core/\x3_reg[6]/C
+[0m[32m• fa_40/U4/B
+[0m[32m• fa_47/U4/B
+[0m[32m• fa_47/U4/A
+[0m[32m• lpffir_core/\x1_reg[11]/C
+[0m[32m• lpffir_core/\x5_reg[4]/C
+[0m[32m• lpffir_core/\x1_reg[11]/D
+[0m[32m• fa_0/U4/A
+[0m[32m• fa_54/U4/A
+[0m[32m• fa_0/U4/B
+[0m[32m• lpffir_core/\x5_reg[4]/D
+[0m[32m• fa_54/U4/B
+[0m[32m• lpffir_core/\x2_reg[2]/C
+[0m[32m• fa_57/U4/B
+[0m[32m• fa_57/U4/A
+[0m[32m• lpffir_core/\x2_reg[2]/D
+[0m[32m• lpffir_core/\x4_reg[8]/D
+[0m[32m• lpffir_core/\x4_reg[8]/C
+[0m[32m• fa_34/U3/A
+[0m[32m• fa_34/U3/B
+[0m[32m• lpffir_core/\x5_reg[2]/D
+[0m[32m• fa_33/U4/A
+[0m[32m• fa_33/U4/B
+[0m[32m• lpffir_core/\x5_reg[2]/C
+[0m[32m• lpffir_core/\x5_reg[15]/C
+[0m[32m• fa_79/U3/A
+[0m[32m• fa_79/U3/B
+[0m[32m• lpffir_core/\x5_reg[15]/D
+[0m[32m• lpffir_core/\x2_reg[4]/D
+[0m[32m• lpffir_core/\x2_reg[4]/C
+[0m[32m• lpffir_core/\x4_reg[6]/C
+[0m[32m• lpffir_core/\x4_reg[6]/D
+[0m[32m• fa_45/U4/A
+[0m[32m• fa_39/U4/B
+[0m[32m• fa_45/U4/B
+[0m[32m• fa_39/U4/A
+[0m[32m• fa_55/U4/A
+[0m[32m• fa_55/U4/B
+[0m[32m• lpffir_core/\x1_reg[2]/C
+[0m[32m• lpffir_core/\x1_reg[2]/D
+[0m[32m• lpffir_core/\x4_reg[11]/D
+[0m[32m• lpffir_core/\x4_reg[11]/C
+[0m[32m• fa_42/U4/B
+[0m[32m• fa_66/U3/B
+[0m[32m• fa_66/U3/A
+[0m[32m• fa_42/U4/A
+[0m[32m• lpffir_core/\x1_reg[5]/D
+[0m[32m• lpffir_core/\x1_reg[5]/C
+[0m[32m• lpffir_core/\x3_reg[13]/C
+[0m[32m• lpffir_core/\x3_reg[2]/C
+[0m[32m• lpffir_core/\x2_reg[9]/C
+[0m[32m• lpffir_core/\x3_reg[13]/D
+[0m[32m• lpffir_core/\x3_reg[2]/D
+[0m[32m• lpffir_core/\x2_reg[9]/D
+[0m[32m• fa_64/U3/A
+[0m[32m• fa_58/U3/B
+[0m[32m• fa_71/U3/A
+[0m[32m• lpffir_core/\x5_reg[8]/D
+[0m[32m• fa_39/U3/A
+[0m[32m• fa_64/U3/B
+[0m[32m• fa_58/U3/A
+[0m[32m• fa_71/U3/B
+[0m[32m• lpffir_core/\x5_reg[8]/C
+[0m[32m• fa_39/U3/B
+[0m[32m• lpffir_core/\x4_reg[1]/D
+[0m[32m• fa_67/U3/B
+[0m[32m• lpffir_core/\x4_reg[10]/D
+[0m[32m• lpffir_core/\x4_reg[1]/C
+[0m[32m• lpffir_core/\x4_reg[10]/C
+[0m[32m• fa_67/U3/A
+[0m[32m• lpffir_core/\x3_reg[15]/D
+[0m[32m• lpffir_core/\x3_reg[4]/D
+[0m[32m• lpffir_core/\x3_reg[15]/C
+[0m[32m• lpffir_core/\x3_reg[4]/C
+[0m[32m• lpffir_core/\x3_reg[9]/C
+[0m[32m• lpffir_core/\x3_reg[9]/D
+[0m[32m• lpffir_core/\x5_reg[6]/C
+[0m[32m• lpffir_core/\x5_reg[6]/D
+[0m[32m• lpffir_core/\x2_reg[0]/C
+[0m[32m• lpffir_core/\x2_reg[0]/D
+[0m[32m• lpffir_core/\x1_reg[8]/C
+[0m[32m• lpffir_core/\x5_reg[1]/D
+[0m[32m• lpffir_core/\x5_reg[1]/C
+[0m[32m• lpffir_core/\x1_reg[8]/D
+[0m[32m• fa_49/U3/B
+[0m[32m• fa_49/U3/A
+[0m[32m• fa_50/U3/B
+[0m[32m• fa_50/U3/A
+[0m[32m• fa_76/U4/A
+[0m[32m• fa_52/U3/A
+[0m[32m• fa_52/U3/B
+[0m[32m• fa_76/U4/B
+[0m[32m• fa_36/U3/B
+[0m[32m• fa_36/U3/A
+[0m[32m• lpffir_core/\x4_reg[15]/C
+[0m[32m• lpffir_core/\x1_reg[1]/C
+[0m[32m• lpffir_core/\x4_reg[15]/D
+[0m[32m• fa_68/U4/B
+[0m[32m• fa_68/U4/A
+[0m[32m• lpffir_core/\x1_reg[1]/D
+[0m[32m• fa_55/U3/B
+[0m[32m• fa_55/U3/A
+[0m[32m• lpffir_core/\x2_reg[7]/D
+[0m[32m• lpffir_core/\x2_reg[7]/C
+[0m[32m• fa_36/U4/A
+[0m[32m• fa_57/U3/A
+[0m[32m• fa_36/U4/B
+[0m[32m• fa_57/U3/B
+[0m[1;35m----------------------
+
+[0m[1;35m------ Level 2: ------
+[0m[32m• fa_43/U3/Q
+[0m[32m• fa_64/U2/A
+[0m[32m• lpffir_core/\x4_reg[5]/SN
+[0m[32m• lpffir_core/\x4_reg[6]/SN
+[0m[32m• fa_73/U3/Q
+[0m[32m• fa_60/U4/Q
+[0m[32m• lpffir_core/\x4_reg[7]/SN
+[0m[32m• fa_74/U4/Q
+[0m[32m• lpffir_core/\x1_reg[10]/SN
+[0m[32m• fa_78/U3/Q
+[0m[32m• fa_32/U2/A
+[0m[32m• lpffir_core/\x5_reg[6]/SN
+[0m[32m• fa_52/U4/Q
+[0m[32m• fa_58/U4/Q
+[0m[32m• lpffir_core/\x2_reg[14]/SN
+[0m[32m• lpffir_core/\x1_reg[2]/SN
+[0m[32m• fa_42/U3/Q
+[0m[32m• fa_0/U3/Q
+[0m[32m• fa_34/U4/Q
+[0m[32m• fa_33/U3/Q
+[0m[32m• fa_62/U4/Q
+[0m[32m• lpffir_core/\x4_reg[4]/SN
+[0m[32m• fa_67/U4/Q
+[0m[32m• lpffir_core/\x2_reg[15]/SN
+[0m[32m• fa_70/U3/Q
+[0m[32m• fa_38/U3/Q
+[0m[32m• fa_77/U4/Q
+[0m[32m• fa_43/U4/Q
+[0m[32m• lpffir_core/\x5_reg[5]/SN
+[0m[32m• fa_50/U4/Q
+[0m[32m• fa_49/U4/Q
+[0m[32m• lpffir_core/\x1_reg[1]/SN
+[0m[32m• fa_53/U4/Q
+[0m[32m• fa_16/U1/A
+[0m[32m• lpffir_core/\x5_reg[4]/SN
+[0m[32m• fa_59/U4/Q
+[0m[32m• lpffir_core/\x5_reg[7]/SN
+[0m[32m• lpffir_core/\x1_reg[0]/SN
+[0m[32m• fa_37/U4/Q
+[0m[32m• lpffir_core/\x4_reg[10]/SN
+[0m[32m• lpffir_core/\x1_reg[3]/SN
+[0m[32m• fa_48/U3/Q
+[0m[32m• lpffir_core/\x4_reg[12]/SN
+[0m[32m• fa_41/U4/Q
+[0m[32m• fa_0/U2/A
+[0m[32m• lpffir_core/\x4_reg[11]/SN
+[0m[32m• fa_65/U4/Q
+[0m[32m• fa_69/U3/Q
+[0m[32m• fa_51/U4/Q
+[0m[32m• lpffir_core/\x3_reg[11]/SN
+[0m[32m• lpffir_core/\x4_reg[13]/SN
+[0m[32m• fa_75/U4/Q
+[0m[32m• fa_40/U3/Q
+[0m[32m• fa_75/U3/Q
+[0m[32m• fa_35/U4/Q
+[0m[32m• fa_16/U2/A
+[0m[32m• fa_61/U3/Q
+[0m[32m• lpffir_core/\x1_reg[15]/SN
+[0m[32m• fa_72/U3/Q
+[0m[32m• lpffir_core/\x3_reg[12]/SN
+[0m[32m• lpffir_core/\x3_reg[13]/SN
+[0m[32m• fa_72/U4/Q
+[0m[32m• lpffir_core/\x5_reg[15]/SN
+[0m[32m• lpffir_core/\x3_reg[10]/SN
+[0m[32m• fa_48/U2/A
+[0m[32m• fa_54/U3/Q
+[0m[32m• fa_56/U3/Q
+[0m[32m• fa_44/U4/Q
+[0m[32m• lpffir_core/\x4_reg[1]/SN
+[0m[32m• fa_78/U4/Q
+[0m[32m• lpffir_core/\x4_reg[2]/SN
+[0m[32m• fa_68/U3/Q
+[0m[32m• lpffir_core/\x4_reg[3]/SN
+[0m[32m• lpffir_core/\x1_reg[14]/SN
+[0m[32m• lpffir_core/\x2_reg[3]/SN
+[0m[32m• fa_45/U3/Q
+[0m[32m• lpffir_core/\x5_reg[2]/SN
+[0m[32m• lpffir_core/\x2_reg[0]/SN
+[0m[32m• fa_47/U3/Q
+[0m[32m• fa_64/U1/A
+[0m[32m• lpffir_core/\x1_reg[6]/SN
+[0m[32m• lpffir_core/\x5_reg[14]/SN
+[0m[32m• lpffir_core/\x2_reg[1]/SN
+[0m[32m• fa_70/U4/Q
+[0m[32m• fa_62/U3/Q
+[0m[32m• fa_60/U3/Q
+[0m[32m• fa_77/U3/Q
+[0m[32m• lpffir_core/\x3_reg[0]/SN
+[0m[32m• lpffir_core/\x1_reg[9]/SN
+[0m[32m• lpffir_core/\x4_reg[0]/SN
+[0m[32m• fa_46/U4/Q
+[0m[32m• fa_63/U3/Q
+[0m[32m• lpffir_core/\x1_reg[8]/SN
+[0m[32m• lpffir_core/\x5_reg[1]/SN
+[0m[32m• fa_59/U3/Q
+[0m[32m• fa_46/U3/Q
+[0m[32m• lpffir_core/\x1_reg[5]/SN
+[0m[32m• fa_63/U4/Q
+[0m[32m• lpffir_core/\x5_reg[0]/SN
+[0m[32m• lpffir_core/\x2_reg[2]/SN
+[0m[32m• lpffir_core/\x5_reg[3]/SN
+[0m[32m• lpffir_core/\x1_reg[4]/SN
+[0m[32m• fa_73/U4/Q
+[0m[32m• fa_35/U3/Q
+[0m[32m• lpffir_core/\x1_reg[7]/SN
+[0m[32m• fa_0/U1/A
+[0m[32m• lpffir_core/\x3_reg[3]/SN
+[0m[32m• fa_74/U3/Q
+[0m[32m• fa_69/U4/Q
+[0m[32m• lpffir_core/\x3_reg[2]/SN
+[0m[32m• fa_79/U4/Q
+[0m[32m• lpffir_core/\x3_reg[1]/SN
+[0m[32m• fa_51/U3/Q
+[0m[32m• fa_53/U3/Q
+[0m[32m• lpffir_core/\x3_reg[15]/SN
+[0m[32m• fa_61/U4/Q
+[0m[32m• fa_71/U4/Q
+[0m[32m• fa_38/U4/Q
+[0m[32m• fa_48/U1/A
+[0m[32m• fa_64/U4/Q
+[0m[32m• lpffir_core/\x4_reg[9]/SN
+[0m[32m• fa_44/U3/Q
+[0m[32m• lpffir_core/\x5_reg[11]/SN
+[0m[32m• lpffir_core/\x3_reg[14]/SN
+[0m[32m• fa_48/U4/Q
+[0m[32m• fa_56/U4/Q
+[0m[32m• lpffir_core/\x5_reg[12]/SN
+[0m[32m• fa_37/U3/Q
+[0m[32m• lpffir_core/\x5_reg[13]/SN
+[0m[32m• fa_65/U3/Q
+[0m[32m• fa_76/U3/Q
+[0m[32m• lpffir_core/\x2_reg[8]/SN
+[0m[32m• fa_66/U4/Q
+[0m[32m• lpffir_core/\x2_reg[10]/SN
+[0m[32m• lpffir_core/\x2_reg[9]/SN
+[0m[32m• fa_40/U4/Q
+[0m[32m• lpffir_core/\x2_reg[7]/SN
+[0m[32m• fa_47/U4/Q
+[0m[32m• fa_54/U4/Q
+[0m[32m• lpffir_core/\x2_reg[4]/SN
+[0m[32m• fa_57/U4/Q
+[0m[32m• lpffir_core/\x3_reg[8]/SN
+[0m[32m• lpffir_core/\x4_reg[8]/SN
+[0m[32m• lpffir_core/\x2_reg[11]/SN
+[0m[32m• lpffir_core/\x5_reg[10]/SN
+[0m[32m• fa_0/U4/Q
+[0m[32m• fa_34/U3/Q
+[0m[32m• lpffir_core/\x2_reg[5]/SN
+[0m[32m• fa_33/U4/Q
+[0m[32m• lpffir_core/\x5_reg[9]/SN
+[0m[32m• fa_79/U3/Q
+[0m[32m• lpffir_core/\x3_reg[4]/SN
+[0m[32m• lpffir_core/\x2_reg[12]/SN
+[0m[32m• lpffir_core/\x5_reg[8]/SN
+[0m[32m• fa_45/U4/Q
+[0m[32m• fa_32/U1/A
+[0m[32m• fa_39/U4/Q
+[0m[32m• lpffir_core/\x4_reg[14]/SN
+[0m[32m• fa_55/U4/Q
+[0m[32m• lpffir_core/\x2_reg[13]/SN
+[0m[32m• lpffir_core/\x2_reg[6]/SN
+[0m[32m• fa_42/U4/Q
+[0m[32m• fa_66/U3/Q
+[0m[32m• fa_64/U3/Q
+[0m[32m• fa_71/U3/Q
+[0m[32m• fa_58/U3/Q
+[0m[32m• fa_39/U3/Q
+[0m[32m• lpffir_core/\x3_reg[9]/SN
+[0m[32m• lpffir_core/\x4_reg[15]/SN
+[0m[32m• lpffir_core/\x3_reg[7]/SN
+[0m[32m• fa_67/U3/Q
+[0m[32m• lpffir_core/\x3_reg[6]/SN
+[0m[32m• lpffir_core/\x3_reg[5]/SN
+[0m[32m• fa_49/U3/Q
+[0m[32m• fa_50/U3/Q
+[0m[32m• fa_52/U3/Q
+[0m[32m• fa_76/U4/Q
+[0m[32m• lpffir_core/\x1_reg[11]/SN
+[0m[32m• fa_36/U3/Q
+[0m[32m• lpffir_core/\x1_reg[12]/SN
+[0m[32m• fa_68/U4/Q
+[0m[32m• fa_55/U3/Q
+[0m[32m• lpffir_core/\x1_reg[13]/SN
+[0m[32m• fa_36/U4/Q
+[0m[32m• fa_57/U3/Q
+[0m[32m• fa_41/U3/Q
+[0m[1;35m----------------------
+
+[0m[1;35m------ Level 3: ------
+[0m[32m• fa_60/U1/B
+[0m[32m• fa_64/U2/B
+[0m[32m• fa_64/U2/C
+[0m[32m• fa_51/U1/B
+[0m[32m• fa_56/U2/C
+[0m[32m• fa_56/U2/B
+[0m[32m• fa_46/U1/B
+[0m[32m• fa_35/U1/B
+[0m[32m• fa_74/U1/B
+[0m[32m• fa_69/U2/C
+[0m[32m• fa_69/U2/B
+[0m[32m• fa_47/U2/C
+[0m[32m• fa_47/U2/B
+[0m[32m• fa_79/U2/B
+[0m[32m• fa_79/U2/C
+[0m[32m• fa_57/U2/B
+[0m[32m• fa_57/U2/C
+[0m[32m• fa_53/U1/B
+[0m[32m• fa_44/U1/B
+[0m[32m• fa_37/U1/B
+[0m[32m• fa_63/U2/C
+[0m[32m• fa_63/U2/B
+[0m[32m• fa_76/U1/B
+[0m[32m• fa_61/U2/C
+[0m[32m• fa_61/U2/B
+[0m[32m• fa_73/U2/B
+[0m[32m• fa_73/U2/C
+[0m[32m• fa_66/U2/B
+[0m[32m• fa_66/U2/C
+[0m[32m• fa_71/U2/B
+[0m[32m• fa_71/U2/C
+[0m[32m• fa_39/U2/B
+[0m[32m• fa_39/U2/C
+[0m[32m• fa_0/U2/B
+[0m[32m• fa_0/U2/C
+[0m[32m• fa_54/U2/C
+[0m[32m• fa_54/U2/B
+[0m[32m• fa_33/U2/B
+[0m[32m• fa_33/U2/C
+[0m[32m• fa_65/U1/B
+[0m[32m• fa_45/U2/C
+[0m[32m• fa_45/U2/B
+[0m[32m• fa_55/U2/B
+[0m[32m• fa_55/U2/C
+[0m[32m• fa_66/U1/B
+[0m[32m• fa_58/U1/B
+[0m[32m• fa_48/U2/B
+[0m[32m• fa_48/U2/C
+[0m[32m• fa_34/U1/B
+[0m[32m• fa_67/U1/B
+[0m[32m• fa_79/U1/B
+[0m[32m• fa_49/U1/B
+[0m[32m• fa_50/U1/B
+[0m[32m• fa_76/U2/C
+[0m[32m• fa_76/U2/B
+[0m[32m• fa_40/U2/B
+[0m[32m• fa_40/U2/C
+[0m[32m• fa_74/U2/C
+[0m[32m• fa_74/U2/B
+[0m[32m• fa_36/U1/B
+[0m[32m• fa_42/U2/B
+[0m[32m• fa_42/U2/C
+[0m[32m• fa_64/U1/B
+[0m[32m• fa_71/U1/B
+[0m[32m• fa_39/U1/B
+[0m[32m• fa_55/U1/B
+[0m[32m• fa_41/U1/B
+[0m[32m• fa_52/U1/B
+[0m[32m• fa_73/U1/B
+[0m[32m• fa_0/U1/B
+[0m[32m• fa_68/U2/B
+[0m[32m• fa_68/U2/C
+[0m[32m• fa_57/U1/B
+[0m[32m• fa_43/U1/B
+[0m[32m• fa_33/U1/B
+[0m[32m• fa_67/U2/C
+[0m[32m• fa_67/U2/B
+[0m[32m• fa_65/U2/C
+[0m[32m• fa_65/U2/B
+[0m[32m• fa_77/U2/B
+[0m[32m• fa_77/U2/C
+[0m[32m• fa_60/U2/B
+[0m[32m• fa_60/U2/C
+[0m[32m• fa_75/U2/B
+[0m[32m• fa_75/U2/C
+[0m[32m• fa_78/U1/B
+[0m[32m• fa_52/U2/C
+[0m[32m• fa_52/U2/B
+[0m[32m• fa_36/U2/C
+[0m[32m• fa_36/U2/B
+[0m[32m• fa_42/U1/B
+[0m[32m• fa_48/U1/B
+[0m[32m• fa_34/U2/C
+[0m[32m• fa_34/U2/B
+[0m[32m• fa_70/U1/B
+[0m[32m• fa_38/U1/B
+[0m[32m• fa_43/U2/C
+[0m[32m• fa_43/U2/B
+[0m[32m• fa_53/U2/B
+[0m[32m• fa_53/U2/C
+[0m[32m• fa_40/U1/B
+[0m[32m• fa_58/U2/C
+[0m[32m• fa_58/U2/B
+[0m[32m• fa_72/U1/B
+[0m[32m• fa_62/U2/B
+[0m[32m• fa_62/U2/C
+[0m[32m• fa_69/U1/B
+[0m[32m• fa_50/U2/C
+[0m[32m• fa_49/U2/C
+[0m[32m• fa_50/U2/B
+[0m[32m• fa_49/U2/B
+[0m[32m• fa_54/U1/B
+[0m[32m• fa_59/U2/B
+[0m[32m• fa_44/U2/B
+[0m[32m• fa_59/U2/C
+[0m[32m• fa_44/U2/C
+[0m[32m• fa_46/U2/B
+[0m[32m• fa_46/U2/C
+[0m[32m• fa_37/U2/B
+[0m[32m• fa_37/U2/C
+[0m[32m• fa_75/U1/B
+[0m[32m• fa_35/U2/B
+[0m[32m• fa_35/U2/C
+[0m[32m• fa_61/U1/B
+[0m[32m• fa_45/U1/B
+[0m[32m• fa_41/U2/C
+[0m[32m• fa_41/U2/B
+[0m[32m• fa_51/U2/B
+[0m[32m• fa_51/U2/C
+[0m[32m• fa_62/U1/B
+[0m[32m• fa_56/U1/B
+[0m[32m• fa_77/U1/B
+[0m[32m• fa_63/U1/B
+[0m[32m• fa_78/U2/C
+[0m[32m• fa_78/U2/B
+[0m[32m• fa_68/U1/B
+[0m[32m• fa_59/U1/B
+[0m[32m• fa_47/U1/B
+[0m[32m• fa_72/U2/C
+[0m[32m• fa_72/U2/B
+[0m[32m• fa_70/U2/C
+[0m[32m• fa_70/U2/B
+[0m[32m• fa_38/U2/C
+[0m[32m• fa_38/U2/B
+[0m[1;35m----------------------
+
+[0m[1;35m------ Level 4: ------
+[0m[32m• fa_64/U2/Q
+[0m[32m• fa_0/U2/Q
+[0m[32m• fa_48/U2/Q
+[0m[32m• fa_64/U1/Q
+[0m[32m• fa_0/U1/Q
+[0m[32m• fa_48/U1/Q
+[0m[1;35m----------------------
+
+[0m[1;35m------ Level 5: ------
+[0m[32m• fa_47/U2/A
+[0m[32m• fa_79/U2/A
+[0m[32m• fa_63/U2/A
+[0m[32m• fa_79/U1/A
+[0m[32m• fa_32/U3/B
+[0m[32m• fa_32/U3/A
+[0m[32m• fa_16/U3/A
+[0m[32m• fa_32/U4/A
+[0m[32m• fa_32/U4/B
+[0m[32m• fa_16/U4/B
+[0m[32m• fa_63/U1/A
+[0m[32m• fa_47/U1/A
+[0m[1;35m----------------------
+
+[0m[1;35m------ Level 6: ------
+[0m[32m• fa_47/U2/Q
+[0m[32m• fa_79/U2/Q
+[0m[32m• fa_63/U2/Q
+[0m[32m• fa_79/U1/Q
+[0m[32m• fa_32/U3/Q
+[0m[32m• fa_32/U4/Q
+[0m[32m• fa_63/U1/Q
+[0m[32m• fa_47/U1/Q
+[0m[1;35m----------------------
+
+[0m[1;35m------ Level 7: ------
+[0m[32m• fa_32/U2/C
+[0m[32m• fa_32/U2/B
+[0m[32m• fa_46/U1/A
+[0m[32m• fa_15/U3/A
+[0m[32m• fa_78/U1/A
+[0m[32m• fa_62/U2/A
+[0m[32m• fa_46/U2/A
+[0m[32m• fa_32/U1/B
+[0m[32m• fa_15/U4/B
+[0m[32m• fa_62/U1/A
+[0m[32m• fa_31/U4/B
+[0m[32m• fa_31/U4/A
+[0m[32m• fa_78/U2/A
+[0m[32m• fa_31/U3/A
+[0m[32m• fa_31/U3/B
+[0m[1;35m----------------------
+
+[0m[1;35m------ Level 8: ------
+[0m[32m• fa_32/U2/Q
+[0m[32m• fa_46/U1/Q
+[0m[32m• fa_78/U1/Q
+[0m[32m• fa_62/U2/Q
+[0m[32m• fa_32/U1/Q
+[0m[32m• fa_46/U2/Q
+[0m[32m• fa_62/U1/Q
+[0m[32m• fa_31/U4/Q
+[0m[32m• fa_78/U2/Q
+[0m[32m• fa_31/U3/Q
+[0m[1;35m----------------------
+
+[0m[1;35m------ Level 9: ------
+[0m[32m• fa_61/U2/A
+[0m[32m• fa_30/U3/A
+[0m[32m• fa_30/U3/B
+[0m[32m• fa_31/U2/A
+[0m[32m• fa_31/U2/B
+[0m[32m• fa_31/U2/C
+[0m[32m• fa_45/U2/A
+[0m[32m• fa_31/U1/B
+[0m[32m• fa_31/U1/A
+[0m[32m• fa_77/U2/A
+[0m[32m• fa_14/U3/A
+[0m[32m• fa_16/U3/B
+[0m[32m• fa_30/U4/B
+[0m[32m• fa_30/U4/A
+[0m[32m• fa_16/U4/A
+[0m[32m• fa_14/U4/B
+[0m[32m• fa_61/U1/A
+[0m[32m• fa_45/U1/A
+[0m[32m• fa_77/U1/A
+[0m[1;35m----------------------
+
+[0m[1;35m------ Level 10: ------
+[0m[32m• fa_61/U2/Q
+[0m[32m• fa_30/U3/Q
+[0m[32m• fa_31/U2/Q
+[0m[32m• fa_45/U2/Q
+[0m[32m• fa_31/U1/Q
+[0m[32m• fa_77/U2/Q
+[0m[32m• fa_16/U3/Q
+[0m[32m• fa_30/U4/Q
+[0m[32m• fa_16/U4/Q
+[0m[32m• fa_61/U1/Q
+[0m[32m• fa_45/U1/Q
+[0m[32m• fa_77/U1/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 11: ------
+[0m[32m• fa_60/U1/A
+[0m[32m• fa_30/U2/A
+[0m[32m• fa_30/U2/C
+[0m[32m• fa_30/U2/B
+[0m[32m• fa_44/U1/A
+[0m[32m• fa_16/U1/B
+[0m[32m• fa_76/U1/A
+[0m[32m• fa_15/U3/B
+[0m[32m• fa_16/U2/C
+[0m[32m• fa_16/U2/B
+[0m[32m• fa_29/U3/A
+[0m[32m• fa_29/U3/B
+[0m[32m• fa_76/U2/A
+[0m[32m• fa_13/U4/B
+[0m[32m• fa_60/U2/A
+[0m[32m• fa_13/U3/A
+[0m[32m• fa_30/U1/B
+[0m[32m• fa_30/U1/A
+[0m[32m• fa_44/U2/A
+[0m[32m• fa_29/U4/B
+[0m[32m• fa_29/U4/A
+[0m[32m• fa_15/U4/A
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 12: ------
+[0m[32m• fa_30/U2/Q
+[0m[32m• fa_44/U1/Q
+[0m[32m• fa_16/U1/Q
+[0m[32m• fa_76/U1/Q
+[0m[32m• fa_15/U3/Q
+[0m[32m• fa_16/U2/Q
+[0m[32m• fa_29/U3/Q
+[0m[32m• fa_76/U2/Q
+[0m[32m• fa_60/U2/Q
+[0m[32m• fa_30/U1/Q
+[0m[32m• fa_44/U2/Q
+[0m[32m• fa_29/U4/Q
+[0m[32m• fa_15/U4/Q
+[0m[32m• fa_60/U1/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 13: ------
+[0m[32m• fa_12/U3/A
+[0m[32m• y_o|0
+[0m[32m• fa_29/U2/A
+[0m[32m• fa_29/U2/C
+[0m[32m• fa_29/U2/B
+[0m[32m• fa_28/U4/B
+[0m[32m• fa_28/U4/A
+[0m[32m• fa_12/U4/B
+[0m[32m• fa_28/U3/A
+[0m[32m• fa_28/U3/B
+[0m[32m• fa_15/U2/B
+[0m[32m• fa_15/U2/C
+[0m[32m• fa_15/U2/A
+[0m[32m• fa_43/U1/A
+[0m[32m• fa_14/U3/B
+[0m[32m• fa_75/U2/A
+[0m[32m• fa_15/U1/A
+[0m[32m• fa_15/U1/B
+[0m[32m• fa_43/U2/A
+[0m[32m• fa_14/U4/A
+[0m[32m• fa_59/U2/A
+[0m[32m• fa_75/U1/A
+[0m[32m• fa_29/U1/B
+[0m[32m• fa_29/U1/A
+[0m[32m• fa_59/U1/A
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 14: ------
+[0m[32m• fa_29/U2/Q
+[0m[32m• fa_28/U4/Q
+[0m[32m• fa_28/U3/Q
+[0m[32m• fa_15/U2/Q
+[0m[32m• fa_43/U1/Q
+[0m[32m• fa_14/U3/Q
+[0m[32m• fa_75/U2/Q
+[0m[32m• fa_15/U1/Q
+[0m[32m• fa_43/U2/Q
+[0m[32m• fa_14/U4/Q
+[0m[32m• fa_59/U2/Q
+[0m[32m• fa_75/U1/Q
+[0m[32m• fa_29/U1/Q
+[0m[32m• fa_59/U1/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 15: ------
+[0m[32m• fa_28/U1/B
+[0m[32m• fa_28/U1/A
+[0m[32m• fa_14/U1/A
+[0m[32m• fa_14/U1/B
+[0m[32m• fa_74/U1/A
+[0m[32m• fa_27/U3/B
+[0m[32m• fa_27/U3/A
+[0m[32m• y_o|1
+[0m[32m• fa_27/U4/A
+[0m[32m• fa_27/U4/B
+[0m[32m• fa_58/U1/A
+[0m[32m• fa_74/U2/A
+[0m[32m• fa_42/U2/A
+[0m[32m• fa_13/U4/A
+[0m[32m• fa_14/U2/C
+[0m[32m• fa_14/U2/B
+[0m[32m• fa_14/U2/A
+[0m[32m• fa_11/U4/B
+[0m[32m• fa_28/U2/A
+[0m[32m• fa_28/U2/B
+[0m[32m• fa_28/U2/C
+[0m[32m• fa_11/U3/A
+[0m[32m• fa_42/U1/A
+[0m[32m• fa_13/U3/B
+[0m[32m• fa_58/U2/A
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 16: ------
+[0m[32m• fa_14/U1/Q
+[0m[32m• fa_74/U1/Q
+[0m[32m• fa_27/U3/Q
+[0m[32m• fa_27/U4/Q
+[0m[32m• fa_58/U1/Q
+[0m[32m• fa_74/U2/Q
+[0m[32m• fa_42/U2/Q
+[0m[32m• fa_13/U4/Q
+[0m[32m• fa_14/U2/Q
+[0m[32m• fa_28/U2/Q
+[0m[32m• fa_42/U1/Q
+[0m[32m• fa_13/U3/Q
+[0m[32m• fa_58/U2/Q
+[0m[32m• fa_28/U1/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 17: ------
+[0m[32m• fa_10/U3/A
+[0m[32m• fa_12/U3/B
+[0m[32m• fa_26/U3/B
+[0m[32m• fa_26/U3/A
+[0m[32m• fa_57/U2/A
+[0m[32m• y_o|2
+[0m[32m• fa_73/U2/A
+[0m[32m• fa_13/U1/B
+[0m[32m• fa_13/U1/A
+[0m[32m• fa_12/U4/A
+[0m[32m• fa_10/U4/B
+[0m[32m• fa_41/U1/A
+[0m[32m• fa_73/U1/A
+[0m[32m• fa_57/U1/A
+[0m[32m• fa_27/U1/A
+[0m[32m• fa_27/U1/B
+[0m[32m• fa_26/U4/A
+[0m[32m• fa_26/U4/B
+[0m[32m• fa_13/U2/A
+[0m[32m• fa_13/U2/B
+[0m[32m• fa_13/U2/C
+[0m[32m• fa_27/U2/C
+[0m[32m• fa_27/U2/B
+[0m[32m• fa_27/U2/A
+[0m[32m• fa_41/U2/A
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 18: ------
+[0m[32m• fa_12/U3/Q
+[0m[32m• fa_26/U3/Q
+[0m[32m• fa_57/U2/Q
+[0m[32m• fa_73/U2/Q
+[0m[32m• fa_13/U1/Q
+[0m[32m• fa_12/U4/Q
+[0m[32m• fa_41/U1/Q
+[0m[32m• fa_73/U1/Q
+[0m[32m• fa_57/U1/Q
+[0m[32m• fa_27/U1/Q
+[0m[32m• fa_26/U4/Q
+[0m[32m• fa_13/U2/Q
+[0m[32m• fa_27/U2/Q
+[0m[32m• fa_41/U2/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 19: ------
+[0m[32m• fa_56/U2/A
+[0m[32m• y_o|3
+[0m[32m• fa_9/U4/B
+[0m[32m• fa_25/U4/B
+[0m[32m• fa_25/U4/A
+[0m[32m• fa_40/U2/A
+[0m[32m• fa_26/U2/B
+[0m[32m• fa_26/U2/C
+[0m[32m• fa_26/U2/A
+[0m[32m• fa_11/U4/A
+[0m[32m• fa_26/U1/A
+[0m[32m• fa_26/U1/B
+[0m[32m• fa_12/U1/B
+[0m[32m• fa_12/U1/A
+[0m[32m• fa_11/U3/B
+[0m[32m• fa_12/U2/A
+[0m[32m• fa_12/U2/C
+[0m[32m• fa_12/U2/B
+[0m[32m• fa_40/U1/A
+[0m[32m• fa_9/U3/A
+[0m[32m• fa_72/U1/A
+[0m[32m• fa_56/U1/A
+[0m[32m• fa_25/U3/A
+[0m[32m• fa_25/U3/B
+[0m[32m• fa_72/U2/A
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 20: ------
+[0m[32m• fa_56/U2/Q
+[0m[32m• fa_25/U4/Q
+[0m[32m• fa_40/U2/Q
+[0m[32m• fa_26/U2/Q
+[0m[32m• fa_11/U4/Q
+[0m[32m• fa_26/U1/Q
+[0m[32m• fa_12/U1/Q
+[0m[32m• fa_11/U3/Q
+[0m[32m• fa_12/U2/Q
+[0m[32m• fa_40/U1/Q
+[0m[32m• fa_72/U1/Q
+[0m[32m• fa_56/U1/Q
+[0m[32m• fa_25/U3/Q
+[0m[32m• fa_72/U2/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 21: ------
+[0m[32m• fa_10/U3/B
+[0m[32m• fa_8/U3/A
+[0m[32m• fa_11/U1/A
+[0m[32m• fa_11/U1/B
+[0m[32m• fa_24/U3/A
+[0m[32m• fa_24/U3/B
+[0m[32m• y_o|4
+[0m[32m• fa_71/U2/A
+[0m[32m• fa_39/U2/A
+[0m[32m• fa_55/U2/A
+[0m[32m• fa_10/U4/A
+[0m[32m• fa_71/U1/A
+[0m[32m• fa_39/U1/A
+[0m[32m• fa_55/U1/A
+[0m[32m• fa_25/U1/B
+[0m[32m• fa_25/U1/A
+[0m[32m• fa_8/U4/B
+[0m[32m• fa_24/U4/B
+[0m[32m• fa_24/U4/A
+[0m[32m• fa_25/U2/A
+[0m[32m• fa_25/U2/C
+[0m[32m• fa_25/U2/B
+[0m[32m• fa_11/U2/B
+[0m[32m• fa_11/U2/C
+[0m[32m• fa_11/U2/A
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 22: ------
+[0m[32m• fa_10/U3/Q
+[0m[32m• fa_11/U1/Q
+[0m[32m• fa_24/U3/Q
+[0m[32m• fa_71/U2/Q
+[0m[32m• fa_39/U2/Q
+[0m[32m• fa_55/U2/Q
+[0m[32m• fa_71/U1/Q
+[0m[32m• fa_10/U4/Q
+[0m[32m• fa_39/U1/Q
+[0m[32m• fa_55/U1/Q
+[0m[32m• fa_25/U1/Q
+[0m[32m• fa_24/U4/Q
+[0m[32m• fa_25/U2/Q
+[0m[32m• fa_11/U2/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 23: ------
+[0m[32m• y_o|5
+[0m[32m• fa_9/U4/A
+[0m[32m• fa_54/U2/A
+[0m[32m• fa_24/U2/A
+[0m[32m• fa_24/U2/B
+[0m[32m• fa_24/U2/C
+[0m[32m• fa_7/U3/A
+[0m[32m• fa_10/U1/A
+[0m[32m• fa_10/U1/B
+[0m[32m• fa_7/U4/B
+[0m[32m• fa_23/U3/B
+[0m[32m• fa_23/U3/A
+[0m[32m• fa_24/U1/B
+[0m[32m• fa_24/U1/A
+[0m[32m• fa_70/U1/A
+[0m[32m• fa_38/U1/A
+[0m[32m• fa_9/U3/B
+[0m[32m• fa_23/U4/A
+[0m[32m• fa_23/U4/B
+[0m[32m• fa_54/U1/A
+[0m[32m• fa_10/U2/C
+[0m[32m• fa_10/U2/B
+[0m[32m• fa_10/U2/A
+[0m[32m• fa_70/U2/A
+[0m[32m• fa_38/U2/A
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 24: ------
+[0m[32m• fa_9/U4/Q
+[0m[32m• fa_54/U2/Q
+[0m[32m• fa_24/U2/Q
+[0m[32m• fa_10/U1/Q
+[0m[32m• fa_23/U3/Q
+[0m[32m• fa_24/U1/Q
+[0m[32m• fa_70/U1/Q
+[0m[32m• fa_38/U1/Q
+[0m[32m• fa_9/U3/Q
+[0m[32m• fa_23/U4/Q
+[0m[32m• fa_54/U1/Q
+[0m[32m• fa_10/U2/Q
+[0m[32m• fa_70/U2/Q
+[0m[32m• fa_38/U2/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 25: ------
+[0m[32m• fa_8/U3/B
+[0m[32m• fa_69/U2/A
+[0m[32m• fa_53/U1/A
+[0m[32m• y_o|6
+[0m[32m• fa_37/U1/A
+[0m[32m• fa_9/U1/A
+[0m[32m• fa_9/U1/B
+[0m[32m• fa_23/U2/C
+[0m[32m• fa_23/U2/B
+[0m[32m• fa_23/U2/A
+[0m[32m• fa_6/U4/B
+[0m[32m• fa_22/U4/A
+[0m[32m• fa_22/U4/B
+[0m[32m• fa_6/U3/A
+[0m[32m• fa_22/U3/B
+[0m[32m• fa_22/U3/A
+[0m[32m• fa_9/U2/C
+[0m[32m• fa_9/U2/B
+[0m[32m• fa_9/U2/A
+[0m[32m• fa_8/U4/A
+[0m[32m• fa_53/U2/A
+[0m[32m• fa_69/U1/A
+[0m[32m• fa_37/U2/A
+[0m[32m• fa_23/U1/A
+[0m[32m• fa_23/U1/B
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 26: ------
+[0m[32m• fa_8/U3/Q
+[0m[32m• fa_69/U2/Q
+[0m[32m• fa_53/U1/Q
+[0m[32m• fa_37/U1/Q
+[0m[32m• fa_9/U1/Q
+[0m[32m• fa_23/U2/Q
+[0m[32m• fa_22/U4/Q
+[0m[32m• fa_22/U3/Q
+[0m[32m• fa_9/U2/Q
+[0m[32m• fa_53/U2/Q
+[0m[32m• fa_8/U4/Q
+[0m[32m• fa_69/U1/Q
+[0m[32m• fa_37/U2/Q
+[0m[32m• fa_23/U1/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 27: ------
+[0m[32m• fa_8/U2/B
+[0m[32m• fa_8/U2/C
+[0m[32m• fa_8/U2/A
+[0m[32m• y_o|7
+[0m[32m• fa_21/U3/A
+[0m[32m• fa_21/U3/B
+[0m[32m• fa_5/U3/A
+[0m[32m• fa_7/U3/B
+[0m[32m• fa_36/U1/A
+[0m[32m• fa_8/U1/A
+[0m[32m• fa_8/U1/B
+[0m[32m• fa_52/U1/A
+[0m[32m• fa_68/U2/A
+[0m[32m• fa_7/U4/A
+[0m[32m• fa_5/U4/B
+[0m[32m• fa_52/U2/A
+[0m[32m• fa_36/U2/A
+[0m[32m• fa_22/U2/B
+[0m[32m• fa_22/U2/C
+[0m[32m• fa_22/U2/A
+[0m[32m• fa_21/U4/B
+[0m[32m• fa_21/U4/A
+[0m[32m• fa_68/U1/A
+[0m[32m• fa_22/U1/A
+[0m[32m• fa_22/U1/B
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 28: ------
+[0m[32m• fa_8/U2/Q
+[0m[32m• fa_21/U3/Q
+[0m[32m• fa_36/U1/Q
+[0m[32m• fa_7/U3/Q
+[0m[32m• fa_8/U1/Q
+[0m[32m• fa_52/U1/Q
+[0m[32m• fa_68/U2/Q
+[0m[32m• fa_7/U4/Q
+[0m[32m• fa_52/U2/Q
+[0m[32m• fa_36/U2/Q
+[0m[32m• fa_22/U2/Q
+[0m[32m• fa_21/U4/Q
+[0m[32m• fa_68/U1/Q
+[0m[32m• fa_22/U1/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 29: ------
+[0m[32m• fa_51/U1/A
+[0m[32m• fa_35/U1/A
+[0m[32m• fa_7/U2/A
+[0m[32m• fa_7/U2/C
+[0m[32m• fa_7/U2/B
+[0m[32m• y_o|8
+[0m[32m• fa_4/U4/B
+[0m[32m• fa_21/U2/A
+[0m[32m• fa_21/U2/C
+[0m[32m• fa_21/U2/B
+[0m[32m• fa_6/U4/A
+[0m[32m• fa_20/U4/B
+[0m[32m• fa_20/U4/A
+[0m[32m• fa_67/U1/A
+[0m[32m• fa_6/U3/B
+[0m[32m• fa_20/U3/A
+[0m[32m• fa_20/U3/B
+[0m[32m• fa_67/U2/A
+[0m[32m• fa_4/U3/A
+[0m[32m• fa_35/U2/A
+[0m[32m• fa_51/U2/A
+[0m[32m• fa_21/U1/B
+[0m[32m• fa_21/U1/A
+[0m[32m• fa_7/U1/B
+[0m[32m• fa_7/U1/A
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 30: ------
+[0m[32m• fa_51/U1/Q
+[0m[32m• fa_35/U1/Q
+[0m[32m• fa_7/U2/Q
+[0m[32m• fa_21/U2/Q
+[0m[32m• fa_6/U4/Q
+[0m[32m• fa_20/U4/Q
+[0m[32m• fa_67/U1/Q
+[0m[32m• fa_6/U3/Q
+[0m[32m• fa_20/U3/Q
+[0m[32m• fa_67/U2/Q
+[0m[32m• fa_35/U2/Q
+[0m[32m• fa_51/U2/Q
+[0m[32m• fa_21/U1/Q
+[0m[32m• fa_7/U1/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 31: ------
+[0m[32m• fa_6/U1/B
+[0m[32m• fa_6/U1/A
+[0m[32m• fa_20/U1/B
+[0m[32m• fa_20/U1/A
+[0m[32m• y_o|9
+[0m[32m• fa_3/U4/B
+[0m[32m• fa_66/U2/A
+[0m[32m• fa_66/U1/A
+[0m[32m• fa_34/U1/A
+[0m[32m• fa_50/U1/A
+[0m[32m• fa_5/U3/B
+[0m[32m• fa_19/U4/A
+[0m[32m• fa_19/U4/B
+[0m[32m• fa_19/U3/B
+[0m[32m• fa_19/U3/A
+[0m[32m• fa_5/U4/A
+[0m[32m• fa_34/U2/A
+[0m[32m• fa_20/U2/A
+[0m[32m• fa_20/U2/B
+[0m[32m• fa_20/U2/C
+[0m[32m• fa_50/U2/A
+[0m[32m• fa_6/U2/A
+[0m[32m• fa_6/U2/B
+[0m[32m• fa_6/U2/C
+[0m[32m• fa_3/U3/A
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 32: ------
+[0m[32m• fa_6/U1/Q
+[0m[32m• fa_20/U1/Q
+[0m[32m• fa_66/U2/Q
+[0m[32m• fa_66/U1/Q
+[0m[32m• fa_34/U1/Q
+[0m[32m• fa_50/U1/Q
+[0m[32m• fa_5/U3/Q
+[0m[32m• fa_19/U4/Q
+[0m[32m• fa_19/U3/Q
+[0m[32m• fa_5/U4/Q
+[0m[32m• fa_34/U2/Q
+[0m[32m• fa_20/U2/Q
+[0m[32m• fa_50/U2/Q
+[0m[32m• fa_6/U2/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 33: ------
+[0m[32m• fa_19/U1/A
+[0m[32m• fa_19/U1/B
+[0m[32m• fa_4/U4/A
+[0m[32m• fa_33/U2/A
+[0m[32m• fa_65/U1/A
+[0m[32m• fa_5/U2/C
+[0m[32m• fa_5/U2/B
+[0m[32m• fa_5/U2/A
+[0m[32m• fa_18/U4/A
+[0m[32m• fa_18/U4/B
+[0m[32m• fa_49/U1/A
+[0m[32m• fa_33/U1/A
+[0m[32m• fa_65/U2/A
+[0m[32m• fa_4/U3/B
+[0m[32m• fa_49/U2/A
+[0m[32m• y_o|10
+[0m[32m• fa_5/U1/A
+[0m[32m• fa_5/U1/B
+[0m[32m• fa_2/U4/B
+[0m[32m• fa_19/U2/B
+[0m[32m• fa_19/U2/C
+[0m[32m• fa_19/U2/A
+[0m[32m• fa_2/U3/A
+[0m[32m• fa_18/U3/B
+[0m[32m• fa_18/U3/A
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 34: ------
+[0m[32m• fa_19/U1/Q
+[0m[32m• fa_4/U4/Q
+[0m[32m• fa_33/U2/Q
+[0m[32m• fa_65/U1/Q
+[0m[32m• fa_5/U2/Q
+[0m[32m• fa_18/U4/Q
+[0m[32m• fa_49/U1/Q
+[0m[32m• fa_33/U1/Q
+[0m[32m• fa_65/U2/Q
+[0m[32m• fa_4/U3/Q
+[0m[32m• fa_49/U2/Q
+[0m[32m• fa_5/U1/Q
+[0m[32m• fa_19/U2/Q
+[0m[32m• fa_18/U3/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 35: ------
+[0m[32m• fa_4/U1/A
+[0m[32m• fa_4/U1/B
+[0m[32m• fa_3/U4/A
+[0m[32m• fa_1/U4/B
+[0m[32m• fa_17/U3/A
+[0m[32m• fa_17/U3/B
+[0m[32m• fa_18/U1/A
+[0m[32m• fa_18/U1/B
+[0m[32m• fa_4/U2/B
+[0m[32m• fa_4/U2/C
+[0m[32m• fa_18/U2/C
+[0m[32m• fa_4/U2/A
+[0m[32m• fa_18/U2/B
+[0m[32m• fa_18/U2/A
+[0m[32m• fa_1/U3/A
+[0m[32m• fa_17/U4/B
+[0m[32m• fa_17/U4/A
+[0m[32m• fa_3/U3/B
+[0m[32m• y_o|11
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 36: ------
+[0m[32m• fa_4/U1/Q
+[0m[32m• fa_3/U4/Q
+[0m[32m• fa_17/U3/Q
+[0m[32m• fa_18/U1/Q
+[0m[32m• fa_18/U2/Q
+[0m[32m• fa_17/U4/Q
+[0m[32m• fa_4/U2/Q
+[0m[32m• fa_3/U3/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 37: ------
+[0m[32m• fa_3/U1/B
+[0m[32m• fa_17/U2/A
+[0m[32m• fa_17/U2/B
+[0m[32m• fa_17/U2/C
+[0m[32m• fa_3/U1/A
+[0m[32m• fa_3/U2/A
+[0m[32m• fa_3/U2/C
+[0m[32m• fa_3/U2/B
+[0m[32m• fa_17/U1/B
+[0m[32m• fa_17/U1/A
+[0m[32m• y_o|12
+[0m[32m• fa_2/U4/A
+[0m[32m• fa_2/U3/B
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 38: ------
+[0m[32m• fa_17/U2/Q
+[0m[32m• fa_3/U1/Q
+[0m[32m• fa_3/U2/Q
+[0m[32m• fa_17/U1/Q
+[0m[32m• fa_2/U4/Q
+[0m[32m• fa_2/U3/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 39: ------
+[0m[32m• fa_2/U2/A
+[0m[32m• fa_2/U2/B
+[0m[32m• fa_2/U2/C
+[0m[32m• fa_1/U4/A
+[0m[32m• fa_2/U1/B
+[0m[32m• fa_2/U1/A
+[0m[32m• fa_1/U3/B
+[0m[32m• y_o|13
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 40: ------
+[0m[32m• fa_2/U2/Q
+[0m[32m• fa_1/U4/Q
+[0m[32m• fa_2/U1/Q
+[0m[32m• fa_1/U3/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 41: ------
+[0m[32m• fa_1/U1/A
+[0m[32m• fa_1/U1/B
+[0m[32m• fa_1/U2/C
+[0m[32m• fa_1/U2/B
+[0m[32m• fa_1/U2/A
+[0m[32m• y_o|14
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 42: ------
+[0m[32m• fa_1/U1/Q
+[0m[32m• fa_1/U2/Q
+[0m[1;35m-----------------------
+
+[0m[1;35m------ Level 43: ------
+[0m[32m• y_o|15
+[0m[1;35m-----------------------
+
+[0m[34mINFO: Max depth of design is: 43
+[0m[32m
+[0mPR> quit 
+[34m[1mEDA TOOL EXITING
+[0m

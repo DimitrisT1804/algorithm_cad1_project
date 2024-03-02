@@ -1518,11 +1518,14 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
         printf(ANSI_COLOR_RED "ERROR: Gatepin is input" ANSI_COLOR_RESET);
         return TCL_ERROR;
     }
-
     if(gatepinhash[ghash].type[gdepth] == PO)
     {
-        get_predecessors_pin(gatepin, &ghash, &gdepth);
+        get_predecessors_pin(gatepinhash[ghash].name[gdepth], &ghash, &gdepth);
     }
+    // if(gatepinhash[ghash].type[gdepth] == PO)
+    // {
+    //     get_predecessors_pin(gatepin, &ghash, &gdepth);
+    // }
 
     chash = gatepinhash[ghash].parentComponent[gdepth];
     cdepth = gatepinhash[ghash].parentComponentDepth[gdepth];
