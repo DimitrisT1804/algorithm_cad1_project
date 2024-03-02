@@ -47,7 +47,7 @@ void annotate_bdds()
         {
             if(gatepinhash[i].hashpresent[j] == 1)
             {
-                if(gatepinhash[i].type[j] == IO_TYPE)
+                if(gatepinhashv[i].level[j] == 0)
                 {
                     IO_vars = (DdNode **)realloc(IO_vars, (IO_vars_size + 1) * sizeof(DdNode *));
                     IO_vars[IO_vars_size] = Cudd_bddNewVar(gbm);
@@ -59,31 +59,67 @@ void annotate_bdds()
                     ghash_added[ghash_added_size] = i;
                     gdepth_added[ghash_added_size] = j;
                     ghash_added_size++;
-                }
-                else if(gatepinhash[i].type[j] != PO)   // check for sequential cells //
-                {
-                    chash = gatepinhash[i].parentComponent[j];
-                    cdepth = gatepinhash[i].parentComponentDepth[j];
-                    lhash = comphash[chash].lib_type[cdepth];
-                    ldepth = comphash[chash].lib_type_depth[cdepth];
 
-                    if(libhash[lhash].cell_type[ldepth] == SEQUENTIAL)
+                    if(gatepinhash[i].type[j] == WIRE)
                     {
-                        if(check_gatepin_type(i, j) == 1) // it is Output pin of flip flop //
+                        chash = gatepinhash[i].parentComponent[j];
+                        cdepth = gatepinhash[i].parentComponentDepth[j];
+                        lhash = comphash[chash].lib_type[cdepth];
+                        ldepth = comphash[chash].lib_type_depth[cdepth];
+                        
+                        if(strcmp(libhash[lhash].function[ldepth][0], "1") == 0)     // Logic 1 //
                         {
-                            IO_vars = (DdNode **)realloc(IO_vars, (IO_vars_size + 1) * sizeof(DdNode *));
-                            IO_vars[IO_vars_size] = Cudd_bddNewVar(gbm);
-                            Cudd_Ref(IO_vars[IO_vars_size]);
-                            IO_vars_size++; 
-
-                            ghash_added = (int *)realloc(ghash_added, (ghash_added_size + 1) * sizeof(int));
-                            gdepth_added = (int *)realloc(gdepth_added, (ghash_added_size + 1) * sizeof(int));
-                            ghash_added[ghash_added_size] = i;
-                            gdepth_added[ghash_added_size] = j;
-                            ghash_added_size++;
+                            gatepinhashv[i].gatepin_bdd[j] = Cudd_ReadOne(gbm);
+                            gatepinhash_prob[i].one_prob[j] = 1.0;
+                            gatepinhash_prob[i].zero_prob[j] = 0.0;
+                            continue;
+                        }
+                        if(strcmp(libhash[lhash].function[ldepth][0], "0") == 0)    // Logic 0 //
+                        {
+                            gatepinhashv[i].gatepin_bdd[j] = Cudd_Not(Cudd_ReadOne(gbm));
+                            gatepinhash_prob[i].one_prob[j] = 0.0;
+                            gatepinhash_prob[i].zero_prob[j] = 1.0;
+                            continue;
                         }
                     }
                 }
+                // if(gatepinhash[i].type[j] == IO_TYPE)
+                // {
+                //     IO_vars = (DdNode **)realloc(IO_vars, (IO_vars_size + 1) * sizeof(DdNode *));
+                //     IO_vars[IO_vars_size] = Cudd_bddNewVar(gbm);
+                //     Cudd_Ref(IO_vars[IO_vars_size]);
+                //     IO_vars_size++; 
+
+                //     ghash_added = (int *)realloc(ghash_added, (ghash_added_size + 1) * sizeof(int));
+                //     gdepth_added = (int *)realloc(gdepth_added, (ghash_added_size + 1) * sizeof(int));
+                //     ghash_added[ghash_added_size] = i;
+                //     gdepth_added[ghash_added_size] = j;
+                //     ghash_added_size++;
+                // }
+                // else if(gatepinhash[i].type[j] != PO)   // check for sequential cells //
+                // {
+                //     chash = gatepinhash[i].parentComponent[j];
+                //     cdepth = gatepinhash[i].parentComponentDepth[j];
+                //     lhash = comphash[chash].lib_type[cdepth];
+                //     ldepth = comphash[chash].lib_type_depth[cdepth];
+
+                //     if(libhash[lhash].cell_type[ldepth] == SEQUENTIAL)
+                //     {
+                //         if(check_gatepin_type(i, j) == 1) // it is Output pin of flip flop //
+                //         {
+                //             IO_vars = (DdNode **)realloc(IO_vars, (IO_vars_size + 1) * sizeof(DdNode *));
+                //             IO_vars[IO_vars_size] = Cudd_bddNewVar(gbm);
+                //             Cudd_Ref(IO_vars[IO_vars_size]);
+                //             IO_vars_size++; 
+
+                //             ghash_added = (int *)realloc(ghash_added, (ghash_added_size + 1) * sizeof(int));
+                //             gdepth_added = (int *)realloc(gdepth_added, (ghash_added_size + 1) * sizeof(int));
+                //             ghash_added[ghash_added_size] = i;
+                //             gdepth_added[ghash_added_size] = j;
+                //             ghash_added_size++;
+                //         }
+                //     }
+                // }
             }
         }
     }
@@ -111,20 +147,20 @@ void annotate_bdds()
                             lhash = comphash[chash].lib_type[cdepth];
                             ldepth = comphash[chash].lib_type_depth[cdepth];
 
-                            if(strcmp(libhash[lhash].function[ldepth][0], "1") == 0)     // Logic 1 //
-                            {
-                                gatepinhashv[i].gatepin_bdd[j] = Cudd_ReadOne(gbm);
-                                gatepinhash_prob[i].one_prob[j] = 1.0;
-                                gatepinhash_prob[i].zero_prob[j] = 0.0;
-                                continue;
-                            }
-                            if(strcmp(libhash[lhash].function[ldepth][0], "0") == 0)    // Logic 0 //
-                            {
-                                gatepinhashv[i].gatepin_bdd[j] = Cudd_Not(Cudd_ReadOne(gbm));
-                                gatepinhash_prob[i].one_prob[j] = 0.0;
-                                gatepinhash_prob[i].zero_prob[j] = 1.0;
-                                continue;
-                            }
+                            // if(strcmp(libhash[lhash].function[ldepth][0], "1") == 0)     // Logic 1 //
+                            // {
+                            //     gatepinhashv[i].gatepin_bdd[j] = Cudd_ReadOne(gbm);
+                            //     gatepinhash_prob[i].one_prob[j] = 1.0;
+                            //     gatepinhash_prob[i].zero_prob[j] = 0.0;
+                            //     continue;
+                            // }
+                            // if(strcmp(libhash[lhash].function[ldepth][0], "0") == 0)    // Logic 0 //
+                            // {
+                            //     gatepinhashv[i].gatepin_bdd[j] = Cudd_Not(Cudd_ReadOne(gbm));
+                            //     gatepinhash_prob[i].one_prob[j] = 0.0;
+                            //     gatepinhash_prob[i].zero_prob[j] = 1.0;
+                            //     continue;
+                            // }
                             
                             for(int f = 0; f < libhash[lhash].out_pins_count[ldepth]; f++)
                             {
