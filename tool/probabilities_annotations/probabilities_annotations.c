@@ -44,11 +44,6 @@ void print_paths()
 
     for(i = 0; i < ghash_added_size; i++)
     {
-        // for(j = 0; all_paths[i][j] != NULL; j++)
-        // {
-        //     printf("%d ", Cudd_NodeReadIndex(all_paths[i][j]));
-        // }
-        // printf("\n");
         if(nodes_array[i] == 0)
         {
             printf("0 ");
