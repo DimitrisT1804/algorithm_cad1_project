@@ -889,8 +889,6 @@ char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *s
         var_num++; 
         (*vars_row)[var_num] = NULL;
     }
-
-    // !!! add a sentinel between variables in postfix !!! //
     already_calculated = 0;
 
     postfix = (char *) realloc (postfix, (strlen(postfix) + 1) * 2);
@@ -1081,7 +1079,7 @@ DdNode *concat_bdds(DdNode **vars, char **varNames, char **vars_row, char *postf
     }
     free(vars_row);
 
-    for(i = 1; i < vars_size; i++)
+    for(i = 1; i < vars_size + 1; i++)
     {
         if(varNames[i] != NULL)
         {

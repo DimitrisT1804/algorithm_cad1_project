@@ -20,4 +20,8 @@ $(TARGET): $(OBJ_FILES) $(FLEX_DEPS) $(BISON_DEPS)
 clean:
 	rm -f $(OBJ_FILES) $(TARGET)
 
+install:
+	cp cad_tool /usr/local/bin
+
+
 .PHONY: all clean

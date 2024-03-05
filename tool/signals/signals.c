@@ -53,3 +53,51 @@ void sigint_handler(int signum)
         }
     }
 }
+
+int isFolderEmpty(const char *path) 
+{
+    struct dirent *entry;
+    DIR *dir = opendir(path);
+
+    if (dir == NULL) 
+    {
+        perror("Error opening directory");
+        exit(EXIT_FAILURE);
+    }
+
+    while ((entry = readdir(dir)) != NULL) 
+    {
+        // Skip "." and ".." entries
+        if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
+            closedir(dir);
+            return 0;  // Folder is not empty
+        }
+    }
+
+    closedir(dir);
+    return 1;  // Folder is empty
+}
+
+void removeFolder(const char *folderPath) 
+{
+    printf(ANSI_COLOR_ORANGE"Do you want to remove the folder '%s' that created to store BDDs? (yes/no): " ANSI_COLOR_RESET, folderPath);
+
+    char response[10];
+    scanf("%9s", response);
+
+    if (strcmp(response, "yes") == 0) 
+    {
+        if (rmdir(folderPath) == 0) 
+        {
+            printf(ANSI_COLOR_GREEN "Folder '%s' removed successfully.\n" ANSI_COLOR_RESET, folderPath);
+        } 
+        else 
+        {
+            perror(ANSI_COLOR_RED "Error removing folder" ANSI_COLOR_RESET);
+        }
+    } 
+    else 
+    {
+        printf(ANSI_COLOR_RED "Folder removal canceled.\n" ANSI_COLOR_RESET);
+    }
+}
