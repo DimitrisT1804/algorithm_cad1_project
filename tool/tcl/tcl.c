@@ -1522,10 +1522,6 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
     {
         get_predecessors_pin(gatepinhash[ghash].name[gdepth], &ghash, &gdepth);
     }
-    // if(gatepinhash[ghash].type[gdepth] == PO)
-    // {
-    //     get_predecessors_pin(gatepin, &ghash, &gdepth);
-    // }
 
     chash = gatepinhash[ghash].parentComponent[gdepth];
     cdepth = gatepinhash[ghash].parentComponentDepth[gdepth];
@@ -1539,13 +1535,8 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
 
     dotfile = fopen(filename, "w");
 
-    // gatepinhashv[ghash].gatepin_bdd[gdepth] = Cudd_Not(gatepinhashv[ghash].gatepin_bdd[gdepth]);
-
     temp_node = gatepinhashv[ghash].gatepin_bdd[gdepth];
-    temp_node = Cudd_BddToAdd(gbm, temp_node);
-
-    // const char *varNames[] = {"clk", "N3", "N2", "N1", "N7", "N6", NULL};
-    
+    temp_node = Cudd_BddToAdd(gbm, temp_node);    
     char *convert_dot = malloc( (2 * strlen(libhash[lhash].name[ldepth]) ) + strlen("dot -Tpng -Gpdi=1000 -o bdd_output/ bdd_output/ .png .dot") + 5);
 
     Cudd_DumpDot(gbm , 1, &temp_node, (const char **) NamesDot, NULL, dotfile);
@@ -1570,17 +1561,134 @@ int report_bdd_dot_gatepin(ClientData clientdata, Tcl_Interp *interp, int objc, 
     free(convert_dot);
     free(filename);
 
-    printf("Number of Minterms is %lf\n", Cudd_CountMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth], Cudd_ReadSize(gbm)));
+    printf(ANSI_COLOR_BLUE "Number of Minterms for gatepin %s is %lf\n" ANSI_COLOR_RESET, gatepin, Cudd_CountMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth], Cudd_ReadSize(gbm)));
+    printf(ANSI_COLOR_BLUE "Number of paths to 1 for gatepin %s is %lf\n" ANSI_COLOR_RESET, gatepin, Cudd_CountPathsToNonZero(gatepinhashv[ghash].gatepin_bdd[gdepth]));
 
-    // freopen("minterms.txt", "w", stdout);
-    printf("Number of paths to 1 is %lf\n", Cudd_CountPathsToNonZero(gatepinhashv[ghash].gatepin_bdd[gdepth]));
+    return TCL_OK;
+}
 
-    // Cudd_PrintMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]);
-    // Cudd_PrintMinterm(gbm, Cudd_FindEssential(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth]));
 
-    // freopen("/dev/tty", "w", stdout);
-    // read_minterms(gatepinhash[ghash].name[gdepth]);
-    // printf("Cudd simplified is %s\n", Cudd_bddPrintCover(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth], gatepinhashv[ghash].gatepin_bdd[gdepth]));
+int report_bdd_dot_component(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    char *component = NULL;
+    char *filename = NULL;
+    int ghash;
+    int gdepth;
+    int chash;
+    int cdepth;
+    int lhash;
+    int ldepth;
+    int i;
+    FILE *dotfile;
+    DdNode *temp_node = NULL;
+    char *gatepin_name = NULL;
+    char number_string[5];
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "component");
+        return TCL_ERROR;
+    }
+
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    component = Tcl_GetString(objv[1]);
+    if(component == NULL)
+    {
+        printf("ERROR: component is NULL\n");
+        return TCL_ERROR;
+    }
+
+    get_comphash_indices(component, &chash, &cdepth);
+    if(chash == -1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Component NOT found" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+    
+    lhash = comphash[chash].lib_type[cdepth];
+    ldepth = comphash[chash].lib_type_depth[cdepth];
+
+    if(libhash[lhash].cell_type[ldepth] == SEQUENTIAL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Component is of type SEQUENTIAL" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    if(isLevelized == 0)    // check if design is levelized //
+    {
+        printf(ANSI_COLOR_ORANGE "ERROR: Design is not levelized\nCall get_toposort to levelize design!" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    for(i = 0; i < libhash[lhash].pin_count[ldepth]; i++)
+    {
+        gatepin_name = (char *) my_calloc(strlen(comphash[chash].name[cdepth]) + strlen(libhash[lhash].pin_names[ldepth][i]) + 1, sizeof(char));
+        strcpy(gatepin_name, comphash[chash].name[cdepth]);
+        strcat(gatepin_name, libhash[lhash].pin_names[ldepth][i]);
+        get_gatepin_indices(gatepin_name, &ghash, &gdepth);
+
+        if(check_gatepin_type(ghash, gdepth) == 0)  // it is input //
+        {
+            free(gatepin_name);
+            gatepin_name = NULL;
+            continue;
+        }
+
+        filename = malloc(strlen(libhash[lhash].name[ldepth]) + strlen(".dot") + strlen("bdd_output/") + 3);
+        strcpy(filename, "bdd_output/");
+        strcat(filename, libhash[lhash].name[ldepth]);
+        strcat(filename, "_");
+        sprintf(number_string, "%d", i);
+        strcat(filename, number_string);
+        strcat(filename, ".dot");
+
+        dotfile = fopen(filename, "w");
+
+        temp_node = gatepinhashv[ghash].gatepin_bdd[gdepth];
+        temp_node = Cudd_BddToAdd(gbm, temp_node);    
+        char *convert_dot = malloc( (2 * strlen(libhash[lhash].name[ldepth]) ) + strlen("dot -Tpng -Gpdi=1000 -o bdd_output/ bdd_output/ .png .dot") + 8);
+
+        Cudd_DumpDot(gbm , 1, &temp_node, (const char **) NamesDot, NULL, dotfile);
+        fclose(dotfile);
+        
+        printf(ANSI_COLOR_GREEN "Done writing dot file for gatepin %s\n" ANSI_COLOR_RESET, gatepin_name);
+
+        strcpy(convert_dot, "dot -Tpng -Gdpi=1000 -o bdd_output/");
+        strcat(convert_dot, libhash[lhash].name[ldepth]);
+        strcat(convert_dot, "_");
+        strcat(convert_dot, number_string);
+        strcat(convert_dot, ".png bdd_output/");
+        strcat(convert_dot, libhash[lhash].name[ldepth]);
+        strcat(convert_dot, "_");
+        strcat(convert_dot, number_string);
+        strcat(convert_dot, ".dot");
+
+        system(convert_dot);
+
+        strcpy(convert_dot, "xdg-open bdd_output/");
+        strcat(convert_dot, libhash[lhash].name[ldepth]);
+        strcat(convert_dot, "_");
+        strcat(convert_dot, number_string);
+        strcat(convert_dot, ".png");
+
+        system(convert_dot);
+   
+        printf(ANSI_COLOR_BLUE "Number of Minterms for gatepin %s is %lf\n" ANSI_COLOR_RESET, gatepin_name, Cudd_CountMinterm(gbm, gatepinhashv[ghash].gatepin_bdd[gdepth], Cudd_ReadSize(gbm)));
+        printf(ANSI_COLOR_BLUE "Number of paths to 1 for gatepin %s is %lf\n" ANSI_COLOR_RESET, gatepin_name, Cudd_CountPathsToNonZero(gatepinhashv[ghash].gatepin_bdd[gdepth]));
+        
+        free(convert_dot);
+        free(filename);
+        free(gatepin_name);
+        convert_dot = NULL;
+        filename = NULL;
+        gatepin_name = NULL;
+    }
+
 
     return TCL_OK;
 }
@@ -2063,6 +2171,7 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "get_traverse_cudd", get_traverse_cudd, NULL, NULL);
     Tcl_CreateObjCommand(interp, "set_static_probability", set_static_probability, NULL, NULL);
     Tcl_CreateObjCommand(interp, "list_static_probability", list_static_probability, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "report_bdd_dot_component", report_bdd_dot_component, NULL, NULL);
 
 
     signal(SIGSEGV, segfault_handler);
@@ -2142,6 +2251,12 @@ int main(int argc, char *argv[])
         // handle two basic commands: history and quit //
         if (strcmp(command, "quit") == 0 || ctrl_c_pressed)
         {
+            // const char *folder = "bdd_output";
+            // if(isFolderEmpty(folder) == 1)
+            // {
+            //     rmdir(folder);
+            // }
+            removeFolder("bdd_output");
             Tcl_DeleteInterp(interp);
             if(gatepinhash != NULL)
             {

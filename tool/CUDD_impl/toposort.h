@@ -18,7 +18,6 @@ struct gatepin_pos
 };
 typedef struct gatepin_pos Gatepin_pos;
 
-
 extern Gatepin_pos *sorted_gatepins;   // L //
 extern Gatepin_pos *input_nodes;       // S //
 
@@ -26,7 +25,6 @@ Gatepin_pos *toposort(int *startpoins_ghash, int *startpoints_gdepth);
 int max(int a, int b);
 void add_gatepin_pos(Gatepin_pos *gatepin, int ghash, int gdepth);
 void remove_gatepin_pos(Gatepin_pos *gatepin, int ghash, int gdepth);
-int max(int a, int b);
 void free_gatepin_pos(Gatepin_pos *gatepin);
 void add_startpoints();
 void assign_level_gatepins(Gatepin_pos *L);
