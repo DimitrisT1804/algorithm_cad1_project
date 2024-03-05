@@ -35,7 +35,7 @@ input: expr EOL { }
 
 expr: expr '+' term    { }
     | term             { }
-    | unary            { } // Add unary production rule
+    | unary            { } // Add unary production rule //
     ;
 
 term: term '*' factor { }

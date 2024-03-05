@@ -38,7 +38,6 @@ char *parse_infix(char *infix)
     FILE *pipe = popen("../examples/parser", "w");
     if(pipe == 0)
     {
-        //printf("Error: failed to open parser\n");
         return NULL;
     }
 
@@ -47,13 +46,12 @@ char *parse_infix(char *infix)
     result_pipe = pclose(pipe);
     if(result_pipe == -1)
     {
-        //printf("Error: failed to close parser\n");
         return NULL;
     }
 
     if(WIFEXITED(result_pipe) == 1 && WEXITSTATUS(result_pipe) == 0)
     {
-        //printf("Parser success\n");
+
     }
     else
     {
@@ -61,22 +59,10 @@ char *parse_infix(char *infix)
         return NULL;
     }
 
-    // strcat(infix, "\n");
-    // if(yacc_main(infix) == 0)
-    // {
-    //     printf("Parser success\n");
-    // }
-    // else
-    // {
-    //     printf("Error: parser failed\n");
-    //     return NULL;
-    // }
-
     infix_size = strlen(infix) + 1;
     postfix = (char*) malloc(sizeof(char) * infix_size);
 
     operatorStack = create_stack(infix_size);
-
     for(i = 0; i < infix_size; i++)
     {
         if(infix[i] != ' ' && infix[i] != '\0')
@@ -119,9 +105,7 @@ char *parse_infix(char *infix)
         postfix_pos++ ;
     }
 
-    
     postfix[postfix_pos] = '\0';
-
     delete_stack(operatorStack);
 
     return postfix;

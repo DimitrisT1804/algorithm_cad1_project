@@ -1004,7 +1004,7 @@ int report_library_cell_BDD(ClientData clientdata, Tcl_Interp *interp, int objc,
         postfix = parse_infix(infix);
 
         // generate_bdd(infix, libhash[lhash].name[ldepth]);
-        generate_bdd_two(infix, libhash[lhash].name[ldepth]);
+        generate_bdd(infix, libhash[lhash].name[ldepth]);
 
         command = malloc(strlen("dot -Tpng ") + strlen(libhash[lhash].name[ldepth]) + strlen(".dot -o .png  ") + strlen(libhash[lhash].name[ldepth]) + strlen("bdd_output/") + strlen("bdd_output/_ "));
         strcpy(command, "dot -Tpng ");
@@ -1113,7 +1113,7 @@ int report_component_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
         postfix = parse_infix(infix);
 
         // generate_bdd(infix, libhash[lhash].name[ldepth]);
-        generate_bdd_two(infix, libhash[lhash].name[ldepth]);
+        generate_bdd(infix, libhash[lhash].name[ldepth]);
 
         command = malloc(strlen("dot -Tpng ") + strlen(libhash[lhash].name[ldepth]) + strlen(".dot -o .png  ") + strlen(libhash[lhash].name[ldepth]) + strlen("bdd_output/") + strlen("bdd_output/_ "));
         strcpy(command, "dot -Tpng ");
@@ -1198,7 +1198,7 @@ int compute_expression_BDD(ClientData clientdata, Tcl_Interp *interp, int objc, 
     }
 
     // generate_bdd(infix, filename);
-    generate_bdd_two(infix, filename);
+    generate_bdd(infix, filename);
 
     command = malloc(strlen("dot -Tpng ") + strlen(filename) + strlen(".dot -o .png  ") + strlen(filename) + strlen("bdd_output/") + strlen("bdd_output/_ "));
     strcpy(command, "dot -Tpng ");
@@ -1582,7 +1582,7 @@ int report_bdd_dot_component(ClientData clientdata, Tcl_Interp *interp, int objc
     FILE *dotfile;
     DdNode *temp_node = NULL;
     char *gatepin_name = NULL;
-    char number_string[5];
+    char number_string[15];
 
     if(objc != 2)
     {
