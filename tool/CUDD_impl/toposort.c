@@ -558,10 +558,6 @@ void add_startpoints()
                                 gatepinhashv[i].level[j] = gatepinhashv[ghash].level[gdepth];
                             }
                         }
-                        // gatepinhashv[i].level[j] = max_level + 1;
-                        // max_level = 0;
-                        // get_predecessors_pin(gatepinhash[i].name[j], &ghash, &gdepth);
-                        // gatepinhashv[i].level[j] = gatepinhashv[ghash].level[gdepth] + 1;
                     }
                 }
                 

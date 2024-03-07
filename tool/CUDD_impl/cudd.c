@@ -996,7 +996,6 @@ DdNode *concat_bdds(DdNode **vars, char **varNames, char **vars_row, char *postf
             get_node_1 = pop_bdd(cur_stack);
             get_node_2 = pop_bdd(cur_stack);
             temp_bdd[temp_bdd_pos] = Cudd_bddOr(gbm, get_node_1, get_node_2);
-            // temp_bdd[temp_bdd_pos] = Cudd_bddOr(gbm, pop_bdd(cur_stack), pop_bdd(cur_stack));
             Cudd_Ref(temp_bdd[temp_bdd_pos]);
 
             if(find_same_nodes(vars, get_node_1, vars_size) == 0)
@@ -1017,7 +1016,6 @@ DdNode *concat_bdds(DdNode **vars, char **varNames, char **vars_row, char *postf
             get_node_1 = pop_bdd(cur_stack);
             get_node_2 = pop_bdd(cur_stack);
             temp_bdd[temp_bdd_pos] = Cudd_bddXor(gbm, get_node_1, get_node_2);
-            // temp_bdd[temp_bdd_pos] = Cudd_bddXor(gbm, pop_bdd(cur_stack), pop_bdd(cur_stack));
             Cudd_Ref(temp_bdd[temp_bdd_pos]);
 
             if(find_same_nodes(vars, get_node_1, vars_size) == 0)
@@ -1036,7 +1034,6 @@ DdNode *concat_bdds(DdNode **vars, char **varNames, char **vars_row, char *postf
         else if (result == 4)
         {
             get_node_1 = pop_bdd(cur_stack);
-            // temp_bdd[temp_bdd_pos] = Cudd_Not(pop_bdd(cur_stack));
             temp_bdd[temp_bdd_pos] = Cudd_Not(get_node_1);
             Cudd_Ref(temp_bdd[temp_bdd_pos]);
 
@@ -1053,7 +1050,6 @@ DdNode *concat_bdds(DdNode **vars, char **varNames, char **vars_row, char *postf
     if(isEmpty_bdd(cur_stack))
     {
         bdd = temp_bdd[0];
-        // Cudd_RecursiveDeref(gbm, temp_bdd[0]);
     }
     else
     {

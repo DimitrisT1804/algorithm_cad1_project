@@ -169,25 +169,18 @@ void printInorder(DdNode* N)
 
 double my_ddCountPathsToNonZero(DdNode * N, st_table * table)
 {
-
     DdNode	*node, *Nt, *Ne;
     int index;
 
     node = Cudd_Regular(N);
     if (cuddIsConstant(node)) 
     {
-        // if( (Cudd_IsComplement(N)) || (cuddV(node)==DD_ZERO_VAL) )
-        // {
-        //     return 0;
-        // }
-        if(cuddV(node) == DD_ZERO_VAL)
+        if(cuddV(node) == DD_ZERO_VAL)  // reached to constant 0 //
         {
             return 0;
         }
 
         probability_gatepin += calculate_probabilities(nodes_array);
-	    // return((double) !(Cudd_IsComplement(N) || cuddV(node)==DD_ZERO_VAL));
-        // print_paths();
         return 1;
     }
     // if (st_lookup(table, N, &dummy)) 
@@ -208,40 +201,13 @@ double my_ddCountPathsToNonZero(DdNode * N, st_table * table)
 
     my_ddCountPathsToNonZero(Nt,table);
     nodes_array[index] = 0;
-    // if (paths1 == (double)CUDD_OUT_OF_MEM)
-    // {
-    //     return((double)CUDD_OUT_OF_MEM);
-    // }
+
     my_ddCountPathsToNonZero(Ne,table);
     nodes_array[index] = -1;
-    // if (paths2 == (double)CUDD_OUT_OF_MEM)
-    // {
-    //     return((double)CUDD_OUT_OF_MEM);
-    // }
-    // paths = paths1 + paths2;
 
-    // ppaths = malloc(sizeof(double));
-    // if (ppaths == NULL) 
-    // {
-	//     return((double)CUDD_OUT_OF_MEM);
-    // }
-
-    // *ppaths = paths;
-
-    // if (st_add_direct(table, N, ppaths) == ST_OUT_OF_MEM) 
-    // {
-    //     free(ppaths);
-    //     ppaths = NULL;
-    //     return((double)CUDD_OUT_OF_MEM);
-    // }
-    // // if(ppaths != NULL)
-    // // {
-    // //     free(ppaths);
-    // // }
-    // return(paths);
     return 0;
 
-} /* end of ddCountPathsToNonZero */
+}
 
 // double my_ddCountPathsToNonZero(DdNode* N, st_table* table) 
 // {
@@ -351,7 +317,6 @@ double calculate_probabilities(int *vars_value)
     }
 
     return probability;
-
 }
 
 void read_minterms(char *gatepin_name)
