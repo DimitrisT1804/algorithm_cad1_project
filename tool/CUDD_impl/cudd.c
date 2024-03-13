@@ -768,6 +768,19 @@ void generate_bdd(char *infix, char *cell_name)
 
 }
 
+/**
+ * @brief 
+ * * Important info is highlighted with
+ *  ! red ones for difficulties in using them
+ * ? blue ones for questions
+ * TODO: orange for to do 
+ * @param infix 
+ * @param varNames 
+ * @param vars_row 
+ * @param size_of_vars 
+ * @param vars_row_size 
+ * @return char* 
+ */
 char *seperate_variables(char *infix, char ***varNames, char ***vars_row, int *size_of_vars, int *vars_row_size)
 {
     int i;

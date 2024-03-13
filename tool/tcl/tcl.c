@@ -2122,7 +2122,7 @@ int main(int argc, char *argv[])
     char *text = NULL; // readline result //
     char *textexpansion; // readline result history expanded //
     int expansionresult;
-    int kati = 0;
+    // int kati = 0;
     const char *directory = "bdd_output";
 
     Tcl_Interp *interp;
