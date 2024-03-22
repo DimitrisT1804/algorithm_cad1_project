@@ -2,14 +2,15 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "../../Downloads/cudd-release"
 		}
 	],
 	"settings": {
 		"files.associations": {
-			"typeinfo": "c"
+			"typeinfo": "c",
+			"tcl.h": "c",
+			"stdlib.h": "c",
+			"cuddint.h": "c",
+			"cudd.h": "c"
 		}
 	}
 }
