@@ -1,6 +1,7 @@
 #include "tcl.h"
 
 int probability_calculated = 0;
+pthread_t gui_thread;
 
 char *custom_generator(const char *text, int state)
 {
@@ -1706,6 +1707,19 @@ int findparameter(int objc, Tcl_Obj *const* objv, char *parameter)
     return 0;
 }
 
+int findparametermain(int argc, char *argv[], char *parameter)
+{
+    int i;
+    for(i = 0; i < argc; i++)
+    {
+        if(strcmp(argv[i], parameter) == 0)
+        {
+            return i;
+        }
+    }
+    return 0;
+}
+
 int set_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
 {
     int value_found;
@@ -2119,12 +2133,26 @@ int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_O
 
 int show_gui(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
 {
-    start_gui();
+    // pthread_t gui_thread;
+    // start_gui();
+    pthread_create(&gui_thread, NULL, start_gui, NULL);
+
+    // pthread_join(gui_thread, NULL);
 
     return TCL_OK;
 }
 
-int main(int argc, char *argv[])
+int hide_gui(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    // gtk_main_quit();
+    // pthread_cancel(gui_thread);
+    gtk_widget_hide(mainwindow);
+    // pthread_join(gui_thread, NULL);
+
+    return TCL_OK;
+}
+
+void *main_tcl(void *arg)
 {
     char *text = NULL; // readline result //
     char *textexpansion; // readline result history expanded //
@@ -2180,7 +2208,7 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "list_static_probability", list_static_probability, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_bdd_dot_component", report_bdd_dot_component, NULL, NULL);
     Tcl_CreateObjCommand(interp, "show_gui", show_gui, NULL, NULL);
-
+    Tcl_CreateObjCommand(interp, "hide_gui", hide_gui, NULL, NULL);
 
     signal(SIGSEGV, segfault_handler);
     signal(SIGINT, sigint_handler);
@@ -2312,4 +2340,53 @@ int main(int argc, char *argv[])
             }
         }
     }
+}
+
+
+int main(int argc, char *argv[])
+{
+    pthread_t tcl_thread;
+    pthread_t gui_thread;
+
+    int hideguiindex = 0;
+    int helpindex = 0;
+    int findex = 0;
+
+    // pthread_create(&tcl_thread, NULL, main_tcl, NULL);
+    // pthread_join(tcl_thread, NULL);
+
+    hideguiindex = findparametermain(argc, argv, "-hide_gui");
+    helpindex = findparametermain(argc, argv, "-help");
+    findex = findparametermain(argc, argv, "-f");
+
+    if(helpindex > 0)
+    {
+        help_command();
+    }
+    if(findex > 0)
+    {
+        char *filename = argv[findex + 1];
+        call_parser(filename);
+    }
+    if(hideguiindex > 0)
+    {
+        main_tcl(NULL);
+        // return 1;   // no gui //
+    }
+
+    if(hideguiindex == 0)
+    {
+        gdk_threads_init();
+
+        gdk_threads_enter();
+
+        pthread_create(&gui_thread, NULL, start_gui, NULL);
+        main_tcl(NULL);
+        
+        gdk_threads_leave();
+    }
+
+    // pthread_join(gui_thread, NULL);
+
+    return 0;
 }
