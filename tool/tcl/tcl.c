@@ -2117,6 +2117,13 @@ int get_traverse_cudd(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_O
     return TCL_OK;
 }
 
+int show_gui(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    start_gui();
+
+    return TCL_OK;
+}
+
 int main(int argc, char *argv[])
 {
     char *text = NULL; // readline result //
@@ -2172,6 +2179,7 @@ int main(int argc, char *argv[])
     Tcl_CreateObjCommand(interp, "set_static_probability", set_static_probability, NULL, NULL);
     Tcl_CreateObjCommand(interp, "list_static_probability", list_static_probability, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_bdd_dot_component", report_bdd_dot_component, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "show_gui", show_gui, NULL, NULL);
 
 
     signal(SIGSEGV, segfault_handler);

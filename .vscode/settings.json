@@ -3,7 +3,8 @@
         "stdio.h": "c",
         "cudd.h": "c",
         "stdlib.h": "c",
-        "gtk.h": "c"
+        "gtk.h": "c",
+        "bdd_annotation.h": "c"
     },
     "cSpell.enableFiletypes": [
         "!c",

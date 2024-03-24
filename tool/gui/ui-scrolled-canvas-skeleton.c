@@ -1,5 +1,34 @@
 #include "ui-scrolled-canvas-skeleton.h"
 
+GtkWidget *maincanvas_scroll; // scrolled window container for main canvas //
+GtkWidget *maincanvas; // main canvas widget // 
+cairo_t *maincanvas_cs; // main canvas cairo state // 
+GdkDrawable *maincanvas_drawable; // drawable layout window of maincanvas //
+
+GtkWidget *maincanvas_fixed;
+
+GtkWidget *maincanvashscrollbar; // horizontal scrollbar for maincanvas //
+GtkWidget *maincanvasvscrollbar; // vertical scrollbar for maincanvas //
+
+GtkObject *maincanvashscrollbaradjustment; // horizontal scrollbar adjustment //
+GtkObject *maincanvasvscrollbaradjustment; // vertical scrollbar adjustment //
+
+int reversey = 0; // reverse y-axis flag, place origin at bottom-left //
+
+double scaledvpagesize, scaledhpagesize, vstep, hstep, vpagesize, hpagesize; // horizontal and vertical scrollbars adjustment parameters //
+
+int maincanvasWidth = 550; // main canvas visible dimension - width //
+int maincanvasHeight = 550; // main canvas visible dimension - height //
+int maincanvasOx = 0; // main canvas visible origin translation - x offset //
+int maincanvasOy = 0; // main canvas visible origin translation - y offset //
+
+GtkWidget *mainwindow; // your main window //
+
+double current_scale = 1.0; // zoom factor for main canvas //
+
+GtkAdjustment *adjust_scrollbar;
+
+
 static void expose(GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
   //  #ifdef DEBUGMODE
@@ -350,12 +379,12 @@ void start_gui()
 
 }
 
-gint main (gint argc, gchar **argv)
-{
-  // you may call start_gui() from TCL, based on a TCL command //
-  // alternatively, you may create a thread, but this is a lot more complex! //
-  start_gui();
+// gint main (gint argc, gchar **argv)
+// {
+//   // you may call start_gui() from TCL, based on a TCL command //
+//   // alternatively, you may create a thread, but this is a lot more complex! //
+//   start_gui();
 
-  return EXIT_SUCCESS;
+//   return EXIT_SUCCESS;
 
-}
+// }

@@ -9,6 +9,9 @@
 #include <string.h>
 #include <limits.h>
 
+//my variable for zooming in/out
+double zoom_level = 1.0;
+
 GtkWidget *maincanvas_scroll; // scrolled window container for main canvas //
 GtkWidget *maincanvas; // main canvas widget // 
 cairo_t *maincanvas_cs; // main canvas cairo state // 
@@ -32,10 +35,6 @@ int maincanvasOx = 0; // main canvas visible origin translation - x offset //
 int maincanvasOy = 0; // main canvas visible origin translation - y offset //
 
 GtkWidget *mainwindow; // your main window //
-
-double current_scale = 1.0; // zoom factor for main canvas //
-
-GtkAdjustment *adjust_scrollbar;
 
 // *** Function Prototypes *** //
 
