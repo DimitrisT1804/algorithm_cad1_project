@@ -1,4 +1,4 @@
-#include "ui-scrolled-canvas-skeleton.h"
+#include "gui.h"
 
 GtkWidget *maincanvas_scroll; // scrolled window container for main canvas //
 GtkWidget *maincanvas; // main canvas widget // 
@@ -78,39 +78,72 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     // Draw rectangles to form the word "CAD"
     cairo_set_source_rgb(maincanvas_cs, 0.005, 0.160, 0.049); // Dark blue
 
-    c1_x = max_double((50 + maincanvasOx), 0.0);
-    c1_y = max_double((50 + maincanvasOy), 0.0);
-    // printf("c1_x = %f, c1_y = %f\n", c1_x, c1_y);
-    // Letter 'C'
-    cairo_rectangle(maincanvas_cs, c1_x * current_scale, c1_y * current_scale, 30 * current_scale, 150 * current_scale);
-    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (50 + maincanvasOy)  * current_scale, 90 * current_scale, 30 * current_scale);
-    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (170 + maincanvasOy) * current_scale, 90 * current_scale, 30 * current_scale);
+    // c1_x = max_double((50 + maincanvasOx), 0.0);
+    // c1_y = max_double((50 + maincanvasOy), 0.0);
+    // // printf("c1_x = %f, c1_y = %f\n", c1_x, c1_y);
+    // // Letter 'C'
+    // cairo_rectangle(maincanvas_cs, c1_x * current_scale, c1_y * current_scale, 30 * current_scale, 150 * current_scale);
+    // cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (50 + maincanvasOy)  * current_scale, 90 * current_scale, 30 * current_scale);
+    // cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (170 + maincanvasOy) * current_scale, 90 * current_scale, 30 * current_scale);
+    // cairo_fill(maincanvas_cs);
+
+    // cairo_set_source_rgb(maincanvas_cs, 0.0, 0.0, 0.0); // Set text color to black
+    // cairo_set_font_size(maincanvas_cs, 12.0); // Set font size
+
+    // // Text for the first rectangle
+    // cairo_move_to(maincanvas_cs, (c1_x + 5) * current_scale, (c1_y + 80) * current_scale); // Adjust position
+    // cairo_show_text(maincanvas_cs, "Text for Rectangle 1");
+
+    // // Text for the second rectangle
+    // cairo_move_to(maincanvas_cs, (50 + maincanvasOx + 5) * current_scale, (50 + maincanvasOy + 20)  * current_scale); // Adjust position
+    // cairo_show_text(maincanvas_cs, "Text for Rectangle 2");
+
+    // // Text for the third rectangle
+    // cairo_move_to(maincanvas_cs, (50 + maincanvasOx + 5) * current_scale, (170 + maincanvasOy + 20) * current_scale); // Adjust position
+    // cairo_show_text(maincanvas_cs, "Text for Rectangle 3");
+
+    // // Letter 'A'
+    // cairo_set_source_rgb(maincanvas_cs, 0.195, 0.044, 0.006); // red
+    // cairo_rectangle(maincanvas_cs, (140 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 30 * current_scale, 150 * current_scale);
+    // cairo_rectangle(maincanvas_cs, (210 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 30 * current_scale, 150 * current_scale);
+    // cairo_rectangle(maincanvas_cs, (140 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 70 * current_scale, 30 * current_scale);
+    // cairo_rectangle(maincanvas_cs, (140 + maincanvasOx) * current_scale, (120 + maincanvasOy) * current_scale, 70 * current_scale, 30 * current_scale);
+    // cairo_fill(maincanvas_cs);
+
+    // cairo_set_source_rgb(maincanvas_cs, 0.005, 0.160, 0.049); // Dark blue
+    // // Letter 'D'
+    // cairo_rectangle(maincanvas_cs, (260 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 30 * current_scale, 150 * current_scale);
+    // cairo_rectangle(maincanvas_cs, (330 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 30 * current_scale, 150 * current_scale);
+    // cairo_rectangle(maincanvas_cs, (240 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 90 * current_scale, 30 * current_scale);
+    // cairo_rectangle(maincanvas_cs, (240 + maincanvasOx) * current_scale, (170 + maincanvasOy) * current_scale, 90 * current_scale, 30 * current_scale);
+
+    // cairo_fill(maincanvas_cs);
+
+    // cairo_set_source_rgb(maincanvas_cs, 0.004, 0.101, 0.229); // Dark blue
+    // // Letter 'D'
+    // cairo_rectangle(maincanvas_cs, (410 + maincanvasOx) * current_scale, (50 + maincanvasOy)  * current_scale, 30 * current_scale, 150 * current_scale);
+    // cairo_rectangle(maincanvas_cs, (450 + maincanvasOx) * current_scale, (50 + maincanvasOy)  * current_scale, 30 * current_scale, 150 * current_scale);
+    // cairo_rectangle(maincanvas_cs, (390 + maincanvasOx) * current_scale, (50 + maincanvasOy)  * current_scale, 110 * current_scale, 30 * current_scale);
+    // cairo_rectangle(maincanvas_cs, (390 + maincanvasOx) * current_scale, (170 + maincanvasOy) * current_scale, 110 * current_scale, 30 * current_scale);
+    // cairo_fill(maincanvas_cs);
+
+
+    // letter C
+    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (200 + maincanvasOy)  * current_scale, 60 * current_scale, 150 * current_scale);
+    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (120 + maincanvasOy)  * current_scale, 150 * current_scale, 60 * current_scale);
+
     cairo_fill(maincanvas_cs);
 
-    // Letter 'A'
-    cairo_set_source_rgb(maincanvas_cs, 0.195, 0.044, 0.006); // red
-    cairo_rectangle(maincanvas_cs, (140 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 30 * current_scale, 150 * current_scale);
-    cairo_rectangle(maincanvas_cs, (210 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 30 * current_scale, 150 * current_scale);
-    cairo_rectangle(maincanvas_cs, (140 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 70 * current_scale, 30 * current_scale);
-    cairo_rectangle(maincanvas_cs, (140 + maincanvasOx) * current_scale, (120 + maincanvasOy) * current_scale, 70 * current_scale, 30 * current_scale);
-    cairo_fill(maincanvas_cs);
+    cairo_select_font_face(maincanvas_cs, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+    cairo_set_source_rgb(maincanvas_cs, 1.0, 0.0, 0.0); // Set text color to black
+    cairo_set_font_size(maincanvas_cs, 15.0); // Set font size
 
-    cairo_set_source_rgb(maincanvas_cs, 0.005, 0.160, 0.049); // Dark blue
-    // Letter 'D'
-    cairo_rectangle(maincanvas_cs, (260 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 30 * current_scale, 150 * current_scale);
-    cairo_rectangle(maincanvas_cs, (330 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 30 * current_scale, 150 * current_scale);
-    cairo_rectangle(maincanvas_cs, (240 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 90 * current_scale, 30 * current_scale);
-    cairo_rectangle(maincanvas_cs, (240 + maincanvasOx) * current_scale, (170 + maincanvasOy) * current_scale, 90 * current_scale, 30 * current_scale);
+    // Text for the first rectangle
+    cairo_move_to(maincanvas_cs, (100 + maincanvasOx) * current_scale, (160 + maincanvasOy) * current_scale); // Adjust position
+    cairo_show_text(maincanvas_cs, "Cell_1");
+    
 
-    cairo_fill(maincanvas_cs);
 
-    cairo_set_source_rgb(maincanvas_cs, 0.004, 0.101, 0.229); // Dark blue
-    // Letter 'D'
-    cairo_rectangle(maincanvas_cs, (410 + maincanvasOx) * current_scale, (50 + maincanvasOy)  * current_scale, 30 * current_scale, 150 * current_scale);
-    cairo_rectangle(maincanvas_cs, (450 + maincanvasOx) * current_scale, (50 + maincanvasOy)  * current_scale, 30 * current_scale, 150 * current_scale);
-    cairo_rectangle(maincanvas_cs, (390 + maincanvasOx) * current_scale, (50 + maincanvasOy)  * current_scale, 110 * current_scale, 30 * current_scale);
-    cairo_rectangle(maincanvas_cs, (390 + maincanvasOx) * current_scale, (170 + maincanvasOy) * current_scale, 110 * current_scale, 30 * current_scale);
-    cairo_fill(maincanvas_cs);
 
     // Add text
     cairo_select_font_face(maincanvas_cs, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
