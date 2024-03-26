@@ -17,7 +17,7 @@ all: $(TARGET)
 
 # Link object files to create the executable
 $(TARGET): $(OBJ_FILES) $(FLEX_DEPS) $(BISON_DEPS)
-	$(CXX) $(GTKFLAGS) $(GTTHREADFLAGS) $(LIBS) $^ -o $@ $(LDFLAGS)
+	$(CXX)  $^ -o $@ $(LDFLAGS) $(GTKFLAGS) $(GTTHREADFLAGS) $(LIBS)
 
 # Clean compiled files
 clean:

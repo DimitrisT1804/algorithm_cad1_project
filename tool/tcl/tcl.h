@@ -1,3 +1,6 @@
+#ifndef TCL_H
+#define TCL_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,8 +9,8 @@
 #include <readline/history.h>
 #include <unistd.h>
 // #include <tcl8.6/tcl.h>
-#include <tcl.h>
-// #include <tcl/tcl.h>
+// #include <tcl.h>
+#include <tcl/tcl.h>
 #include <limits.h>
 #include <syscall.h>
 #include <sys/types.h>
@@ -83,6 +86,7 @@ static const char *commands[] =
 // global variables //
 extern int probability_calculated;
 extern pthread_t gui_thread;
+extern Tcl_Interp *interp;
 
 // tab completion functions //
 char *custom_generator(const char *text, int state);
@@ -94,3 +98,5 @@ int findparameter(int objc, Tcl_Obj *const* objv, char *parameter);
 int findparametermain(int argc, char *argv[], char *parameter);
 int report_bdd_dot_component(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
 void *main_tcl(void *arg);
+
+#endif

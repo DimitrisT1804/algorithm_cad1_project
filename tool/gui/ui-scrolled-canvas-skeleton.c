@@ -28,6 +28,11 @@ double current_scale = 1.0; // zoom factor for main canvas //
 
 GtkAdjustment *adjust_scrollbar;
 
+GtkWidget *buttons; // buttons container //
+GtkWidget *button1; // button 1 //
+GtkWidget *hierarchybrowserframe;
+GtkWidget *list_cells_button; // button 1 //
+
 double max_double(double a, double b)
 {
     if (a > b) 
@@ -346,9 +351,51 @@ static void quitaction()
     #endif
   
 //   printf("Thank you. Bye now.\n");
-  gtk_main_quit();
+    gtk_main_quit();
 }
 
+static void button1_clicked(GtkButton *button, gpointer data)
+{
+    #ifdef DEBUGGUI
+    {
+      printf("DEBUG: Flow Button Clicked\n");
+    }
+    #endif
+
+  // code here //
+
+    Tcl_Eval(interp, "get_toposort");
+
+}
+
+static void list_cells_button_clicked(GtkButton *button, gpointer data)
+{
+    #ifdef DEBUGGUI
+    {
+      printf("DEBUG: Flow Button Clicked\n");
+    }
+    #endif
+
+  // code here //
+
+    Tcl_Eval(interp, "list_cells");
+
+}
+
+static void create_buttons_frame()
+{
+    buttons = gtk_vbox_new(FALSE, 0);
+
+    gtk_container_add(GTK_CONTAINER(hierarchybrowserframe), buttons);
+
+    button1 = gtk_button_new_with_label("get_toposort");
+    list_cells_button = gtk_button_new_with_label("list_cells");
+
+    g_signal_connect(G_OBJECT(button1), "clicked", G_CALLBACK(button1_clicked), NULL);
+    g_signal_connect(G_OBJECT(list_cells_button), "clicked", G_CALLBACK(list_cells_button_clicked), NULL);
+    gtk_box_pack_start(GTK_BOX(buttons), button1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(buttons), list_cells_button, FALSE, FALSE, 0);
+}
 
 void start_gui()
 {  
@@ -361,7 +408,7 @@ void start_gui()
     GtkWidget *hpane2; // horizontal pane //
 
     GtkWidget *mainframe; // main canvas frame //
-    GtkWidget *hierarchybrowserframe; // hierarchy browser frame //
+
 
     // *** Local Variables End *** //
 
@@ -435,6 +482,8 @@ void start_gui()
     gtk_paned_add2(GTK_PANED(hpane), mainframe);  
 
     gtk_container_add(GTK_CONTAINER(mainwindow), hpane);
+
+    create_buttons_frame();
 
     gtk_widget_show_all(mainwindow);
 

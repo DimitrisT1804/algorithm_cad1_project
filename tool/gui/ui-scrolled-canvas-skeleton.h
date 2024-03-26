@@ -8,6 +8,9 @@
 #include <time.h>
 #include <string.h>
 #include <limits.h>
+#include "../tcl/tcl.h"
+
+#include <tcl/tcl.h>
 
 // #define DEBUGGUI
 
@@ -20,6 +23,11 @@ extern GtkWidget *maincanvashscrollbar; // horizontal scrollbar for maincanvas /
 extern GtkWidget *maincanvasvscrollbar; // vertical scrollbar for maincanvas //
 extern GtkObject *maincanvashscrollbaradjustment; // horizontal scrollbar adjustment //
 extern GtkObject *maincanvasvscrollbaradjustment; // vertical scrollbar adjustment //
+
+extern GtkWidget *buttons; // buttons container //
+extern GtkWidget *button1; // button 1 //
+extern GtkWidget *list_cells_button; // button 1 //
+extern GtkWidget *hierarchybrowserframe; // hierarchy browser frame //
 
 extern int reversey; // reverse y-axis flag, place origin at bottom-left //
 
@@ -49,3 +57,6 @@ static void mousebutton(GtkWidget *, GdkEventButton *, gpointer);
 static void quitaction();
 void start_gui();
 double max_double(double a, double b);
+static void flowbuttonclicked(GtkButton *button, gpointer data);
+static void create_buttons_frame();
+static void list_cells_button_clicked(GtkButton *button, gpointer data);

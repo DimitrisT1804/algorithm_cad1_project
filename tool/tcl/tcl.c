@@ -2,6 +2,7 @@
 
 int probability_calculated = 0;
 pthread_t gui_thread;
+Tcl_Interp *interp;
 
 char *custom_generator(const char *text, int state)
 {
@@ -2159,8 +2160,6 @@ void *main_tcl(void *arg)
     int expansionresult;
     // int kati = 0;
     const char *directory = "bdd_output";
-
-    Tcl_Interp *interp;
 
     interp = Tcl_CreateInterp();
 
