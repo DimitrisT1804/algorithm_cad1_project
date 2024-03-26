@@ -25,7 +25,7 @@
 #include "../bdd_annotation/bdd_annotation.h"
 #include "../structs/structs.h"
 #include "../probabilities_annotations/probabilities_annotations.h"
-#include "../gui/ui-scrolled-canvas-skeleton.h"
+#include "../gui/gui.h"
 
 
 /* Global array that stores all custom, system and TCL commands for tab-completion */

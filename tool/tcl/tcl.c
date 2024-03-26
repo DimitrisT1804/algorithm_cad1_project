@@ -2245,13 +2245,13 @@ void *main_tcl(void *arg)
     isLevelized = 0;
     max_design_level = -2;
 
-    const char *ascii_art = "   ____    _    ____    _____ ___   ___  _     \n"
-        "  / ___|  / \\  |  _ \\  |_   _/ _ \\ / _ \\| |    \n"
-        " | |     / _ \\ | | | |   | || | | | | | | |    \n"
-        " | |___ / ___ \\| |_| |   | || |_| | |_| | |___ \n"
-        "  \\____/_/   \\_\\____/    |_| \\___/ \\___/|_____|\n";
+    // const char *ascii_art = "   ____    _    ____    _____ ___   ___  _     \n"
+    //     "  / ___|  / \\  |  _ \\  |_   _/ _ \\ / _ \\| |    \n"
+    //     " | |     / _ \\ | | | |   | || | | | | | | |    \n"
+    //     " | |___ / ___ \\| |_| |   | || |_| | |_| | |___ \n"
+    //     "  \\____/_/   \\_\\____/    |_| \\___/ \\___/|_____|\n";
 
-    printf("%s\n\n\n", ascii_art);
+    // printf("%s\n\n\n", ascii_art);
 
     while (!exit_requested)
     {
@@ -2353,6 +2353,14 @@ int main(int argc, char *argv[])
 
     // pthread_create(&tcl_thread, NULL, main_tcl, NULL);
     // pthread_join(tcl_thread, NULL);
+
+    const char *ascii_art = "   ____    _    ____    _____ ___   ___  _     \n"
+    "  / ___|  / \\  |  _ \\  |_   _/ _ \\ / _ \\| |    \n"
+    " | |     / _ \\ | | | |   | || | | | | | | |    \n"
+    " | |___ / ___ \\| |_| |   | || |_| | |_| | |___ \n"
+    "  \\____/_/   \\_\\____/    |_| \\___/ \\___/|_____|\n";
+
+    printf("%s\n\n\n", ascii_art);
 
     hideguiindex = findparametermain(argc, argv, "-hide_gui");
     helpindex = findparametermain(argc, argv, "-help");
