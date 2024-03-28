@@ -10,7 +10,8 @@
 #include <limits.h>
 #include "../tcl/tcl.h"
 
-#include <tcl/tcl.h>
+// #include <tcl/tcl.h>
+#include <tcl.h>
 
 // #define DEBUGGUI
 
