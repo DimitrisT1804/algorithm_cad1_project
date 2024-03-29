@@ -187,10 +187,10 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     cairo_set_source_rgb(maincanvas_cs, 181.0/255.0, 148.0/255.0, 182.0/255.0); // light blue
     cairo_rectangle(maincanvas_cs, (520 + maincanvasOx) * current_scale, (150 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
     cairo_rectangle(maincanvas_cs, (520 + maincanvasOx) * current_scale, (280 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx) * current_scale, (90 + maincanvasOy)  * current_scale, 160 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx) * current_scale, (410 + maincanvasOy)  * current_scale, 160 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (600 + maincanvasOx) * current_scale, (150 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (600 + maincanvasOx) * current_scale, (280 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
+    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx) * current_scale, (90 + maincanvasOy)  * current_scale, 200 * current_scale, 40 * current_scale);
+    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx) * current_scale, (410 + maincanvasOy)  * current_scale, 200 * current_scale, 40 * current_scale);
+    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx) * current_scale, (150 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
+    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx) * current_scale, (280 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
 
     cairo_fill(maincanvas_cs);
 
@@ -202,10 +202,10 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     
     cairo_rectangle(maincanvas_cs, (520 + maincanvasOx) * current_scale, (150 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
     cairo_rectangle(maincanvas_cs, (520 + maincanvasOx) * current_scale, (280 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx) * current_scale, (90 + maincanvasOy)  * current_scale, 160 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx) * current_scale, (410 + maincanvasOy)  * current_scale, 160 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (600 + maincanvasOx) * current_scale, (150 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (600 + maincanvasOx) * current_scale, (280 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
+    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx) * current_scale, (90 + maincanvasOy)  * current_scale, 200 * current_scale, 40 * current_scale);
+    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx) * current_scale, (410 + maincanvasOy)  * current_scale, 200 * current_scale, 40 * current_scale);
+    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx) * current_scale, (150 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
+    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx) * current_scale, (280 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
 
     cairo_stroke(maincanvas_cs); // Draw the outline //
 
@@ -217,6 +217,10 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     cairo_line_to(maincanvas_cs, (260 + maincanvasOx) * current_scale, (330 + maincanvasOy)  * current_scale);
     cairo_stroke(maincanvas_cs);
 
+    cairo_set_line_width(maincanvas_cs, 9.0);
+    cairo_move_to(maincanvas_cs, (430 + maincanvasOx) * current_scale, (200 + maincanvasOy)  * current_scale);
+    cairo_line_to(maincanvas_cs, (540 + maincanvasOx) * current_scale, (110 + maincanvasOy)  * current_scale);
+    cairo_stroke(maincanvas_cs);
 
     // Label block //
     cairo_set_source_rgb(maincanvas_cs, 0.0, 0.153, 0.0); // light blue
