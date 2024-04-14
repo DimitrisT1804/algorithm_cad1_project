@@ -33,6 +33,10 @@ GtkWidget *button1; // button 1 //
 GtkWidget *hierarchybrowserframe;
 GtkWidget *list_cells_button; // button 1 //
 
+double offset_x = 1.0;
+double offset_y = 1.0;
+
+
 double max_double(double a, double b)
 {
     if (a > b) 
@@ -82,9 +86,9 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     // letter C //
     // Draw rectangles to form the word "CAD"
     cairo_set_source_rgb(maincanvas_cs, 168.0/255.0, 212.0/255.0, 173.0/255.0); // light blue
-    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (200 + maincanvasOy)  * current_scale, 60 * current_scale, 150 * current_scale);
-    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (120 + maincanvasOy)  * current_scale, 150 * current_scale, 60 * current_scale);
-    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (370 + maincanvasOy)  * current_scale, 150 * current_scale, 60 * current_scale);
+    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (200 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 150 * current_scale);
+    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (120 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 60 * current_scale);
+    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (370 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 60 * current_scale);
 
     cairo_fill(maincanvas_cs);
 
@@ -94,9 +98,9 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     // Set line style to solid
     cairo_set_dash(maincanvas_cs, 0, 0, 0); // Set dash pattern to solid
     // Draw the outline rectangle
-    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (200 + maincanvasOy) * current_scale, 60 * current_scale, 150 * current_scale);
-    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (120 + maincanvasOy)  * current_scale, 150 * current_scale, 60 * current_scale);
-    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (370 + maincanvasOy)  * current_scale, 150 * current_scale, 60 * current_scale);
+    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (200 + maincanvasOy - offset_y) * current_scale + offset_y, 60 * current_scale, 150 * current_scale);
+    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (120 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 60 * current_scale);
+    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (370 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 60 * current_scale);
     cairo_stroke(maincanvas_cs); // Draw the outline
 
     cairo_select_font_face(maincanvas_cs, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
@@ -106,12 +110,12 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
 
     // letter A //
     cairo_set_source_rgb(maincanvas_cs, 155.0/255.0, 106.0/255.0, 108.0/255.0); // light blue
-    cairo_rectangle(maincanvas_cs, (250 + maincanvasOx) * current_scale, (140 + maincanvasOy)  * current_scale, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (250 + maincanvasOx) * current_scale, (300 + maincanvasOy)  * current_scale, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (400 + maincanvasOx) * current_scale, (140 + maincanvasOy)  * current_scale, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (400 + maincanvasOx) * current_scale, (300 + maincanvasOy)  * current_scale, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (280 + maincanvasOx) * current_scale, (90 + maincanvasOy)  * current_scale, 150 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (315 + maincanvasOx) * current_scale, (270 + maincanvasOy)  * current_scale, 80 * current_scale, 30 * current_scale);
+    cairo_rectangle(maincanvas_cs, (250 + maincanvasOx - offset_x) * current_scale + offset_x, (140 + maincanvasOy - offset_y) * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+    cairo_rectangle(maincanvas_cs, (250 + maincanvasOx - offset_x) * current_scale + offset_x, (300 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+    cairo_rectangle(maincanvas_cs, (400 + maincanvasOx - offset_x) * current_scale + offset_x, (140 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+    cairo_rectangle(maincanvas_cs, (400 + maincanvasOx - offset_x) * current_scale + offset_x, (300 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+    cairo_rectangle(maincanvas_cs, (280 + maincanvasOx - offset_x) * current_scale + offset_x, (90 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 40 * current_scale);
+    cairo_rectangle(maincanvas_cs, (315 + maincanvasOx - offset_x) * current_scale + offset_x, (270 + maincanvasOy - offset_y)  * current_scale + offset_y, 80 * current_scale, 30 * current_scale);
     cairo_fill(maincanvas_cs);
 
     // Set the color for the outline (white)
@@ -120,22 +124,22 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     // Set line style to solid
     cairo_set_dash(maincanvas_cs, 0, 0, 0); // Set dash pattern to solid
     // Draw the outline rectangle
-    cairo_rectangle(maincanvas_cs, (250 + maincanvasOx) * current_scale, (140 + maincanvasOy)  * current_scale, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (250 + maincanvasOx) * current_scale, (300 + maincanvasOy)  * current_scale, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (400 + maincanvasOx) * current_scale, (140 + maincanvasOy)  * current_scale, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (400 + maincanvasOx) * current_scale, (300 + maincanvasOy)  * current_scale, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (280 + maincanvasOx) * current_scale, (90 + maincanvasOy)  * current_scale, 150 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (315 + maincanvasOx) * current_scale, (270 + maincanvasOy)  * current_scale, 80 * current_scale, 30 * current_scale);
+    cairo_rectangle(maincanvas_cs, (250 + maincanvasOx - offset_x) * current_scale + offset_x, (140 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+    cairo_rectangle(maincanvas_cs, (250 + maincanvasOx - offset_x) * current_scale + offset_x, (300 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+    cairo_rectangle(maincanvas_cs, (400 + maincanvasOx - offset_x) * current_scale + offset_x, (140 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+    cairo_rectangle(maincanvas_cs, (400 + maincanvasOx - offset_x) * current_scale + offset_x, (300 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+    cairo_rectangle(maincanvas_cs, (280 + maincanvasOx - offset_x) * current_scale + offset_x, (90 + maincanvasOy - offset_y) * current_scale + offset_y, 150 * current_scale, 40 * current_scale);
+    cairo_rectangle(maincanvas_cs, (315 + maincanvasOx - offset_x) * current_scale + offset_x, (270 + maincanvasOy - offset_y)  * current_scale + offset_y, 80 * current_scale, 30 * current_scale);
     cairo_stroke(maincanvas_cs); // Draw the outline
 
     // letter D //
     cairo_set_source_rgb(maincanvas_cs, 181.0/255.0, 148.0/255.0, 182.0/255.0); // light blue
-    cairo_rectangle(maincanvas_cs, (520 + maincanvasOx) * current_scale, (150 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (520 + maincanvasOx) * current_scale, (280 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx) * current_scale, (90 + maincanvasOy)  * current_scale, 200 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx) * current_scale, (410 + maincanvasOy)  * current_scale, 200 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx) * current_scale, (150 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx) * current_scale, (280 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
+    cairo_rectangle(maincanvas_cs, (520 + maincanvasOx - offset_x) * current_scale + offset_x, (150 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
+    cairo_rectangle(maincanvas_cs, (520 + maincanvasOx - offset_x) * current_scale + offset_x, (280 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
+    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx - offset_x) * current_scale + offset_x, (90 + maincanvasOy - offset_y)  * current_scale + offset_y, 200 * current_scale, 40 * current_scale);
+    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx - offset_x) * current_scale + offset_x, (410 + maincanvasOy - offset_y)  * current_scale + offset_y, 200 * current_scale, 40 * current_scale);
+    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx - offset_x) * current_scale + offset_x, (150 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
+    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx - offset_x) * current_scale + offset_x, (280 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
 
     cairo_fill(maincanvas_cs);
 
@@ -145,12 +149,12 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     // Set line style to solid
     cairo_set_dash(maincanvas_cs, 0, 0, 0); // Set dash pattern to solid
     
-    cairo_rectangle(maincanvas_cs, (520 + maincanvasOx) * current_scale, (150 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (520 + maincanvasOx) * current_scale, (280 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx) * current_scale, (90 + maincanvasOy)  * current_scale, 200 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx) * current_scale, (410 + maincanvasOy)  * current_scale, 200 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx) * current_scale, (150 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx) * current_scale, (280 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
+    cairo_rectangle(maincanvas_cs, (520 + maincanvasOx - offset_x) * current_scale + offset_x, (150 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
+    cairo_rectangle(maincanvas_cs, (520 + maincanvasOx - offset_x) * current_scale + offset_x, (280 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
+    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx - offset_x) * current_scale + offset_x, (90 + maincanvasOy - offset_y)  * current_scale + offset_y, 200 * current_scale, 40 * current_scale);
+    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx - offset_x) * current_scale + offset_x, (410 + maincanvasOy - offset_y)  * current_scale + offset_y, 200 * current_scale, 40 * current_scale);
+    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx - offset_x) * current_scale + offset_x, (150 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
+    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx - offset_x) * current_scale + offset_x, (280 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
 
     cairo_stroke(maincanvas_cs); // Draw the outline //
 
@@ -158,24 +162,29 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     // Wires //
     cairo_set_source_rgb(maincanvas_cs, 227.0/255.0, 151.0/255.0, 116.0/255.0); // Black
     cairo_set_line_width(maincanvas_cs, 7.0);
-    cairo_move_to(maincanvas_cs, (80 + maincanvasOx) * current_scale, (380 + maincanvasOy)  * current_scale);
-    cairo_line_to(maincanvas_cs, (260 + maincanvasOx) * current_scale, (330 + maincanvasOy)  * current_scale);
+    cairo_move_to(maincanvas_cs, (80 + maincanvasOx - offset_x) * current_scale + offset_x, (380 + maincanvasOy - offset_y)  * current_scale + offset_y);
+    cairo_line_to(maincanvas_cs, (260 + maincanvasOx - offset_x) * current_scale + offset_x, (330 + maincanvasOy - offset_y)  * current_scale + offset_y);
     cairo_stroke(maincanvas_cs);
 
     cairo_set_line_width(maincanvas_cs, 9.0);
-    cairo_move_to(maincanvas_cs, (430 + maincanvasOx) * current_scale, (200 + maincanvasOy)  * current_scale);
-    cairo_line_to(maincanvas_cs, (540 + maincanvasOx) * current_scale, (110 + maincanvasOy)  * current_scale);
+    cairo_move_to(maincanvas_cs, (430 + maincanvasOx - offset_x) * current_scale + offset_x, (200 + maincanvasOy - offset_y)  * current_scale + offset_y);
+    cairo_line_to(maincanvas_cs, (540 + maincanvasOx - offset_x) * current_scale + offset_x, (110 + maincanvasOy - offset_y)  * current_scale + offset_y);
+    cairo_stroke(maincanvas_cs);
+
+    cairo_set_line_width(maincanvas_cs, 11.0);
+    cairo_move_to(maincanvas_cs, (430 + maincanvasOx - offset_x) * current_scale + offset_x, (400 + maincanvasOy - offset_y)  * current_scale + offset_y);
+    cairo_line_to(maincanvas_cs, (540 + maincanvasOx - offset_x) * current_scale + offset_x, (350 + maincanvasOy - offset_y)  * current_scale + offset_y);
     cairo_stroke(maincanvas_cs);
 
     // Label block //
     cairo_set_source_rgb(maincanvas_cs, 0.0, 0.153, 0.0); // light blue
-    cairo_rectangle(maincanvas_cs, (100 + maincanvasOx) * current_scale, (500 + maincanvasOy)  * current_scale, 500 * current_scale, 40 * current_scale);
+    cairo_rectangle(maincanvas_cs, (100 + maincanvasOx - offset_x) * current_scale + offset_x, (500 + maincanvasOy - offset_y)  * current_scale + offset_y, 500 * current_scale, 40 * current_scale);
     cairo_fill(maincanvas_cs);
 
     cairo_select_font_face(maincanvas_cs, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
     cairo_set_source_rgb(maincanvas_cs, 1.0, 1.0, 1.0); // Set text color to black
     cairo_set_font_size(maincanvas_cs, 20.0); // Set font size
-    cairo_move_to(maincanvas_cs, (130 + maincanvasOx) * current_scale, (520 + maincanvasOy) * current_scale); // Adjust position
+    cairo_move_to(maincanvas_cs, (130 + maincanvasOx - offset_x) * current_scale + offset_x, (520 + maincanvasOy - offset_y) * current_scale + offset_y); // Adjust position
     cairo_show_text(maincanvas_cs, "CAD 2: Physical Design Automation Tool");
 
 
@@ -193,8 +202,8 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
 // Size-Allocate Event Function for maincanvas // 
 static void resizemaincanvas(GtkWidget *widget, GdkRectangle *gdkrect, gpointer data)
 {
-  int newmaincanvasWidth;
-  int newmaincanvasHeight;
+    int newmaincanvasWidth = 0;
+    int newmaincanvasHeight = 0;
   
     #ifdef DEBUGGUI
     {
@@ -271,6 +280,11 @@ static gboolean maincanvasvscroll(GtkRange *range, GtkScrollType scroll, gdouble
 
 static gboolean maincanvashscroll(GtkRange *range, GtkScrollType scroll, gdouble value, gpointer data)
 {
+    double low;
+    double up;
+    double page_size;
+    double maxmaincanvasOx;
+    int ivalue;
 
     #ifdef DEBUGGUI
     {
@@ -284,16 +298,16 @@ static gboolean maincanvashscroll(GtkRange *range, GtkScrollType scroll, gdouble
     adjust_scrollbar = gtk_range_get_adjustment(range);
 
     // Get the current values of the adjustment
-    double low = gtk_adjustment_get_lower(adjust_scrollbar);
-    double up = gtk_adjustment_get_upper(adjust_scrollbar);
-    double page_size = gtk_adjustment_get_page_size(adjust_scrollbar);
+    low = gtk_adjustment_get_lower(adjust_scrollbar);
+    up = gtk_adjustment_get_upper(adjust_scrollbar);
+    page_size = gtk_adjustment_get_page_size(adjust_scrollbar);
 
     gtk_adjustment_set_lower(adjust_scrollbar, low = -550.0);
     gtk_adjustment_set_upper(adjust_scrollbar, up = 1100.0);
     gtk_adjustment_set_page_size(adjust_scrollbar, page_size = 550.0);
     
-    double maxmaincanvasOx = up;
-    int ivalue = (int) round(value);
+    maxmaincanvasOx = up;
+    ivalue = (int) round(value);
 
     maincanvasOx = ivalue;
 
@@ -327,6 +341,10 @@ static void scroll(GtkWidget *widget, GdkEventScroll *eev, gpointer data)
     }
     #endif
 
+    // Get the coordinates of the mouse pointer relative to the widget
+    double x, y;
+    gdk_event_get_coords((GdkEvent*)eev, &x, &y);
+
     // mouse wheel (scroll) code here //
 
     if(eev->direction == GDK_SCROLL_UP)
@@ -342,23 +360,28 @@ static void scroll(GtkWidget *widget, GdkEventScroll *eev, gpointer data)
         return;
     }
 
+    // Calculate the offset of the mouse pointer relative to the canvas/widget
+    GtkAllocation allocation;
+    gtk_widget_get_allocation(widget, &allocation);
+
+    double center_x = allocation.width / 2;
+    double center_y = allocation.height / 2;
+
+    offset_x = x;
+    offset_y = y;
+
     gtk_widget_queue_draw(widget);
-    
 }
 
 void setupscrolladjustments()
 {
     // setup horizontal and vertical scrollbar adjustments //
-
-    // use gtk_adjustment_configure() //
-
-    // setup horizontal and vertical scrollbar adjustments //
     scaledhpagesize =  current_scale * ((double) maincanvasWidth);
     scaledvpagesize =  current_scale * ((double) maincanvasHeight);
     hpagesize = ((double) maincanvasWidth);
     vpagesize = ((double) maincanvasHeight);
-    hstep = 0.05 * hpagesize; // 5% of maincanvasWidth horizontal step // 
-    vstep = 0.05 * vpagesize; // 5% of maincanvasHeight vertical step //
+    hstep = 0.05 * hpagesize;
+    vstep = 0.05 * vpagesize;
 
     gtk_adjustment_configure(GTK_ADJUSTMENT(maincanvasvscrollbaradjustment), maincanvasOy, 0.0, scaledvpagesize, vstep, vstep, vpagesize);
     gtk_adjustment_configure(GTK_ADJUSTMENT(maincanvashscrollbaradjustment), maincanvasOx, 0.0, scaledhpagesize, hstep, hstep, hpagesize);
@@ -372,16 +395,24 @@ static void mousebutton(GtkWidget *widget, GdkEventButton *eev, gpointer data)
     }
     #endif
 
-  if (eev->button == 1) // Left Mouse Button //
+    if (eev->button == 1) // Left Mouse Button //
     {
-      // code here //
+        // code here //
+
+    }
+
+    if(eev->button == 2) // Middle Mouse Button //
+    {
+        // code here //
         current_scale = 1.0;
+        offset_x = 1.0;
+        offset_y = 1.0;
         gtk_widget_queue_draw(widget);
     }
 
-  if (eev->button == 3) // Right Mouse Button //
+    if (eev->button == 3) // Right Mouse Button //
     {
-      // code here //
+        // code here //
     }
   
 }

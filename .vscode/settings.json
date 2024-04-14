@@ -4,7 +4,9 @@
         "cudd.h": "c",
         "stdlib.h": "c",
         "gtk.h": "c",
-        "bdd_annotation.h": "c"
+        "bdd_annotation.h": "c",
+        "ui-scrolled-canvas-skeleton.h": "c",
+        "stat.h": "c"
     },
     "cSpell.enableFiletypes": [
         "!c",

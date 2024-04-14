@@ -10,8 +10,8 @@
 #include <limits.h>
 #include "../tcl/tcl.h"
 
-#include <tcl/tcl.h>
-// #include <tcl.h>
+// #include <tcl/tcl.h>
+#include <tcl.h>
 
 // #define DEBUGGUI
 
@@ -44,6 +44,9 @@ extern GtkWidget *mainwindow; // your main window //
 extern double current_scale; // zoom factor for main canvas //
 
 extern GtkAdjustment *adjust_scrollbar;
+
+extern double offset_x;
+extern double offset_y;
 
 // *** Function Prototypes *** //
 
