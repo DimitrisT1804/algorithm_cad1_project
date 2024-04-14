@@ -67,7 +67,7 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     double c1_x = 0.0;
     double c1_y = 0.0;
 
-    cairo_set_source_rgb(maincanvas_cs, 0.0, 0.204, 0.204);
+    cairo_set_source_rgb(maincanvas_cs, 146.0/255.0, 185.0/255.0, 189.0/255.0);
     cairo_paint(maincanvas_cs);
 
     // Set dotted line style
@@ -81,7 +81,7 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
 
     // letter C //
     // Draw rectangles to form the word "CAD"
-    cairo_set_source_rgb(maincanvas_cs, 0.255, 0.255, 0.102); // light blue
+    cairo_set_source_rgb(maincanvas_cs, 168.0/255.0, 212.0/255.0, 173.0/255.0); // light blue
     cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (200 + maincanvasOy)  * current_scale, 60 * current_scale, 150 * current_scale);
     cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (120 + maincanvasOy)  * current_scale, 150 * current_scale, 60 * current_scale);
     cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (370 + maincanvasOy)  * current_scale, 150 * current_scale, 60 * current_scale);
@@ -105,7 +105,7 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
 
 
     // letter A //
-    cairo_set_source_rgb(maincanvas_cs, 0.178, 0.102, 0.255); // light blue
+    cairo_set_source_rgb(maincanvas_cs, 155.0/255.0, 106.0/255.0, 108.0/255.0); // light blue
     cairo_rectangle(maincanvas_cs, (250 + maincanvasOx) * current_scale, (140 + maincanvasOy)  * current_scale, 60 * current_scale, 140 * current_scale);
     cairo_rectangle(maincanvas_cs, (250 + maincanvasOx) * current_scale, (300 + maincanvasOy)  * current_scale, 60 * current_scale, 140 * current_scale);
     cairo_rectangle(maincanvas_cs, (400 + maincanvasOx) * current_scale, (140 + maincanvasOy)  * current_scale, 60 * current_scale, 140 * current_scale);
@@ -129,7 +129,7 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     cairo_stroke(maincanvas_cs); // Draw the outline
 
     // letter D //
-    cairo_set_source_rgb(maincanvas_cs, 0.0, 0.153, 0.0); // light blue
+    cairo_set_source_rgb(maincanvas_cs, 181.0/255.0, 148.0/255.0, 182.0/255.0); // light blue
     cairo_rectangle(maincanvas_cs, (520 + maincanvasOx) * current_scale, (150 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
     cairo_rectangle(maincanvas_cs, (520 + maincanvasOx) * current_scale, (280 + maincanvasOy)  * current_scale, 60 * current_scale, 110 * current_scale);
     cairo_rectangle(maincanvas_cs, (500 + maincanvasOx) * current_scale, (90 + maincanvasOy)  * current_scale, 200 * current_scale, 40 * current_scale);
@@ -156,7 +156,7 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
 
 
     // Wires //
-    cairo_set_source_rgb(maincanvas_cs, 0.255, 0.144, 0.0); // Black
+    cairo_set_source_rgb(maincanvas_cs, 227.0/255.0, 151.0/255.0, 116.0/255.0); // Black
     cairo_set_line_width(maincanvas_cs, 7.0);
     cairo_move_to(maincanvas_cs, (80 + maincanvasOx) * current_scale, (380 + maincanvasOy)  * current_scale);
     cairo_line_to(maincanvas_cs, (260 + maincanvasOx) * current_scale, (330 + maincanvasOy)  * current_scale);

@@ -9,8 +9,8 @@
 #include <readline/history.h>
 #include <unistd.h>
 // #include <tcl8.6/tcl.h>
-#include <tcl.h>
-// #include <tcl/tcl.h>
+// #include <tcl.h>
+#include <tcl/tcl.h>
 #include <limits.h>
 #include <syscall.h>
 #include <sys/types.h>
