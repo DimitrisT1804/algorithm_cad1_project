@@ -79,57 +79,6 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     // cairo_stroke(maincanvas_cs);
     cairo_stroke(maincanvas_cs);
 
-
-
-    // c1_x = max_double((50 + maincanvasOx), 0.0);
-    // c1_y = max_double((50 + maincanvasOy), 0.0);
-    // // printf("c1_x = %f, c1_y = %f\n", c1_x, c1_y);
-    // // Letter 'C'
-    // cairo_rectangle(maincanvas_cs, c1_x * current_scale, c1_y * current_scale, 30 * current_scale, 150 * current_scale);
-    // cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (50 + maincanvasOy)  * current_scale, 90 * current_scale, 30 * current_scale);
-    // cairo_rectangle(maincanvas_cs, (50 + maincanvasOx) * current_scale, (170 + maincanvasOy) * current_scale, 90 * current_scale, 30 * current_scale);
-    // cairo_fill(maincanvas_cs);
-
-    // cairo_set_source_rgb(maincanvas_cs, 0.0, 0.0, 0.0); // Set text color to black
-    // cairo_set_font_size(maincanvas_cs, 12.0); // Set font size
-
-    // // Text for the first rectangle
-    // cairo_move_to(maincanvas_cs, (c1_x + 5) * current_scale, (c1_y + 80) * current_scale); // Adjust position
-    // cairo_show_text(maincanvas_cs, "Text for Rectangle 1");
-
-    // // Text for the second rectangle
-    // cairo_move_to(maincanvas_cs, (50 + maincanvasOx + 5) * current_scale, (50 + maincanvasOy + 20)  * current_scale); // Adjust position
-    // cairo_show_text(maincanvas_cs, "Text for Rectangle 2");
-
-    // // Text for the third rectangle
-    // cairo_move_to(maincanvas_cs, (50 + maincanvasOx + 5) * current_scale, (170 + maincanvasOy + 20) * current_scale); // Adjust position
-    // cairo_show_text(maincanvas_cs, "Text for Rectangle 3");
-
-    // // Letter 'A'
-    // cairo_set_source_rgb(maincanvas_cs, 0.195, 0.044, 0.006); // red
-    // cairo_rectangle(maincanvas_cs, (140 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 30 * current_scale, 150 * current_scale);
-    // cairo_rectangle(maincanvas_cs, (210 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 30 * current_scale, 150 * current_scale);
-    // cairo_rectangle(maincanvas_cs, (140 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 70 * current_scale, 30 * current_scale);
-    // cairo_rectangle(maincanvas_cs, (140 + maincanvasOx) * current_scale, (120 + maincanvasOy) * current_scale, 70 * current_scale, 30 * current_scale);
-    // cairo_fill(maincanvas_cs);
-
-    // cairo_set_source_rgb(maincanvas_cs, 0.005, 0.160, 0.049); // Dark blue
-    // // Letter 'D'
-    // cairo_rectangle(maincanvas_cs, (260 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 30 * current_scale, 150 * current_scale);
-    // cairo_rectangle(maincanvas_cs, (330 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 30 * current_scale, 150 * current_scale);
-    // cairo_rectangle(maincanvas_cs, (240 + maincanvasOx) * current_scale, (50 + maincanvasOy) * current_scale, 90 * current_scale, 30 * current_scale);
-    // cairo_rectangle(maincanvas_cs, (240 + maincanvasOx) * current_scale, (170 + maincanvasOy) * current_scale, 90 * current_scale, 30 * current_scale);
-
-    // cairo_fill(maincanvas_cs);
-
-    // cairo_set_source_rgb(maincanvas_cs, 0.004, 0.101, 0.229); // Dark blue
-    // // Letter 'D'
-    // cairo_rectangle(maincanvas_cs, (410 + maincanvasOx) * current_scale, (50 + maincanvasOy)  * current_scale, 30 * current_scale, 150 * current_scale);
-    // cairo_rectangle(maincanvas_cs, (450 + maincanvasOx) * current_scale, (50 + maincanvasOy)  * current_scale, 30 * current_scale, 150 * current_scale);
-    // cairo_rectangle(maincanvas_cs, (390 + maincanvasOx) * current_scale, (50 + maincanvasOy)  * current_scale, 110 * current_scale, 30 * current_scale);
-    // cairo_rectangle(maincanvas_cs, (390 + maincanvasOx) * current_scale, (170 + maincanvasOy) * current_scale, 110 * current_scale, 30 * current_scale);
-    // cairo_fill(maincanvas_cs);
-
     // letter C //
     // Draw rectangles to form the word "CAD"
     cairo_set_source_rgb(maincanvas_cs, 0.255, 0.255, 0.102); // light blue
@@ -153,10 +102,6 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     cairo_select_font_face(maincanvas_cs, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
     cairo_set_source_rgb(maincanvas_cs, 1.0, 0.0, 0.0); // Set text color to black
     cairo_set_font_size(maincanvas_cs, 15.0); // Set font size
-
-    // Text for the first rectangle
-    cairo_move_to(maincanvas_cs, (100 + maincanvasOx) * current_scale, (160 + maincanvasOy) * current_scale); // Adjust position
-    cairo_show_text(maincanvas_cs, "Cell_1");
 
 
     // letter A //
@@ -235,12 +180,12 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
 
 
     // Add text
-    cairo_select_font_face(maincanvas_cs, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-    cairo_set_font_size(maincanvas_cs, 15);
-    cairo_set_source_rgb(maincanvas_cs, 1.0, 1.0, 1.0); // Black
-    cairo_move_to(maincanvas_cs, 0, 645);
-    cairo_show_text(maincanvas_cs, "Designer: Dimitrios Tsalapatas");
-    cairo_fill(maincanvas_cs);
+    // cairo_select_font_face(maincanvas_cs, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+    // cairo_set_font_size(maincanvas_cs, 15);
+    // cairo_set_source_rgb(maincanvas_cs, 1.0, 1.0, 1.0); // Black
+    // cairo_move_to(maincanvas_cs, 0, 645);
+    // cairo_show_text(maincanvas_cs, "Designer: Dimitrios Tsalapatas");
+    // cairo_fill(maincanvas_cs);
 
     cairo_destroy(maincanvas_cs);
 }
@@ -275,8 +220,8 @@ static void resizemaincanvas(GtkWidget *widget, GdkRectangle *gdkrect, gpointer 
 
 static gboolean maincanvasvscroll(GtkRange *range, GtkScrollType scroll, gdouble value, gpointer data)
 {
-  double maxmaincanvasOy;
-  int ivalue; // calibrated, inter y-offset value, based on vertical scrollbar value //
+    double maxmaincanvasOy;
+    int ivalue; // calibrated, inter y-offset value, based on vertical scrollbar value //
 
     #ifdef DEBUGGUI
     {
@@ -299,17 +244,8 @@ static gboolean maincanvasvscroll(GtkRange *range, GtkScrollType scroll, gdouble
     gtk_adjustment_set_page_size(adjust_scrollbar, page_size = 550.0);
     
     maxmaincanvasOy = up;
-    // int ivalue = (int)((value - low) / page_size); // calibrated, inter x-offset value, based on horizontal scrollbar value //
     ivalue = (int) round(value);
 
-    // if(scroll == GTK_SCROLL_STEP_BACKWARD)
-    // {
-    //     maincanvasOx = maincanvasOx - ivalue;
-    // }
-    // else if(scroll == GTK_SCROLL_STEP_FORWARD)
-    // {
-    //     maincanvasOx = maincanvasOx + ivalue;
-    // }
     maincanvasOy = ivalue;
 
     if (maincanvasOy < -550)
@@ -357,17 +293,8 @@ static gboolean maincanvashscroll(GtkRange *range, GtkScrollType scroll, gdouble
     gtk_adjustment_set_page_size(adjust_scrollbar, page_size = 550.0);
     
     double maxmaincanvasOx = up;
-    // int ivalue = (int)((value - low) / page_size); // calibrated, inter x-offset value, based on horizontal scrollbar value //
     int ivalue = (int) round(value);
 
-    // if(scroll == GTK_SCROLL_STEP_BACKWARD)
-    // {
-    //     maincanvasOx = maincanvasOx - ivalue;
-    // }
-    // else if(scroll == GTK_SCROLL_STEP_FORWARD)
-    // {
-    //     maincanvasOx = maincanvasOx + ivalue;
-    // }
     maincanvasOx = ivalue;
 
     if (maincanvasOx < -550)
@@ -514,6 +441,7 @@ static void create_buttons_frame()
     gtk_box_pack_start(GTK_BOX(buttons), list_cells_button, FALSE, FALSE, 0);
 }
 
+
 void start_gui()
 {  
     // *** Local Variables *** //
@@ -525,6 +453,11 @@ void start_gui()
     GtkWidget *hpane2; // horizontal pane //
 
     GtkWidget *mainframe; // main canvas frame //
+
+    GtkWidget *menubar;
+    GtkWidget *filemenu;
+    GtkWidget *file;
+
 
 
     // *** Local Variables End *** //
@@ -602,25 +535,14 @@ void start_gui()
 
     create_buttons_frame();
 
+    // // Create the menu
+    // GtkWidget *menu_bar = create_menu();
+
+    // // Add the menu bar to the main window
+    // gtk_container_add(GTK_CONTAINER(mainwindow), menu_bar);
+
     gtk_widget_show_all(mainwindow);
 
     gtk_main();
 
 }
-
-// // hide the main gui window //
-// void hide_gui()
-// {  
-//   gtk_widget_hide(mainwindow);
-// }
-
-
-// gint main (gint argc, gchar **argv)
-// {
-//   // you may call start_gui() from TCL, based on a TCL command //
-//   // alternatively, you may create a thread, but this is a lot more complex! //
-//   start_gui();
-
-//   return EXIT_SUCCESS;
-
-// }
