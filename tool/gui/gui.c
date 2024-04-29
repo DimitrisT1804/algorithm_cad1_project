@@ -83,9 +83,10 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     // cairo_stroke(maincanvas_cs);
     cairo_stroke(maincanvas_cs);
 
-    // Set the clipping region to the visible area
-    cairo_rectangle(maincanvas_cs, 0, 0, 800, 500);
-    cairo_clip(maincanvas_cs);
+    // set visible area clipping //
+    // // Set the clipping region to the visible area
+    // cairo_rectangle(maincanvas_cs, 0, 0, 800, 500);
+    // cairo_clip(maincanvas_cs);
 
     // letter C //
     // Draw rectangles to form the word "CAD"
@@ -215,8 +216,6 @@ static void resizemaincanvas(GtkWidget *widget, GdkRectangle *gdkrect, gpointer 
       printf("DEBUG: Current Width, Height = (%d, %d), New Width, Height = (%d, %d)\n", maincanvasWidth, maincanvasHeight, gdkrect->width, gdkrect->height);
     }
     #endif
-
-  // resize code //
 
     maincanvasWidth = gdkrect->width;
     maincanvasHeight = gdkrect->height;
@@ -411,7 +410,7 @@ static void mousebutton(GtkWidget *widget, GdkEventButton *eev, gpointer data)
         offset_x = 1.0;
         offset_y = 1.0;
 
-        gtk_adjustment_set_value(adjust_scrollbar, 200);
+        // gtk_adjustment_set_value(adjust_scrollbar, 200);
         gtk_widget_queue_draw(widget);
 
     }
@@ -494,8 +493,6 @@ void start_gui()
     GtkWidget *menubar;
     GtkWidget *filemenu;
     GtkWidget *file;
-
-
 
     // *** Local Variables End *** //
 
