@@ -6,7 +6,9 @@
         "gtk.h": "c",
         "bdd_annotation.h": "c",
         "ui-scrolled-canvas-skeleton.h": "c",
-        "stat.h": "c"
+        "stat.h": "c",
+        "probabilities_annotations.h": "c",
+        "string.h": "c"
     },
     "cSpell.enableFiletypes": [
         "!c",

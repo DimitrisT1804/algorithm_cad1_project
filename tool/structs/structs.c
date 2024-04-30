@@ -17,6 +17,9 @@ int isLevelized;
 int max_design_level;
 GatepinhashProb *gatepinhash_prob;
 
+Componentslocation *compslocation;
+Coresite *coresite;
+
 /* #################### Gatepins_init() #################### */
 /* This function just initialize all fields of gatepin hash */
 void Gatepins_init()
@@ -662,6 +665,7 @@ void structs_init()
     comphash_init();
     gatepinhashVisited_init();
     gatepinhashProb_init();
+    componentslocation_init();
 }
 
 /* ######################## structs_free() ######################## */
@@ -677,6 +681,8 @@ void structs_free()
     comphash_free();
     gatepinhashVisited_free();
     gatepinhashProb_free();
+    componentslocation_free();
+    coresite_free();
 
     for(i = 0; i < libarray_size; i++)
     {
@@ -692,6 +698,7 @@ void structs_free()
     libhash = NULL;
     gatepinhashv = NULL;
     gatepinhash_prob = NULL;
+    compslocation = NULL;
 
     libarray = NULL;
     libarray_size = 0;
@@ -887,4 +894,96 @@ void gatepinhashProb_free()
     {
         free(gatepinhash_prob);
     }
+}
+
+
+// Code for placement informations //
+
+/* #################### componentslocation_init() #################### */
+// This function initializes the componentslocation data structure,     //
+// which is used                                                        //
+void componentslocation_init()
+{
+    compslocation = (Componentslocation*) my_calloc(comphash_size, sizeof(Componentslocation));
+
+    for(int i = 0; i < comphash_size; i++)
+    {
+        for(int j = 0; j < HASHDEPTH; j++)
+        {
+            compslocation[i].x[j] = -1.0;
+            compslocation[i].y[j] = -1.0;
+        }
+    }
+}
+
+/* #################### componentslocation_free() #################### */
+// This function frees the memory allocated for the componentslocation   //
+void componentslocation_free()
+{
+    if(compslocation != NULL)
+    {
+        free(compslocation);
+    }
+}
+
+/* #################### componentslocation_add() #################### */
+// This function adds the location of the component in the componentslocation //
+void add_components_location(char *comp_name, float x, float y)
+{
+    int chash;
+    int cdepth;
+
+    get_comphash_indices(comp_name, &chash, &cdepth);
+    if(cdepth == -1)
+    {
+        return;
+    }
+
+    compslocation[chash].x[cdepth] = x;
+    compslocation[chash].y[cdepth] = y;
+}
+
+/* #################### coresite_init() #################### */
+// This function initializes the coresite data structure, which is used //
+// for storing the core utilization, width, and height.                //
+void coresite_init()
+{
+    coresite = (Coresite*) my_calloc(1, sizeof(Coresite));
+
+    coresite->core_utilisation = -1.0;
+    coresite->core_width = -1.0;
+    coresite->core_height = -1.0;
+}
+
+/* #################### coresite_free() #################### */
+// This function frees the memory allocated for the coresite data structure //
+void coresite_free()
+{
+    if(coresite != NULL)
+    {
+        free(coresite);
+    }
+}
+
+/* #################### add_coresite() #################### */
+// This function adds the core utilization, width, and height to the coresite //
+void add_coresite(int core_utilisation, float core_width, float core_height, float aspect_ratio)
+{
+    coresite->core_utilisation = core_utilisation;
+    coresite->core_width = core_width;
+    coresite->core_height = core_height;
+    coresite->aspect_ratio = aspect_ratio;
+}
+
+/* #################### dump_coresite() #################### */
+// This function prints the core utilization, width, and height to the console //
+void dump_coresite()
+{
+    printf("\x1b[34m""------------- INFO CORESITE ----------------\n" "\x1b[0m");
+    printf(ANSI_COLOR_GREEN "Core Utilisation: %d%%\n", coresite->core_utilisation);
+    printf("Core Width: %f\n", coresite->core_width);
+    printf("Core Height: %f\n", coresite->core_height);
+    printf("Aspect Ratio: %f\n" ANSI_COLOR_RESET, coresite->aspect_ratio);
+    printf("-------------------------------------------");
+
 }
