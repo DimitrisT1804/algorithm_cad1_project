@@ -2161,6 +2161,13 @@ int report_coresite(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj
     return TCL_OK;
 }
 
+int list_rows(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    dump_rows();
+
+    return TCL_OK;
+}
+
 void *main_tcl(void *arg)
 {
     char *text = NULL; // readline result //
@@ -2219,6 +2226,7 @@ void *main_tcl(void *arg)
 
     // TCL commands for placement //
     Tcl_CreateObjCommand(interp, "report_coresite", report_coresite, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "list_rows", list_rows, NULL, NULL);
 
     signal(SIGSEGV, segfault_handler);
     signal(SIGINT, sigint_handler);

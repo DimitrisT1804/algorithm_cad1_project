@@ -718,6 +718,91 @@ enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, ch
     }
 }
 
+enum count_ROWS count_rows(enum count_ROWS currentState, char *event)
+{
+    switch (currentState)
+    {
+        case WAIT_ROW_COUNT:
+            if(strcmp(event, "Row:") == 0)
+            {
+                rows_size++;
+            }
+
+            return WAIT_ROW_COUNT;
+        
+        default:
+            return currentState;
+    }
+}
+
+enum proccess_ROWS proccess_rows(enum proccess_ROWS currentState, char *event)
+{
+    static char *name;
+    static float location_x;
+    static float location_y;
+    static float width;
+    static float height;
+
+    switch (currentState) 
+    {
+        case WAIT_ROW:
+            if(strcmp(event, "Row:") == 0)
+            {
+                return GET_NAME;
+            }
+            else
+            {
+                return WAIT_ROW;
+            }
+
+        case GET_NAME:
+            name = (char *) calloc(strlen(event) + 1, sizeof(char));
+            strcpy(name, event);
+            return WAIT_LOCATION_ROWS;
+
+        case WAIT_LOCATION_ROWS:
+            if(strcmp(event, "Location:") == 0)
+            {
+                return GET_X;
+            }
+            else
+            {
+                return WAIT_LOCATION_ROWS;
+            }
+
+        case GET_X:
+            location_x = atof(event);
+            return GET_Y;
+
+        case GET_Y:
+            location_y = atof(event);
+            return WAIT_WIDTH;
+
+        case WAIT_WIDTH:
+            if(strcmp(event, "Width/Height:") == 0)
+            {
+                return GET_WIDTH_ROW;
+            }
+            else
+            {
+                return WAIT_WIDTH;
+            }
+
+        case GET_WIDTH_ROW:
+            width = atof(event);
+            return GET_HEIGHT_ROW;
+
+        case GET_HEIGHT_ROW:
+            height = atof(event);
+            add_row(name, location_x, location_y, width, height);
+            free(name);
+            return WAIT_ROW;
+
+        default:
+            return currentState;
+    }
+}
+
 /* #################### print_gatepinhash() #################### */
 /* This function prints all gatepis from gatepinhash with CCs and 
    parent component and also if it is WIRE or IO*/
@@ -846,6 +931,8 @@ int call_parser(char *input_file)
     enum proccess_lib_pins currentState4 = BEGIN;
     enum proccess_lib_pins currentState5 = BEGIN_IO;
     enum CORE_PARSE_STATES currentState6 = WAIT_UTILISATION;
+    enum count_ROWS currentState7 = WAIT_ROW_COUNT;
+    enum proccess_ROWS currentState8 = WAIT_ROW;
 
 
     clock_t clock_start = clock();
@@ -873,6 +960,12 @@ int call_parser(char *input_file)
         {
             coresite_init();
             choose_FSM = 0;
+        }
+
+        find_line = strstr(line, "# Rows:");
+        if(find_line != NULL)
+        {
+            choose_FSM = 6;
         }
 
         find_line = strstr(line, "Top-Level I/O CCs:");
@@ -916,6 +1009,10 @@ int call_parser(char *input_file)
             {
                 currentState2 = count_components_CCS(currentState2, word);
             }
+            else if (choose_FSM == 6)
+            {
+                currentState7 = count_rows(currentState7, word);
+            }
 
             while (line[i] == ' ') 
             {
@@ -938,10 +1035,19 @@ int call_parser(char *input_file)
     libhash_size++; // add one to libhash size because hash functions usually does not return 0 //
     structs_init(); // initialize all structs with correct sizes //
 
+    rows_init(); // initialize rows //
+
     // reparse file to store gatepins components and cells //
     while((read_length = (getline(&line, &line_size, filename) ) )!= -1)
     {
         j = 0;
+
+        find_line = strstr(line, "# Rows:");
+        if(find_line != NULL)
+        {
+            choose_FSM = 7;
+        }
+
         find_line = strstr(line, "Top-Level I/O Ports:");
         if(find_line != NULL)
         {
@@ -987,6 +1093,10 @@ int call_parser(char *input_file)
             else if (choose_FSM == 3)
             {
                 currentState3 = proccessAllComponentsCCS(currentState3, word);
+            }
+            else if(choose_FSM == 7)
+            {
+                currentState8 = proccess_rows(currentState8, word);
             }
 
             while (line[i] == ' ') // if there are more spaces between words //

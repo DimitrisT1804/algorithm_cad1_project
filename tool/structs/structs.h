@@ -100,6 +100,16 @@ struct coresite
 };
 typedef struct coresite Coresite;
 
+struct rowsstruct
+{
+    char *name;
+    float location_x;
+    float location_y;
+    float width;
+    float height;
+};
+typedef struct rowsstruct Rows;
+
 
 extern gatePins *gatepinhash;
 extern int gatepinhash_size;
@@ -117,6 +127,8 @@ extern GatepinhashProb *gatepinhash_prob;
 // placed informations //
 extern Componentslocation *compslocation;
 extern Coresite *coresite;
+extern Rows *rows;
+extern int rows_size;
 
 /* gatepinhash functions*/
 void Gatepins_init();
@@ -170,5 +182,11 @@ void coresite_init();
 void coresite_free();
 void add_coresite(int, float, float, float);
 void dump_coresite();
+
+/* Rows functions */
+void rows_init();
+void rows_free();
+void add_row(char *name, float x, float y, float width, float height);
+void dump_rows();
 
 #endif

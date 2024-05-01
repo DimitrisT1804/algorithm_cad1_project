@@ -19,6 +19,8 @@ GatepinhashProb *gatepinhash_prob;
 
 Componentslocation *compslocation;
 Coresite *coresite;
+Rows *rows;
+int rows_size;
 
 /* #################### Gatepins_init() #################### */
 /* This function just initialize all fields of gatepin hash */
@@ -979,6 +981,12 @@ void add_coresite(int core_utilisation, float core_width, float core_height, flo
 // This function prints the core utilization, width, and height to the console //
 void dump_coresite()
 {
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return;
+    }
+
     printf("\x1b[34m""------------- INFO CORESITE ----------------\n" "\x1b[0m");
     printf(ANSI_COLOR_GREEN "Core Utilisation: %d%%\n", coresite->core_utilisation);
     printf("Core Width: %f\n", coresite->core_width);
@@ -987,3 +995,95 @@ void dump_coresite()
     printf("-------------------------------------------");
 
 }
+
+/* #################### rows_init() #################### */
+// This function initializes the rows data structure, which is used //
+// for storing the row information.                               //
+void rows_init()
+{
+    int i;
+
+    rows = (Rows*) my_calloc(rows_size, sizeof(Rows));
+
+    for(i = 0; i < rows_size; i++)
+    {
+        rows[i].name = NULL;
+        rows[i].location_x = -1.0;
+        rows[i].location_y = -1.0;
+        rows[i].width = -1.0;
+        rows[i].height = -1.0;
+    }
+}
+
+/* #################### rows_free() #################### */
+// This function frees the memory allocated for the rows data structure //
+void rows_free()
+{
+    int i;
+
+    if(rows == NULL)
+    {
+        return;
+    }
+
+    for(i = 0; i < rows_size; i++)
+    {
+        if(rows[i].name != NULL)
+        {
+            free(rows[i].name);
+        }
+    }
+    free(rows);
+}
+
+/* #################### add_row() #################### */
+// This function adds the row information to the rows data structure //
+void add_row(char *row_name, float location_x, float location_y, float width, float height)
+{
+    int i;
+
+    for(i = 0; i < rows_size; i++)
+    {
+        if(rows[i].name == NULL)
+        {
+            rows[i].name = (char *) my_calloc(strlen(row_name) + 1, sizeof(char));
+            strcpy(rows[i].name, row_name);
+            rows[i].location_x = location_x;
+            rows[i].location_y = location_y;
+            rows[i].width = width;
+            rows[i].height = height;
+            break;
+        }
+    }
+}
+
+/* #################### dump_rows() #################### */
+// This function prints the row information to the console //
+void dump_rows()
+{
+    int i;
+
+    if(comphash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return;
+    }
+
+    printf(ANSI_COLOR_ORANGE "------------- INFO ROWS ----------------\n" ANSI_COLOR_RESET);
+    for(i = 0; i < rows_size; i++)
+    {
+        if(rows[i].name != NULL)
+        {
+            printf(ANSI_COLOR_BLUE "-------------------------------------------\n");
+            printf(ANSI_COLOR_GREEN "Row Name: %s\n", rows[i].name);
+            printf("Location X: %f\n", rows[i].location_x);
+            printf("Location Y: %f\n", rows[i].location_y);
+            printf("Width: %f\n", rows[i].width);
+            printf("Height: %f\n" ANSI_COLOR_RESET, rows[i].height);
+            printf(ANSI_COLOR_BLUE "-------------------------------------------\n\n" ANSI_COLOR_RESET);
+        }
+    }
+}
+
+// TODO: implement struct 1-1 with gatepinhash to store IOs location and side //
+ 
