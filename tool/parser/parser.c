@@ -336,6 +336,8 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
     static float location_x = -1.0;
     static float location_y = -1.0;
     static int location_format = 0;
+    static float cell_width = -1.0;
+    static float cell_height = -1.0;
 
     switch (currentState) 
     {
@@ -412,6 +414,34 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
                 cell_type = SEQUENTIAL;
             }
 
+            return CELL_WIDTH;
+
+        case CELL_WIDTH:
+            if(strcmp(event, "Width:") == 0)
+            {
+                return GET_CELL_WIDTH;
+            }
+            else
+            {
+                return CELL_WIDTH;
+            }
+
+        case GET_CELL_WIDTH:
+            cell_width = atof(event);
+            return CELL_HEIGHT;
+
+        case CELL_HEIGHT:
+            if(strcmp(event, "Height:") == 0)
+            {
+                return GET_CELL_HEIGHT;
+            }
+            else
+            {
+                return CELL_HEIGHT;
+            }
+
+        case GET_CELL_HEIGHT:
+            cell_height = atof(event);
             return WAIT_CCS;
 
         case WAIT_CCS: // Wait for CCs //
@@ -564,6 +594,7 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             if(new_comp == 0)
             {
                 comphash_add(comp_name, name_of_cell, cell_type, event); 
+                libhash_add_dimensions(name_of_cell, cell_width, cell_height);
                 
                 if(location_format != 0)
                 {
@@ -1048,7 +1079,7 @@ int call_parser(char *input_file)
     rows_init(); // initialize rows //
 
     currentState2 = WAIT_IO;
-    currentState3 = WAIT;
+    currentState3 = WAIT; 
 
     // reparse file to store gatepins components and cells //
     while((read_length = (getline(&line, &line_size, filename) ) )!= -1)

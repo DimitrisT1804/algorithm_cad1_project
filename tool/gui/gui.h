@@ -9,6 +9,7 @@
 #include <string.h>
 #include <limits.h>
 #include "../tcl/tcl.h"
+#include "../structs/structs.h"
 
 // #include <tcl/tcl.h>
 #include <tcl.h>
@@ -64,3 +65,4 @@ double max_double(double a, double b);
 static void flowbuttonclicked(GtkButton *button, gpointer data);
 static void create_buttons_frame();
 static void list_cells_button_clicked(GtkButton *button, gpointer data);
+double translate_um_to_pixels(double um);

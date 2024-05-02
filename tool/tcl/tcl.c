@@ -670,6 +670,9 @@ int list_cells(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *con
                 {
                     printf(ANSI_COLOR_MAGENDA "Cell Type is: Sequential\n" ANSI_COLOR_RESET);
                 }
+                printf(ANSI_COLOR_BLUE"Cell_width: %.3f\n", libhash[lhash].width[ldepth]);
+                printf(ANSI_COLOR_BLUE"Cell_height: %.3f\n" ANSI_COLOR_RESET, libhash[lhash].height[ldepth]);
+
 
                 printf("Pin names are: \n");
                 for(i = 0; i < libhash[lhash].pin_count[ldepth]; i++)

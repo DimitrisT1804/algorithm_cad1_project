@@ -54,6 +54,9 @@ struct library
     int out_pins_count[HASHDEPTH];
     int hashpresent[HASHDEPTH]; // flag indicating presence in the hash table //
     int *pin_type[HASHDEPTH];
+
+    float width[HASHDEPTH];
+    float height[HASHDEPTH];
 };
 typedef struct library Lib;
 
@@ -150,6 +153,7 @@ void lib_add_pins (char *cell_name, char *pin_name, int pin_type);
 void libhash_free();
 void add_cell(char *cell_name);
 void lib_add_func(char *cell_name, char *func_expr, char *cell_pin);
+void libhash_add_dimensions(char *cell_name, float width, float height);
 
 /* Compohash functions */
 void comphash_init();

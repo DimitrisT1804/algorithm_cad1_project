@@ -60,6 +60,11 @@ static void expose(GtkWidget *widget, GdkEventExpose *event, gpointer data)
   maincanvaspaint(widget, event, data);
 }
 
+double translate_um_to_pixels(double um)
+{
+    return um * 10;
+}
+
 // Expose-Event Paint Function for maincanvas //
 static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
@@ -71,126 +76,199 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     double c1_x = 0.0;
     double c1_y = 0.0;
 
-    cairo_set_source_rgb(maincanvas_cs, 146.0/255.0, 185.0/255.0, 189.0/255.0);
-    cairo_paint(maincanvas_cs);
-
-    // Set dotted line style
-    double dashes[] = {4.0, 4.0}; // 4 pixels on, 4 pixels off
-    cairo_set_dash(maincanvas_cs, dashes, 2, 0); // 2 is the number of dashes in the pattern
-
-    cairo_set_source_rgb(maincanvas_cs, 0.0, 0.0, 1.0);
-    cairo_rectangle(maincanvas_cs, 0, 0, (maincanvasWidth - 100) * current_scale, (maincanvasHeight - 100) * current_scale );
-    // cairo_stroke(maincanvas_cs);
-    cairo_stroke(maincanvas_cs);
 
     // set visible area clipping //
     // // Set the clipping region to the visible area
     // cairo_rectangle(maincanvas_cs, 0, 0, 800, 500);
     // cairo_clip(maincanvas_cs);
 
-    // letter C //
-    // Draw rectangles to form the word "CAD"
-    cairo_set_source_rgb(maincanvas_cs, 168.0/255.0, 212.0/255.0, 173.0/255.0); // light blue
-    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (200 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 150 * current_scale);
-    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (120 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 60 * current_scale);
-    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (370 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 60 * current_scale);
+    if(comphash == NULL)
+    {
+        cairo_set_source_rgb(maincanvas_cs, 146.0/255.0, 185.0/255.0, 189.0/255.0);
+        cairo_paint(maincanvas_cs);
 
-    cairo_fill(maincanvas_cs);
+        // Set dotted line style
+        double dashes[] = {4.0, 4.0}; // 4 pixels on, 4 pixels off
+        cairo_set_dash(maincanvas_cs, dashes, 2, 0); // 2 is the number of dashes in the pattern
 
-    // Set the color for the outline (white)
-    cairo_set_source_rgb(maincanvas_cs, 1.0, 1.0, 1.0); // White color
-    cairo_set_line_width(maincanvas_cs, 2.0); // Adjust the width as needed
-    // Set line style to solid
-    cairo_set_dash(maincanvas_cs, 0, 0, 0); // Set dash pattern to solid
-    // Draw the outline rectangle
-    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (200 + maincanvasOy - offset_y) * current_scale + offset_y, 60 * current_scale, 150 * current_scale);
-    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (120 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 60 * current_scale);
-    cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (370 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 60 * current_scale);
-    cairo_stroke(maincanvas_cs); // Draw the outline
+        cairo_set_source_rgb(maincanvas_cs, 0.0, 0.0, 1.0);
+        cairo_rectangle(maincanvas_cs, 0, 0, (maincanvasWidth - 100) * current_scale, (maincanvasHeight - 100) * current_scale );
+        // cairo_stroke(maincanvas_cs);
+        cairo_stroke(maincanvas_cs);
 
-    cairo_select_font_face(maincanvas_cs, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-    cairo_set_source_rgb(maincanvas_cs, 1.0, 0.0, 0.0); // Set text color to black
-    cairo_set_font_size(maincanvas_cs, 15.0); // Set font size
+        // letter C //
+        // Draw rectangles to form the word "CAD"
+        cairo_set_source_rgb(maincanvas_cs, 168.0/255.0, 212.0/255.0, 173.0/255.0); // light blue
+        cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (200 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 150 * current_scale);
+        cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (120 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 60 * current_scale);
+        cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (370 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 60 * current_scale);
 
+        cairo_fill(maincanvas_cs);
 
-    // letter A //
-    cairo_set_source_rgb(maincanvas_cs, 155.0/255.0, 106.0/255.0, 108.0/255.0); // light blue
-    cairo_rectangle(maincanvas_cs, (250 + maincanvasOx - offset_x) * current_scale + offset_x, (140 + maincanvasOy - offset_y) * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (250 + maincanvasOx - offset_x) * current_scale + offset_x, (300 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (400 + maincanvasOx - offset_x) * current_scale + offset_x, (140 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (400 + maincanvasOx - offset_x) * current_scale + offset_x, (300 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (280 + maincanvasOx - offset_x) * current_scale + offset_x, (90 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (315 + maincanvasOx - offset_x) * current_scale + offset_x, (270 + maincanvasOy - offset_y)  * current_scale + offset_y, 80 * current_scale, 30 * current_scale);
-    cairo_fill(maincanvas_cs);
+        // Set the color for the outline (white)
+        cairo_set_source_rgb(maincanvas_cs, 1.0, 1.0, 1.0); // White color
+        cairo_set_line_width(maincanvas_cs, 2.0); // Adjust the width as needed
+        // Set line style to solid
+        cairo_set_dash(maincanvas_cs, 0, 0, 0); // Set dash pattern to solid
+        // Draw the outline rectangle
+        cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (200 + maincanvasOy - offset_y) * current_scale + offset_y, 60 * current_scale, 150 * current_scale);
+        cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (120 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 60 * current_scale);
+        cairo_rectangle(maincanvas_cs, (50 + maincanvasOx - offset_x) * current_scale + offset_x, (370 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 60 * current_scale);
+        cairo_stroke(maincanvas_cs); // Draw the outline
 
-    // Set the color for the outline (white)
-    cairo_set_source_rgb(maincanvas_cs, 1.0, 1.0, 1.0); // White color
-    cairo_set_line_width(maincanvas_cs, 2.0); // Adjust the width as needed
-    // Set line style to solid
-    cairo_set_dash(maincanvas_cs, 0, 0, 0); // Set dash pattern to solid
-    // Draw the outline rectangle
-    cairo_rectangle(maincanvas_cs, (250 + maincanvasOx - offset_x) * current_scale + offset_x, (140 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (250 + maincanvasOx - offset_x) * current_scale + offset_x, (300 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (400 + maincanvasOx - offset_x) * current_scale + offset_x, (140 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (400 + maincanvasOx - offset_x) * current_scale + offset_x, (300 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
-    cairo_rectangle(maincanvas_cs, (280 + maincanvasOx - offset_x) * current_scale + offset_x, (90 + maincanvasOy - offset_y) * current_scale + offset_y, 150 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (315 + maincanvasOx - offset_x) * current_scale + offset_x, (270 + maincanvasOy - offset_y)  * current_scale + offset_y, 80 * current_scale, 30 * current_scale);
-    cairo_stroke(maincanvas_cs); // Draw the outline
-
-    // letter D //
-    cairo_set_source_rgb(maincanvas_cs, 181.0/255.0, 148.0/255.0, 182.0/255.0); // light blue
-    cairo_rectangle(maincanvas_cs, (520 + maincanvasOx - offset_x) * current_scale + offset_x, (150 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (520 + maincanvasOx - offset_x) * current_scale + offset_x, (280 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx - offset_x) * current_scale + offset_x, (90 + maincanvasOy - offset_y)  * current_scale + offset_y, 200 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx - offset_x) * current_scale + offset_x, (410 + maincanvasOy - offset_y)  * current_scale + offset_y, 200 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx - offset_x) * current_scale + offset_x, (150 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx - offset_x) * current_scale + offset_x, (280 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
-
-    cairo_fill(maincanvas_cs);
-
-    // Set the color for the outline (white)
-    cairo_set_source_rgb(maincanvas_cs, 1.0, 1.0, 1.0); // White color
-    cairo_set_line_width(maincanvas_cs, 2.0); // Adjust the width as needed
-    // Set line style to solid
-    cairo_set_dash(maincanvas_cs, 0, 0, 0); // Set dash pattern to solid
-    
-    cairo_rectangle(maincanvas_cs, (520 + maincanvasOx - offset_x) * current_scale + offset_x, (150 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (520 + maincanvasOx - offset_x) * current_scale + offset_x, (280 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx - offset_x) * current_scale + offset_x, (90 + maincanvasOy - offset_y)  * current_scale + offset_y, 200 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (500 + maincanvasOx - offset_x) * current_scale + offset_x, (410 + maincanvasOy - offset_y)  * current_scale + offset_y, 200 * current_scale, 40 * current_scale);
-    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx - offset_x) * current_scale + offset_x, (150 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
-    cairo_rectangle(maincanvas_cs, (640 + maincanvasOx - offset_x) * current_scale + offset_x, (280 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
-
-    cairo_stroke(maincanvas_cs); // Draw the outline //
+        cairo_select_font_face(maincanvas_cs, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+        cairo_set_source_rgb(maincanvas_cs, 1.0, 0.0, 0.0); // Set text color to black
+        cairo_set_font_size(maincanvas_cs, 15.0); // Set font size
 
 
-    // Wires //
-    cairo_set_source_rgb(maincanvas_cs, 227.0/255.0, 151.0/255.0, 116.0/255.0); // Black
-    cairo_set_line_width(maincanvas_cs, 7.0);
-    cairo_move_to(maincanvas_cs, (80 + maincanvasOx - offset_x) * current_scale + offset_x, (380 + maincanvasOy - offset_y)  * current_scale + offset_y);
-    cairo_line_to(maincanvas_cs, (260 + maincanvasOx - offset_x) * current_scale + offset_x, (330 + maincanvasOy - offset_y)  * current_scale + offset_y);
-    cairo_stroke(maincanvas_cs);
+        // letter A //
+        cairo_set_source_rgb(maincanvas_cs, 155.0/255.0, 106.0/255.0, 108.0/255.0); // light blue
+        cairo_rectangle(maincanvas_cs, (250 + maincanvasOx - offset_x) * current_scale + offset_x, (140 + maincanvasOy - offset_y) * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+        cairo_rectangle(maincanvas_cs, (250 + maincanvasOx - offset_x) * current_scale + offset_x, (300 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+        cairo_rectangle(maincanvas_cs, (400 + maincanvasOx - offset_x) * current_scale + offset_x, (140 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+        cairo_rectangle(maincanvas_cs, (400 + maincanvasOx - offset_x) * current_scale + offset_x, (300 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+        cairo_rectangle(maincanvas_cs, (280 + maincanvasOx - offset_x) * current_scale + offset_x, (90 + maincanvasOy - offset_y)  * current_scale + offset_y, 150 * current_scale, 40 * current_scale);
+        cairo_rectangle(maincanvas_cs, (315 + maincanvasOx - offset_x) * current_scale + offset_x, (270 + maincanvasOy - offset_y)  * current_scale + offset_y, 80 * current_scale, 30 * current_scale);
+        cairo_fill(maincanvas_cs);
 
-    cairo_set_line_width(maincanvas_cs, 9.0);
-    cairo_move_to(maincanvas_cs, (430 + maincanvasOx - offset_x) * current_scale + offset_x, (200 + maincanvasOy - offset_y)  * current_scale + offset_y);
-    cairo_line_to(maincanvas_cs, (540 + maincanvasOx - offset_x) * current_scale + offset_x, (110 + maincanvasOy - offset_y)  * current_scale + offset_y);
-    cairo_stroke(maincanvas_cs);
+        // Set the color for the outline (white)
+        cairo_set_source_rgb(maincanvas_cs, 1.0, 1.0, 1.0); // White color
+        cairo_set_line_width(maincanvas_cs, 2.0); // Adjust the width as needed
+        // Set line style to solid
+        cairo_set_dash(maincanvas_cs, 0, 0, 0); // Set dash pattern to solid
+        // Draw the outline rectangle
+        cairo_rectangle(maincanvas_cs, (250 + maincanvasOx - offset_x) * current_scale + offset_x, (140 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+        cairo_rectangle(maincanvas_cs, (250 + maincanvasOx - offset_x) * current_scale + offset_x, (300 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+        cairo_rectangle(maincanvas_cs, (400 + maincanvasOx - offset_x) * current_scale + offset_x, (140 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+        cairo_rectangle(maincanvas_cs, (400 + maincanvasOx - offset_x) * current_scale + offset_x, (300 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 140 * current_scale);
+        cairo_rectangle(maincanvas_cs, (280 + maincanvasOx - offset_x) * current_scale + offset_x, (90 + maincanvasOy - offset_y) * current_scale + offset_y, 150 * current_scale, 40 * current_scale);
+        cairo_rectangle(maincanvas_cs, (315 + maincanvasOx - offset_x) * current_scale + offset_x, (270 + maincanvasOy - offset_y)  * current_scale + offset_y, 80 * current_scale, 30 * current_scale);
+        cairo_stroke(maincanvas_cs); // Draw the outline
 
-    cairo_set_line_width(maincanvas_cs, 11.0);
-    cairo_move_to(maincanvas_cs, (430 + maincanvasOx - offset_x) * current_scale + offset_x, (400 + maincanvasOy - offset_y)  * current_scale + offset_y);
-    cairo_line_to(maincanvas_cs, (540 + maincanvasOx - offset_x) * current_scale + offset_x, (350 + maincanvasOy - offset_y)  * current_scale + offset_y);
-    cairo_stroke(maincanvas_cs);
+        // letter D //
+        cairo_set_source_rgb(maincanvas_cs, 181.0/255.0, 148.0/255.0, 182.0/255.0); // light blue
+        cairo_rectangle(maincanvas_cs, (520 + maincanvasOx - offset_x) * current_scale + offset_x, (150 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
+        cairo_rectangle(maincanvas_cs, (520 + maincanvasOx - offset_x) * current_scale + offset_x, (280 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
+        cairo_rectangle(maincanvas_cs, (500 + maincanvasOx - offset_x) * current_scale + offset_x, (90 + maincanvasOy - offset_y)  * current_scale + offset_y, 200 * current_scale, 40 * current_scale);
+        cairo_rectangle(maincanvas_cs, (500 + maincanvasOx - offset_x) * current_scale + offset_x, (410 + maincanvasOy - offset_y)  * current_scale + offset_y, 200 * current_scale, 40 * current_scale);
+        cairo_rectangle(maincanvas_cs, (640 + maincanvasOx - offset_x) * current_scale + offset_x, (150 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
+        cairo_rectangle(maincanvas_cs, (640 + maincanvasOx - offset_x) * current_scale + offset_x, (280 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
 
-    // Label block //
-    cairo_set_source_rgb(maincanvas_cs, 0.0, 0.153, 0.0); // light blue
-    cairo_rectangle(maincanvas_cs, (100 + maincanvasOx - offset_x) * current_scale + offset_x, (500 + maincanvasOy - offset_y)  * current_scale + offset_y, 500 * current_scale, 40 * current_scale);
-    cairo_fill(maincanvas_cs);
+        cairo_fill(maincanvas_cs);
 
-    cairo_select_font_face(maincanvas_cs, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-    cairo_set_source_rgb(maincanvas_cs, 1.0, 1.0, 1.0); // Set text color to black
-    cairo_set_font_size(maincanvas_cs, 20.0); // Set font size
-    cairo_move_to(maincanvas_cs, (130 + maincanvasOx - offset_x) * current_scale + offset_x, (520 + maincanvasOy - offset_y) * current_scale + offset_y); // Adjust position
-    cairo_show_text(maincanvas_cs, "CAD 2: Physical Design Automation Tool");
+        // Set the color for the outline (white)
+        cairo_set_source_rgb(maincanvas_cs, 1.0, 1.0, 1.0); // White color
+        cairo_set_line_width(maincanvas_cs, 2.0); // Adjust the width as needed
+        // Set line style to solid
+        cairo_set_dash(maincanvas_cs, 0, 0, 0); // Set dash pattern to solid
+        
+        cairo_rectangle(maincanvas_cs, (520 + maincanvasOx - offset_x) * current_scale + offset_x, (150 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
+        cairo_rectangle(maincanvas_cs, (520 + maincanvasOx - offset_x) * current_scale + offset_x, (280 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
+        cairo_rectangle(maincanvas_cs, (500 + maincanvasOx - offset_x) * current_scale + offset_x, (90 + maincanvasOy - offset_y)  * current_scale + offset_y, 200 * current_scale, 40 * current_scale);
+        cairo_rectangle(maincanvas_cs, (500 + maincanvasOx - offset_x) * current_scale + offset_x, (410 + maincanvasOy - offset_y)  * current_scale + offset_y, 200 * current_scale, 40 * current_scale);
+        cairo_rectangle(maincanvas_cs, (640 + maincanvasOx - offset_x) * current_scale + offset_x, (150 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
+        cairo_rectangle(maincanvas_cs, (640 + maincanvasOx - offset_x) * current_scale + offset_x, (280 + maincanvasOy - offset_y)  * current_scale + offset_y, 60 * current_scale, 110 * current_scale);
+
+        cairo_stroke(maincanvas_cs); // Draw the outline //
+
+
+        // Wires //
+        cairo_set_source_rgb(maincanvas_cs, 227.0/255.0, 151.0/255.0, 116.0/255.0); // Black
+        cairo_set_line_width(maincanvas_cs, 7.0);
+        cairo_move_to(maincanvas_cs, (80 + maincanvasOx - offset_x) * current_scale + offset_x, (380 + maincanvasOy - offset_y)  * current_scale + offset_y);
+        cairo_line_to(maincanvas_cs, (260 + maincanvasOx - offset_x) * current_scale + offset_x, (330 + maincanvasOy - offset_y)  * current_scale + offset_y);
+        cairo_stroke(maincanvas_cs);
+
+        cairo_set_line_width(maincanvas_cs, 9.0);
+        cairo_move_to(maincanvas_cs, (430 + maincanvasOx - offset_x) * current_scale + offset_x, (200 + maincanvasOy - offset_y)  * current_scale + offset_y);
+        cairo_line_to(maincanvas_cs, (540 + maincanvasOx - offset_x) * current_scale + offset_x, (110 + maincanvasOy - offset_y)  * current_scale + offset_y);
+        cairo_stroke(maincanvas_cs);
+
+        cairo_set_line_width(maincanvas_cs, 11.0);
+        cairo_move_to(maincanvas_cs, (430 + maincanvasOx - offset_x) * current_scale + offset_x, (400 + maincanvasOy - offset_y)  * current_scale + offset_y);
+        cairo_line_to(maincanvas_cs, (540 + maincanvasOx - offset_x) * current_scale + offset_x, (350 + maincanvasOy - offset_y)  * current_scale + offset_y);
+        cairo_stroke(maincanvas_cs);
+
+        // Label block //
+        cairo_set_source_rgb(maincanvas_cs, 0.0, 0.153, 0.0); // light blue
+        cairo_rectangle(maincanvas_cs, (100 + maincanvasOx - offset_x) * current_scale + offset_x, (500 + maincanvasOy - offset_y)  * current_scale + offset_y, 500 * current_scale, 40 * current_scale);
+        cairo_fill(maincanvas_cs);
+
+        cairo_select_font_face(maincanvas_cs, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+        cairo_set_source_rgb(maincanvas_cs, 1.0, 1.0, 1.0); // Set text color to black
+        cairo_set_font_size(maincanvas_cs, 20.0); // Set font size
+        cairo_move_to(maincanvas_cs, (130 + maincanvasOx - offset_x) * current_scale + offset_x, (520 + maincanvasOy - offset_y) * current_scale + offset_y); // Adjust position
+        cairo_show_text(maincanvas_cs, "CAD 2: Physical Design Automation Tool");
+    }
+    else
+    {
+        cairo_set_source_rgb(maincanvas_cs,0, 255.0, 0); 
+        cairo_rectangle(maincanvas_cs, 0, 0, current_scale * translate_um_to_pixels(coresite->core_width), current_scale * translate_um_to_pixels(coresite->core_height));
+
+        // gtk_widget_set_size_request(maincanvas, translate_um_to_pixels(coresite->core_height) + 20, translate_um_to_pixels(coresite->core_width) + 20);
+
+        cairo_scale(maincanvas_cs, 650.0 / translate_um_to_pixels(coresite->core_height), 650.0 / translate_um_to_pixels(coresite->core_height));
+
+        // current_scale = (double) (650.0 / translate_um_to_pixels(coresite->core_height));
+        // printf("current_scale = %lf\n", current_scale);
+
+        maincanvasOy = current_scale * (translate_um_to_pixels(coresite->core_height)) + 20;
+        maincanvasOx = (current_scale * translate_um_to_pixels(coresite->core_width)) + 20;
+        cairo_stroke(maincanvas_cs);
+
+        cairo_set_source_rgb(maincanvas_cs, 255.0, 0, 0);
+        for(int i = 0; i < rows_size; i++)
+        {
+            cairo_rectangle(maincanvas_cs, current_scale * translate_um_to_pixels(rows[i].location_x), current_scale *  translate_um_to_pixels(rows[i].location_y), current_scale * translate_um_to_pixels(rows[i].width), current_scale * translate_um_to_pixels(rows[i].height)); 
+            cairo_stroke(maincanvas_cs);
+        }
+
+        for(int i = 0; i < comphash_size; i++)
+        {
+            for(int j = 0; j < HASHDEPTH; j++)
+            {
+                if(comphash[i].hashpresent[j] != 0)
+                {
+                    int lhash, ldepth;
+                    double cell_width, cell_height;
+
+                    cairo_set_source_rgb(maincanvas_cs, 0, 255.0, 0);
+                    
+                    lhash = comphash[i].lib_type[j];
+                    ldepth = comphash[i].lib_type_depth[j];
+
+                    cell_width = libhash[lhash].width[ldepth];
+                    cell_height = libhash[lhash].height[ldepth];
+
+                    cairo_rectangle(maincanvas_cs, current_scale * translate_um_to_pixels(compslocation[i].x[j]), current_scale * translate_um_to_pixels(compslocation[i].y[j]), current_scale * translate_um_to_pixels(cell_width), current_scale * translate_um_to_pixels(cell_height)); 
+                    cairo_fill(maincanvas_cs);
+                }
+            }
+        }
+
+        for(int i = 0; i < comphash_size; i++)
+        {
+            for(int j = 0; j < HASHDEPTH; j++)
+            {
+                if(comphash[i].hashpresent[j] != 0)
+                {
+                    int lhash, ldepth;
+                    double cell_width, cell_height;
+                    
+                    cairo_set_source_rgb(maincanvas_cs, 0, 0, 255.0);
+                    
+                    lhash = comphash[i].lib_type[j];
+                    ldepth = comphash[i].lib_type_depth[j];
+
+                    cell_width = libhash[lhash].width[ldepth];
+                    cell_height = libhash[lhash].height[ldepth];
+
+                    cairo_rectangle(maincanvas_cs, current_scale * translate_um_to_pixels(compslocation[i].x[j]), current_scale * translate_um_to_pixels(compslocation[i].y[j]), current_scale * translate_um_to_pixels(cell_width), current_scale * translate_um_to_pixels(cell_height)); 
+                    cairo_stroke(maincanvas_cs);
+                }
+            }
+        }
+    }
 
 
     // Add text
@@ -477,6 +555,11 @@ static void create_buttons_frame()
     gtk_box_pack_start(GTK_BOX(buttons), list_cells_button, FALSE, FALSE, 0);
 }
 
+
+// static void draw_components_location(GtkWidget *widget, GdkEventExpose *event, gpointer data)
+// {
+//     cairo_rectangle(maincanvas_cs, 0, 0, coresite->core_width, coresite->core_height);
+// }
 
 void start_gui()
 {  

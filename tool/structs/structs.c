@@ -330,6 +330,8 @@ void Lib_init()
             libhash[i].cell_type[j] = -1;
             libhash[i].out_pins_count[j] = 0;
             libhash[i].pin_type[j] = NULL;
+            libhash[i].width[j] = 0.0;
+            libhash[i].height[j] = 0.0;
         }
     }
 }
@@ -467,6 +469,24 @@ void lib_add_func(char *cell_name, char *func_expr, char *cell_pin)
     libhash[lhash].function[ldepth][i] = (char *) calloc(strlen(func_expr) + 1, sizeof(char)); 
     strcpy(libhash[lhash].function[ldepth][i], func_expr);
 }
+
+
+/* ######################### libhash_add_dimensions() ########################*/
+void libhash_add_dimensions(char *cell_name, float width, float height)
+{
+    int lhash;
+    int ldepth;
+
+    get_libhash_indices(cell_name, &lhash, &ldepth);
+    if(ldepth == -1)
+    {
+        return;
+    }
+
+    libhash[lhash].width[ldepth] = width;
+    libhash[lhash].height[ldepth] = height;
+}
+
 
 /* ######################### libhash_free() ######################### */
 /* This function frees the memory allocated for the libhash data structure,
