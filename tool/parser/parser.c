@@ -74,6 +74,9 @@ enum CORE_PARSE_STATES coreParse(enum CORE_PARSE_STATES currentState, char *even
         {
             return currentState;
         }
+
+        default:
+            return currentState;
     }
 }
 
@@ -332,6 +335,7 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
     static int pin_type;
     static float location_x = -1.0;
     static float location_y = -1.0;
+    static int location_format = 0;
 
     switch (currentState) 
     {
@@ -495,6 +499,7 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
         case COMPONENT_3:
             return WAIT_LOCATION;
 
+
         case WAIT_LOCATION:
             if(strcmp(event, "Location:") == 0)
             {
@@ -502,11 +507,12 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             }
             else
             {
-                return WAIT_LOCATION;
+                return COMPONENT_2;
             }
 
         case LOCATION_X:
             // store location X //
+            location_format = 1;
             location_x = atof(event);
             return LOCATION_Y;
         
@@ -558,7 +564,11 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             if(new_comp == 0)
             {
                 comphash_add(comp_name, name_of_cell, cell_type, event); 
-                add_components_location(comp_name, location_x, location_y);
+                
+                if(location_format != 0)
+                {
+                    add_components_location(comp_name, location_x, location_y);
+                }
             }
             if(event[strlen(event)-1] == '\n')
                 event[strlen(event)-1] = '\0';
