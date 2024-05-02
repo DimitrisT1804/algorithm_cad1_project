@@ -16,6 +16,14 @@
 #define SEQUENTIAL 2
 #define INPUT 0
 #define OUTPUT 1
+
+#define ANSI_COLOR_RED     "\x1b[31m"   // define color codes to print TCL messages //
+#define ANSI_COLOR_RESET   "\x1b[0m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_ORANGE  "\x1b[38;5;208m"
+#define ANSI_COLOR_MAGENDA "\e[1;35m"
+#define BOLD_LETTERS "\033[1m"
 // #define DEBUG
 
 struct gatepins
@@ -75,6 +83,33 @@ struct gatepinhashProb
 };
 typedef struct gatepinhashProb GatepinhashProb;
 
+// struct to store components location --> placed info //
+struct componentslocation
+{
+    float x[HASHDEPTH];
+    float y[HASHDEPTH];
+};
+typedef struct componentslocation Componentslocation;
+
+struct coresite
+{
+    int core_utilisation;
+    float core_width;
+    float core_height;
+    float aspect_ratio;
+};
+typedef struct coresite Coresite;
+
+struct rowsstruct
+{
+    char *name;
+    float location_x;
+    float location_y;
+    float width;
+    float height;
+};
+typedef struct rowsstruct Rows;
+
 
 extern gatePins *gatepinhash;
 extern int gatepinhash_size;
@@ -88,6 +123,12 @@ extern GatepinhashVisited *gatepinhashv;
 extern int isLevelized;
 extern int max_design_level;
 extern GatepinhashProb *gatepinhash_prob;
+
+// placed informations //
+extern Componentslocation *compslocation;
+extern Coresite *coresite;
+extern Rows *rows;
+extern int rows_size;
 
 /* gatepinhash functions*/
 void Gatepins_init();
@@ -130,5 +171,22 @@ void gatepinhashProb_init();
 void gatepinhashProb_free();
 
 int check_gatepin_type(int ghash, int gdepth);
+
+/* Componentslocation functions */
+void componentslocation_init();
+void componentslocation_free();
+void add_components_location(char *comp_name, float x, float y);
+
+/* Coresite functions */
+void coresite_init();
+void coresite_free();
+void add_coresite(int, float, float, float);
+void dump_coresite();
+
+/* Rows functions */
+void rows_init();
+void rows_free();
+void add_row(char *name, float x, float y, float width, float height);
+void dump_rows();
 
 #endif

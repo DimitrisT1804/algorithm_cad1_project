@@ -832,6 +832,7 @@ int list_components_info(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
                         // break;
                     }
                 }
+                printf(ANSI_COLOR_MAGENDA"Location is: (X: %f, Y: %f)\n" ANSI_COLOR_RESET, compslocation[chash].x[cdepth], compslocation[chash].y[cdepth]);
                 for(i = 0; i < strlen(comphash[chash].name[cdepth]) + 44; i++)
                 {
                     printf(ANSI_COLOR_BLUE "-" ANSI_COLOR_RESET);
@@ -2153,6 +2154,20 @@ int hide_gui(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const
     return TCL_OK;
 }
 
+int report_coresite(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    dump_coresite();
+
+    return TCL_OK;
+}
+
+int list_rows(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    dump_rows();
+
+    return TCL_OK;
+}
+
 void *main_tcl(void *arg)
 {
     char *text = NULL; // readline result //
@@ -2208,6 +2223,10 @@ void *main_tcl(void *arg)
     Tcl_CreateObjCommand(interp, "report_bdd_dot_component", report_bdd_dot_component, NULL, NULL);
     Tcl_CreateObjCommand(interp, "show_gui", show_gui, NULL, NULL);
     Tcl_CreateObjCommand(interp, "hide_gui", hide_gui, NULL, NULL);
+
+    // TCL commands for placement //
+    Tcl_CreateObjCommand(interp, "report_coresite", report_coresite, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "list_rows", list_rows, NULL, NULL);
 
     signal(SIGSEGV, segfault_handler);
     signal(SIGINT, sigint_handler);

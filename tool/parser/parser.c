@@ -2,6 +2,85 @@
 #include "parser.h"
 // #define DEBUG
 
+enum CORE_PARSE_STATES coreParse(enum CORE_PARSE_STATES currentState, char *event)
+{
+    static float core_width = -1.0;
+    static float core_height = -1.0;
+    static float aspect_ratio = -1.0;
+    static int utilisation_value = -1;
+
+    switch (currentState)
+    {
+        case WAIT_UTILISATION:
+        {
+            if(strcmp(event, "Utilisation:") == 0)
+            {
+                return GET_UTILISATION;
+            }
+            else
+            {
+                return WAIT_UTILISATION;
+            }
+        }
+        case GET_UTILISATION:
+        {
+            utilisation_value = atoi(event);
+
+            return WAIT_HEIGHT;
+        }
+        case WAIT_HEIGHT:
+        {
+            if(strcmp(event, "Height:") == 0)
+            {
+                return GET_WIDTH;
+            }
+            else
+            {
+                return WAIT_HEIGHT;
+            }
+        }
+        case GET_WIDTH:
+        {
+            core_width = atof(event);
+
+            return GET_HEIGHT;
+        }
+        case GET_HEIGHT:
+        {
+            core_height = atof(event);
+
+            return WAIT_ASPECT_RATIO;
+        }
+        case WAIT_ASPECT_RATIO:
+        {
+            if(strcmp(event, "Ratio:") == 0)
+            {
+                return GET_ASPECT_RATIO;
+            }
+            else
+            {
+                return WAIT_ASPECT_RATIO;
+            }
+        }
+        case GET_ASPECT_RATIO:
+        {
+            aspect_ratio = atof(event);
+
+            add_coresite(utilisation_value, core_width, core_height, aspect_ratio);
+
+            return WAIT_NEXT_STATE;
+        }
+        case WAIT_NEXT_STATE:
+        {
+            return currentState;
+        }
+
+        default:
+            return currentState;
+    }
+}
+
+
 /* #### countIOS(enum IO_STATES_CCS currentState, char *event) #### */
 /* This function handles the counting of input/output (IO) states based on
    the current state and the provided event. It implements a FSM to
@@ -254,6 +333,9 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
     static int new_comp = 0;
     static char *cell_pin;
     static int pin_type;
+    static float location_x = -1.0;
+    static float location_y = -1.0;
+    static int location_format = 0;
 
     switch (currentState) 
     {
@@ -372,7 +454,7 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
 
         case CONNECTED_PINS: // get the CCs of output pin //
             if(strcmp(event, "Component:") == 0)
-                return COMPONENT_2;
+                return COMPONENT_3;
             
             if(strcmp(comp_name, event) == 0)
             {
@@ -414,6 +496,34 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
 
             return CONNECTED_PINS;
 
+        case COMPONENT_3:
+            return WAIT_LOCATION;
+
+
+        case WAIT_LOCATION:
+            if(strcmp(event, "Location:") == 0)
+            {
+                return LOCATION_X;
+            }
+            else
+            {
+                return COMPONENT_2;
+            }
+
+        case LOCATION_X:
+            // store location X //
+            location_format = 1;
+            location_x = atof(event);
+            return LOCATION_Y;
+        
+        case LOCATION_Y:
+            // store location Y //
+            location_y = atof(event);
+
+            // add location of component //
+            // add_components_location(comp_name, location_x, location_y); 
+            return COMPONENT_2;
+
         case COMPONENT_2: // wait for second time of word Component //
             if(strcmp(event, "Pin:") == 0)
             {
@@ -454,6 +564,11 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
             if(new_comp == 0)
             {
                 comphash_add(comp_name, name_of_cell, cell_type, event); 
+                
+                if(location_format != 0)
+                {
+                    add_components_location(comp_name, location_x, location_y);
+                }
             }
             if(event[strlen(event)-1] == '\n')
                 event[strlen(event)-1] = '\0';
@@ -613,6 +728,91 @@ enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, ch
     }
 }
 
+enum count_ROWS count_rows(enum count_ROWS currentState, char *event)
+{
+    switch (currentState)
+    {
+        case WAIT_ROW_COUNT:
+            if(strcmp(event, "Row:") == 0)
+            {
+                rows_size++;
+            }
+
+            return WAIT_ROW_COUNT;
+        
+        default:
+            return currentState;
+    }
+}
+
+enum proccess_ROWS proccess_rows(enum proccess_ROWS currentState, char *event)
+{
+    static char *name;
+    static float location_x;
+    static float location_y;
+    static float width;
+    static float height;
+
+    switch (currentState) 
+    {
+        case WAIT_ROW:
+            if(strcmp(event, "Row:") == 0)
+            {
+                return GET_NAME;
+            }
+            else
+            {
+                return WAIT_ROW;
+            }
+
+        case GET_NAME:
+            name = (char *) calloc(strlen(event) + 1, sizeof(char));
+            strcpy(name, event);
+            return WAIT_LOCATION_ROWS;
+
+        case WAIT_LOCATION_ROWS:
+            if(strcmp(event, "Location:") == 0)
+            {
+                return GET_X;
+            }
+            else
+            {
+                return WAIT_LOCATION_ROWS;
+            }
+
+        case GET_X:
+            location_x = atof(event);
+            return GET_Y;
+
+        case GET_Y:
+            location_y = atof(event);
+            return WAIT_WIDTH;
+
+        case WAIT_WIDTH:
+            if(strcmp(event, "Width/Height:") == 0)
+            {
+                return GET_WIDTH_ROW;
+            }
+            else
+            {
+                return WAIT_WIDTH;
+            }
+
+        case GET_WIDTH_ROW:
+            width = atof(event);
+            return GET_HEIGHT_ROW;
+
+        case GET_HEIGHT_ROW:
+            height = atof(event);
+            add_row(name, location_x, location_y, width, height);
+            free(name);
+            return WAIT_ROW;
+
+        default:
+            return currentState;
+    }
+}
+
 /* #################### print_gatepinhash() #################### */
 /* This function prints all gatepis from gatepinhash with CCs and 
    parent component and also if it is WIRE or IO*/
@@ -726,7 +926,7 @@ int call_parser(char *input_file)
     FILE *filename; 
     char *line = NULL;
     char *find_line;
-    int choose_FSM = 0;
+    int choose_FSM = -1;
     int i = 0;
     char word[LINE_MAX] = {'\0'};
     int pos = 0;
@@ -736,10 +936,13 @@ int call_parser(char *input_file)
     int correct_format = 0;
 
     enum IO_STATES currentState = START;
-    enum IO_STATES_CCS currentState2 = START;
+    enum IO_STATES_CCS currentState2 = WAIT_IO;
     enum lib_parse currentState3 = WAIT;
     enum proccess_lib_pins currentState4 = BEGIN;
-    enum proccess_lib_pins currentState5 = BEGIN_IO;
+    enum proccess_lib_pins_IO currentState5 = BEGIN_IO;
+    enum CORE_PARSE_STATES currentState6 = WAIT_UTILISATION;
+    enum count_ROWS currentState7 = WAIT_ROW_COUNT;
+    enum proccess_ROWS currentState8 = WAIT_ROW;
 
 
     clock_t clock_start = clock();
@@ -761,6 +964,20 @@ int call_parser(char *input_file)
     while((read_length = (getline(&line, &line_size, filename) ) )!= -1)
     {
         j = 0;
+
+        find_line = strstr(line, "# Core Utilisation:");
+        if(find_line != NULL)
+        {
+            coresite_init();
+            choose_FSM = 0;
+        }
+
+        find_line = strstr(line, "# Rows:");
+        if(find_line != NULL)
+        {
+            choose_FSM = 6;
+        }
+
         find_line = strstr(line, "Top-Level I/O CCs:");
         if(find_line != NULL)
         {
@@ -790,13 +1007,21 @@ int call_parser(char *input_file)
                 }
             }
             pos = 0;
-            if(choose_FSM == 1)
+            if(choose_FSM == 0)
+            {
+                currentState6 = coreParse(currentState6, word);
+            }
+            else if(choose_FSM == 1)
             {
                 currentState2 = countIOS(currentState2, word);
             }
             else if (choose_FSM == 3)
             {
-                currentState2 = count_components_CCS(currentState2, word);
+                currentState3 = count_components_CCS(currentState3, word);
+            }
+            else if (choose_FSM == 6)
+            {
+                currentState7 = count_rows(currentState7, word);
             }
 
             while (line[i] == ' ') 
@@ -820,10 +1045,22 @@ int call_parser(char *input_file)
     libhash_size++; // add one to libhash size because hash functions usually does not return 0 //
     structs_init(); // initialize all structs with correct sizes //
 
+    rows_init(); // initialize rows //
+
+    currentState2 = WAIT_IO;
+    currentState3 = WAIT;
+
     // reparse file to store gatepins components and cells //
     while((read_length = (getline(&line, &line_size, filename) ) )!= -1)
     {
         j = 0;
+
+        find_line = strstr(line, "# Rows:");
+        if(find_line != NULL)
+        {
+            choose_FSM = 7;
+        }
+
         find_line = strstr(line, "Top-Level I/O Ports:");
         if(find_line != NULL)
         {
@@ -869,6 +1106,10 @@ int call_parser(char *input_file)
             else if (choose_FSM == 3)
             {
                 currentState3 = proccessAllComponentsCCS(currentState3, word);
+            }
+            else if(choose_FSM == 7)
+            {
+                currentState8 = proccess_rows(currentState8, word);
             }
 
             while (line[i] == ' ') // if there are more spaces between words //

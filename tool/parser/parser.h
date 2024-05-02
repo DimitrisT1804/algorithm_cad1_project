@@ -13,6 +13,18 @@
 #define BOLD_LETTERS "\033[1m"
 
 
+enum CORE_PARSE_STATES
+{
+    WAIT_UTILISATION,
+    GET_UTILISATION,
+    WAIT_HEIGHT,
+    GET_WIDTH,
+    GET_HEIGHT,
+    WAIT_ASPECT_RATIO,
+    GET_ASPECT_RATIO,
+    WAIT_NEXT_STATE
+};
+
 enum IO_STATES 
 {
     START,
@@ -41,6 +53,10 @@ enum lib_parse
     OUTPUT_PIN_2,
     CONNECTED_PINS,
     CONNECTED_PINS_2,
+    COMPONENT_3,
+    WAIT_LOCATION,
+    LOCATION_X,
+    LOCATION_Y,
     COMPONENT_2,
     PIN_OUT,
     FUNCTION_WAIT,
@@ -61,6 +77,24 @@ enum proccess_lib_pins
     PIN
 };
 
+// CAD 2 placement parsing //
+enum count_ROWS
+{
+    WAIT_ROW_COUNT
+};
+
+enum proccess_ROWS
+{
+    WAIT_ROW,
+    GET_NAME,
+    WAIT_LOCATION_ROWS,
+    GET_X,
+    GET_Y,
+    WAIT_WIDTH,
+    GET_WIDTH_ROW,
+    GET_HEIGHT_ROW
+};
+
 enum IO_STATES_CCS countIOS(enum IO_STATES_CCS currentState, char *event);
 enum lib_parse count_components_CCS(enum lib_parse currentState, char *event);
 enum IO_STATES proccessIOS(enum IO_STATES currentState, char *event);
@@ -68,6 +102,8 @@ enum IO_STATES_CCS proccessIOS_CCS(enum IO_STATES_CCS currentState, char *event)
 enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event);
 enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO currentState, char *event);
 enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, char *event);
+enum count_ROWS count_rows(enum count_ROWS currentState, char *event);
+enum proccess_ROWS proccess_rows(enum proccess_ROWS currentState, char *event);
 
 void print_gatepinhash();
 void print_libhash();

@@ -83,6 +83,11 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     // cairo_stroke(maincanvas_cs);
     cairo_stroke(maincanvas_cs);
 
+    // set visible area clipping //
+    // // Set the clipping region to the visible area
+    // cairo_rectangle(maincanvas_cs, 0, 0, 800, 500);
+    // cairo_clip(maincanvas_cs);
+
     // letter C //
     // Draw rectangles to form the word "CAD"
     cairo_set_source_rgb(maincanvas_cs, 168.0/255.0, 212.0/255.0, 173.0/255.0); // light blue
@@ -212,8 +217,6 @@ static void resizemaincanvas(GtkWidget *widget, GdkRectangle *gdkrect, gpointer 
     }
     #endif
 
-  // resize code //
-
     maincanvasWidth = gdkrect->width;
     maincanvasHeight = gdkrect->height;
 
@@ -230,6 +233,9 @@ static void resizemaincanvas(GtkWidget *widget, GdkRectangle *gdkrect, gpointer 
 static gboolean maincanvasvscroll(GtkRange *range, GtkScrollType scroll, gdouble value, gpointer data)
 {
     double maxmaincanvasOy;
+    double low;
+    double up;
+    double page_size;
     int ivalue; // calibrated, inter y-offset value, based on vertical scrollbar value //
 
     #ifdef DEBUGGUI
@@ -239,14 +245,12 @@ static gboolean maincanvasvscroll(GtkRange *range, GtkScrollType scroll, gdouble
     }
     #endif  
 
-  // vertical scrollbar code here //
-
     adjust_scrollbar = gtk_range_get_adjustment(range);
 
     // Get the current values of the adjustment
-    double low = gtk_adjustment_get_lower(adjust_scrollbar);
-    double up = gtk_adjustment_get_upper(adjust_scrollbar);
-    double page_size = gtk_adjustment_get_page_size(adjust_scrollbar);
+    low = gtk_adjustment_get_lower(adjust_scrollbar);
+    up = gtk_adjustment_get_upper(adjust_scrollbar);
+    page_size = gtk_adjustment_get_page_size(adjust_scrollbar);
 
     gtk_adjustment_set_lower(adjust_scrollbar, low = -550.0);
     gtk_adjustment_set_upper(adjust_scrollbar, up = 1100.0);
@@ -292,8 +296,6 @@ static gboolean maincanvashscroll(GtkRange *range, GtkScrollType scroll, gdouble
       printf("DEBUG: Scroll value = %.3f\n", value);
     }
     #endif  
-
-  // horizontal scrollbar code here //
 
     adjust_scrollbar = gtk_range_get_adjustment(range);
 
@@ -407,7 +409,10 @@ static void mousebutton(GtkWidget *widget, GdkEventButton *eev, gpointer data)
         current_scale = 1.0;
         offset_x = 1.0;
         offset_y = 1.0;
+
+        // gtk_adjustment_set_value(adjust_scrollbar, 200);
         gtk_widget_queue_draw(widget);
+
     }
 
     if (eev->button == 3) // Right Mouse Button //
@@ -488,8 +493,6 @@ void start_gui()
     GtkWidget *menubar;
     GtkWidget *filemenu;
     GtkWidget *file;
-
-
 
     // *** Local Variables End *** //
 
