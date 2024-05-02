@@ -133,6 +133,9 @@ extern Coresite *coresite;
 extern Rows *rows;
 extern int rows_size;
 
+extern int design_is_placed;
+extern char *highlighted_component;
+
 /* gatepinhash functions*/
 void Gatepins_init();
 void Gatepins_free();

@@ -9,8 +9,8 @@
 #include <readline/history.h>
 #include <unistd.h>
 // #include <tcl8.6/tcl.h>
-#include <tcl.h>
-// #include <tcl/tcl.h>
+// #include <tcl.h>
+#include <tcl/tcl.h>
 #include <limits.h>
 #include <syscall.h>
 #include <sys/types.h>
@@ -76,7 +76,7 @@ static const char *commands[] =
     "get_toposort", "get_predecessor_pin", "report_gatepins_levelized", "report_level_gatepins", 
     "report_gatepin_level", "report_library_cell_BDD", "annotate_bdd", "report_bdd_dot_gatepin",
     "get_traverse_cudd",  "set_static_probability", "list_static_probability", "report_bdd_dot_component", "show_gui",
-    "hide_gui", "report_coresite", "list_rows", 
+    "hide_gui", "report_coresite", "list_rows", "highligth_component", 
     
      
     NULL    // should terminate with NULL //
@@ -99,6 +99,7 @@ int findparametermain(int argc, char *argv[], char *parameter);
 int report_bdd_dot_component(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
 int report_coresite(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
 int list_rows(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
+int highligth_component(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
 void *main_tcl(void *arg);
 
 #endif

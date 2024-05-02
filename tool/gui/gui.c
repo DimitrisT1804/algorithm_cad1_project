@@ -82,8 +82,10 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     // cairo_rectangle(maincanvas_cs, 0, 0, 800, 500);
     // cairo_clip(maincanvas_cs);
 
-    if(comphash == NULL)
+    if(comphash == NULL || design_is_placed == 0)
     {
+        // cairo_scale(maincanvas_cs, 650.0, 650.0);
+
         cairo_set_source_rgb(maincanvas_cs, 146.0/255.0, 185.0/255.0, 189.0/255.0);
         cairo_paint(maincanvas_cs);
 
@@ -200,7 +202,7 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
         cairo_move_to(maincanvas_cs, (130 + maincanvasOx - offset_x) * current_scale + offset_x, (520 + maincanvasOy - offset_y) * current_scale + offset_y); // Adjust position
         cairo_show_text(maincanvas_cs, "CAD 2: Physical Design Automation Tool");
     }
-    else
+    else if(design_is_placed == 1)
     {
         cairo_set_source_rgb(maincanvas_cs,0, 255.0, 0); 
         cairo_rectangle(maincanvas_cs, 0, 0, current_scale * translate_um_to_pixels(coresite->core_width), current_scale * translate_um_to_pixels(coresite->core_height));
@@ -212,14 +214,14 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
         // current_scale = (double) (650.0 / translate_um_to_pixels(coresite->core_height));
         // printf("current_scale = %lf\n", current_scale);
 
-        maincanvasOy = current_scale * (translate_um_to_pixels(coresite->core_height)) + 20;
-        maincanvasOx = (current_scale * translate_um_to_pixels(coresite->core_width)) + 20;
+        // maincanvasOy = current_scale * (translate_um_to_pixels(coresite->core_height)) + 20;
+        // maincanvasOx = (current_scale * translate_um_to_pixels(coresite->core_width)) + 20;
         cairo_stroke(maincanvas_cs);
 
         cairo_set_source_rgb(maincanvas_cs, 255.0, 0, 0);
         for(int i = 0; i < rows_size; i++)
         {
-            cairo_rectangle(maincanvas_cs, current_scale * translate_um_to_pixels(rows[i].location_x), current_scale *  translate_um_to_pixels(rows[i].location_y), current_scale * translate_um_to_pixels(rows[i].width), current_scale * translate_um_to_pixels(rows[i].height)); 
+            cairo_rectangle(maincanvas_cs,(translate_um_to_pixels(rows[i].location_x) - offset_x + maincanvasOx) * current_scale + offset_x, (translate_um_to_pixels(rows[i].location_y) - offset_y + maincanvasOy) * current_scale + offset_y, current_scale * translate_um_to_pixels(rows[i].width), current_scale * translate_um_to_pixels(rows[i].height)); 
             cairo_stroke(maincanvas_cs);
         }
 
@@ -232,7 +234,15 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
                     int lhash, ldepth;
                     double cell_width, cell_height;
 
-                    cairo_set_source_rgb(maincanvas_cs, 0, 255.0, 0);
+                    
+                    if(highlighted_component != NULL && strcmp(comphash[i].name[j], highlighted_component) == 0)
+                    {
+                        cairo_set_source_rgb(maincanvas_cs, 7.0 / 255.0, 243.0 /255.0, 227.0 / 255.0);
+                    }
+                    else
+                    {
+                        cairo_set_source_rgb(maincanvas_cs, 0, 255.0, 0);
+                    }
                     
                     lhash = comphash[i].lib_type[j];
                     ldepth = comphash[i].lib_type_depth[j];
@@ -240,7 +250,7 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
                     cell_width = libhash[lhash].width[ldepth];
                     cell_height = libhash[lhash].height[ldepth];
 
-                    cairo_rectangle(maincanvas_cs, current_scale * translate_um_to_pixels(compslocation[i].x[j]), current_scale * translate_um_to_pixels(compslocation[i].y[j]), current_scale * translate_um_to_pixels(cell_width), current_scale * translate_um_to_pixels(cell_height)); 
+                    cairo_rectangle(maincanvas_cs, (translate_um_to_pixels(compslocation[i].x[j]) - offset_x + maincanvasOx) * current_scale + offset_x, (translate_um_to_pixels(compslocation[i].y[j]) - offset_y + maincanvasOy) * current_scale + offset_y, current_scale * translate_um_to_pixels(cell_width), current_scale * translate_um_to_pixels(cell_height)); 
                     cairo_fill(maincanvas_cs);
                 }
             }
@@ -263,7 +273,7 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
                     cell_width = libhash[lhash].width[ldepth];
                     cell_height = libhash[lhash].height[ldepth];
 
-                    cairo_rectangle(maincanvas_cs, current_scale * translate_um_to_pixels(compslocation[i].x[j]), current_scale * translate_um_to_pixels(compslocation[i].y[j]), current_scale * translate_um_to_pixels(cell_width), current_scale * translate_um_to_pixels(cell_height)); 
+                    cairo_rectangle(maincanvas_cs, (translate_um_to_pixels(compslocation[i].x[j]) - offset_x + maincanvasOx) * current_scale + offset_x, (translate_um_to_pixels(compslocation[i].y[j]) - offset_y + maincanvasOy) * current_scale + offset_y, current_scale * translate_um_to_pixels(cell_width), current_scale * translate_um_to_pixels(cell_height)); 
                     cairo_stroke(maincanvas_cs);
                 }
             }
@@ -305,7 +315,6 @@ static void resizemaincanvas(GtkWidget *widget, GdkRectangle *gdkrect, gpointer 
     maincanvasHeight = newmaincanvasHeight;
 
     gtk_widget_queue_draw(widget);
-
 }
 
 static gboolean maincanvasvscroll(GtkRange *range, GtkScrollType scroll, gdouble value, gpointer data)
@@ -347,6 +356,8 @@ static gboolean maincanvasvscroll(GtkRange *range, GtkScrollType scroll, gdouble
     {
         maincanvasOy = maxmaincanvasOy; // Limit maximum value
     }
+
+    // cairo_translate(maincanvas_cs, maincanvasOx, maincanvasOy);
 
     gtk_adjustment_set_value(adjust_scrollbar, maincanvasOy);
 

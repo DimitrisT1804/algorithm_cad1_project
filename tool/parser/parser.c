@@ -542,7 +542,9 @@ enum lib_parse proccessAllComponentsCCS(enum lib_parse currentState, char *event
 
         case LOCATION_X:
             // store location X //
+
             location_format = 1;
+            design_is_placed = 1;
             location_x = atof(event);
             return LOCATION_Y;
         

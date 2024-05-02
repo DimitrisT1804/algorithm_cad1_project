@@ -569,6 +569,8 @@ int clear_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
     gdepth_added = NULL;
     ghash_added_size = 0;
 
+    design_is_placed = 0;
+
     if(gbm != NULL)
     {
         Cudd_Quit(gbm);
@@ -2171,6 +2173,48 @@ int list_rows(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *cons
     return TCL_OK;
 }
 
+int highligth_component(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    int i, j;
+    int chash, cdepth;
+    int lhash, ldepth;
+    int ghash, gdepth;
+    int gconhash, gcondepth;
+    char *currComp = NULL;
+    char *currPin = NULL;
+
+    if(objc != 2)
+    {
+        Tcl_WrongNumArgs(interp, 1, objv, "component");
+        return TCL_ERROR;
+    }
+
+    currComp = Tcl_GetString(objv[1]);
+
+    if(currComp == NULL)
+    {
+        return TCL_ERROR;
+    }
+
+    if(gatepinhash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    get_comphash_indices(currComp, &chash, &cdepth);
+    if(cdepth == -1)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Component %s does not exists!" ANSI_COLOR_RESET, currComp);
+        return TCL_ERROR;
+    }
+
+    highlighted_component = my_calloc(strlen(currComp) + 1, sizeof(char));
+    strcpy(highlighted_component, currComp);
+
+    return TCL_OK;
+}
+
 void *main_tcl(void *arg)
 {
     char *text = NULL; // readline result //
@@ -2230,6 +2274,7 @@ void *main_tcl(void *arg)
     // TCL commands for placement //
     Tcl_CreateObjCommand(interp, "report_coresite", report_coresite, NULL, NULL);
     Tcl_CreateObjCommand(interp, "list_rows", list_rows, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "highligth_component", highligth_component, NULL, NULL);
 
     signal(SIGSEGV, segfault_handler);
     signal(SIGINT, sigint_handler);

@@ -21,6 +21,8 @@ Componentslocation *compslocation;
 Coresite *coresite;
 Rows *rows;
 int rows_size;
+int design_is_placed = 0;
+char *highlighted_component = NULL;
 
 /* #################### Gatepins_init() #################### */
 /* This function just initialize all fields of gatepin hash */
