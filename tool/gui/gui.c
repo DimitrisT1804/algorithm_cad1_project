@@ -204,13 +204,15 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     }
     else if(design_is_placed == 1)
     {
-        cairo_set_source_rgb(maincanvas_cs,0, 255.0, 0); 
-        cairo_rectangle(maincanvas_cs, 0, 0, current_scale * translate_um_to_pixels(coresite->core_width), current_scale * translate_um_to_pixels(coresite->core_height));
 
         // gtk_widget_set_size_request(maincanvas, translate_um_to_pixels(coresite->core_height) + 20, translate_um_to_pixels(coresite->core_width) + 20);
 
-        cairo_scale(maincanvas_cs, 650.0 / translate_um_to_pixels(coresite->core_height), 650.0 / translate_um_to_pixels(coresite->core_height));
+        cairo_scale(maincanvas_cs, 650.0 / translate_um_to_pixels(coresite->core_height), 650.0 / translate_um_to_pixels(coresite->core_height));  
 
+        double height_scale = 650.0 / translate_um_to_pixels(coresite->core_height);
+
+        cairo_set_source_rgb(maincanvas_cs,0, 255.0, 0); 
+        cairo_rectangle(maincanvas_cs, (maincanvasOx - offset_x) * current_scale + offset_x, (maincanvasOy - offset_y) * current_scale + offset_y, current_scale * translate_um_to_pixels(coresite->core_width), current_scale * translate_um_to_pixels(coresite->core_height));
         // current_scale = (double) (650.0 / translate_um_to_pixels(coresite->core_height));
         // printf("current_scale = %lf\n", current_scale);
 
@@ -253,9 +255,13 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
                     cairo_rectangle(maincanvas_cs, (translate_um_to_pixels(compslocation[i].x[j]) - offset_x + maincanvasOx) * current_scale + offset_x, (translate_um_to_pixels(compslocation[i].y[j]) - offset_y + maincanvasOy) * current_scale + offset_y, current_scale * translate_um_to_pixels(cell_width), current_scale * translate_um_to_pixels(cell_height)); 
                     cairo_fill(maincanvas_cs);
 
-                    compslocation[i].drawing_x[j] = (translate_um_to_pixels(compslocation[i].x[j]) - offset_x + maincanvasOx) * current_scale + offset_x;
+                    compslocation[i].drawing_x[j] = ( (translate_um_to_pixels(compslocation[i].x[j]) - offset_x + maincanvasOx) * current_scale + offset_x) * height_scale ;
 
-                    compslocation[i].drawing_y[j] = (translate_um_to_pixels(compslocation[i].y[j]) - offset_y + maincanvasOy) * current_scale + offset_y;
+                    compslocation[i].drawing_y[j] = ( (translate_um_to_pixels(compslocation[i].y[j]) - offset_y + maincanvasOy) * current_scale + offset_y ) * height_scale;
+
+                    compslocation[i].drawing_x_max[j] = ( (translate_um_to_pixels(compslocation[i].x[j]) - offset_x + maincanvasOx) * current_scale + offset_x) * height_scale + current_scale * translate_um_to_pixels(cell_width) * height_scale;
+
+                    compslocation[i].drawing_y_max[j] = ( (translate_um_to_pixels(compslocation[i].y[j]) - offset_y + maincanvasOy) * current_scale + offset_y ) * height_scale + current_scale * translate_um_to_pixels(cell_height) * height_scale;
                 }
             }
         }
@@ -521,6 +527,8 @@ static void mousebutton(GtkWidget *widget, GdkEventButton *eev, gpointer data)
         // code here //
         printf("Mouse location: X: %f, Y: %f\n", ( (eev->x - offset_x + maincanvasOx) * current_scale + offset_x) , (eev->y - offset_y + maincanvasOy) * current_scale + offset_y);
 
+        find_cell_pos((eev->x - offset_x + maincanvasOx) * current_scale + offset_x, (eev->y - offset_y + maincanvasOy) * current_scale + offset_y);
+
         // for(i = 0; i < comphash_size; i++)
         // {
         //     for(j = 0; j < HASHDEPTH; j++)
@@ -615,6 +623,30 @@ static void create_buttons_frame()
 // {
 //     cairo_rectangle(maincanvas_cs, 0, 0, coresite->core_width, coresite->core_height);
 // }
+
+void find_cell_pos(double mouse_x, double mouse_y)
+{
+    int i;
+    int j;
+
+    for(i = 0; i < comphash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(comphash[i].hashpresent[j] == 0)
+            {
+                continue;
+            }
+
+            if(mouse_x >= compslocation[i].drawing_x[j] && mouse_x <= compslocation[i].drawing_x_max[j] && mouse_y >= compslocation[i].drawing_y[j] && mouse_y <= compslocation[i].drawing_y_max[j])
+            {
+                highlighted_component = comphash[i].name[j];
+                dump_component(comphash[i].name[j]);
+                break;
+            }
+        }
+    }
+}
 
 void start_gui()
 {  

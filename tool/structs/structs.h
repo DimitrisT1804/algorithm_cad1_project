@@ -98,6 +98,8 @@ struct componentslocation
 
     float drawing_x[HASHDEPTH];
     float drawing_y[HASHDEPTH];
+    float drawing_x_max[HASHDEPTH];
+    float drawing_y_max[HASHDEPTH];
 };
 typedef struct componentslocation Componentslocation;
 
@@ -174,6 +176,7 @@ void get_comphash_indices(char *comp_name, int *chash, int *chashdepth);
 void comphash_free();
 void structs_init();
 void structs_free();
+void dump_component();
 
 /* GatepinhashVisited functions */
 void gatepinhashVisited_init();

@@ -352,7 +352,9 @@ void Lib_add(char *cell_name, int cell_type, char *func_expr)
     int lhash, ldepth;
 
     if(cell_name == NULL)
+    {
         return;
+    }
 
     key = hash_function(cell_name, libhash_size); // rehash cell_name to get pos of it in libhash //
 
@@ -942,6 +944,8 @@ void componentslocation_init()
             compslocation[i].y[j] = -1.0;
             compslocation[i].drawing_x[j]  = -1.0;
             compslocation[i].drawing_y[j] = -1.0;
+            compslocation[i].drawing_x_max[j] = -1.0;
+            compslocation[i].drawing_y_max[j] = -1.0;
         }
     }
 }
@@ -1183,4 +1187,65 @@ void dump_gatepinhash()
             printf("\n\n");
         }
     }
+}
+
+void dump_component(char *comp_name)
+{
+    int chash;
+    int cdepth;
+    int lhash;
+    int ldepth;
+    int ghash;
+    int gdepth;
+    int gconhash;
+    int gcondepth;
+    int i;
+    int j;
+    char *currPin = NULL;
+
+    get_comphash_indices(comp_name, &chash, &cdepth);
+    if(cdepth == -1)
+    {
+        return;
+    }
+
+    printf(ANSI_COLOR_BLUE"------------- INFO COMPONENT: %s -------------\n" ANSI_COLOR_RESET, comphash[chash].name[cdepth]);
+
+    lhash = comphash[chash].lib_type[cdepth];
+    ldepth = comphash[chash].lib_type_depth[cdepth];
+    printf(ANSI_COLOR_ORANGE"Component is of type: %s\n" ANSI_COLOR_RESET, libhash[lhash].name[ldepth]);
+
+    for(i = 0; i < libhash[lhash].pin_count[ldepth]; i++)
+    {
+        currPin = (char *) my_calloc(strlen(comphash[chash].name[cdepth]) + strlen(libhash[lhash].pin_names[ldepth][i]) + 1, sizeof(char));
+        strcpy(currPin, comphash[chash].name[cdepth]);
+        strcat(currPin, libhash[lhash].pin_names[ldepth][i]);
+
+        get_gatepin_indices(currPin, &ghash, &gdepth);
+        if(gdepth == -1)
+        {
+            printf(ANSI_COLOR_RED "ERROR: gatepin NOT found" ANSI_COLOR_RESET);
+            free(currPin);
+            return;
+        }
+        free(currPin);
+        if(gatepinhash[ghash].connections_size[gdepth] != 0)
+        {
+            printf(ANSI_COLOR_BLUE "Successors of pin %s are: \n" ANSI_COLOR_RESET, gatepinhash[ghash].name[gdepth]);
+            for(j = 0; j < gatepinhash[ghash].connections_size[gdepth]; j++)
+            {
+                gconhash = gatepinhash[ghash].pinConn[gdepth][j];
+                gcondepth = gatepinhash[ghash].pinConnDepth[gdepth][j];
+
+                printf(ANSI_COLOR_GREEN "• %s \n" ANSI_COLOR_RESET, gatepinhash[gconhash].name[gcondepth]);
+            }
+        }
+    }
+    printf(ANSI_COLOR_MAGENDA"Location is: (X: %f, Y: %f)\n" ANSI_COLOR_RESET, compslocation[chash].x[cdepth], compslocation[chash].y[cdepth]);
+    printf(ANSI_COLOR_MAGENDA "Drawing location is (X: %f, Y: %f)\n" ANSI_COLOR_RESET, compslocation[chash].drawing_x[cdepth], compslocation[chash].drawing_y[cdepth]);
+    for(i = 0; i < strlen(comphash[chash].name[cdepth]) + 44; i++)
+    {
+        printf(ANSI_COLOR_BLUE "-" ANSI_COLOR_RESET);
+    }
+    printf("\n\n");
 }

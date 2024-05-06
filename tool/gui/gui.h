@@ -11,8 +11,8 @@
 #include "../tcl/tcl.h"
 #include "../structs/structs.h"
 
-#include <tcl/tcl.h>
-// #include <tcl.h>
+// #include <tcl/tcl.h>
+#include <tcl.h>
 
 // #define DEBUGGUI
 
@@ -66,3 +66,4 @@ static void flowbuttonclicked(GtkButton *button, gpointer data);
 static void create_buttons_frame();
 static void list_cells_button_clicked(GtkButton *button, gpointer data);
 double translate_um_to_pixels(double um);
+void find_cell_pos(double mouse_x, double mouse_y);
