@@ -834,10 +834,10 @@ int list_components_info(ClientData clientdata, Tcl_Interp *interp, int objc, Tc
 
                             printf(ANSI_COLOR_GREEN "• %s \n" ANSI_COLOR_RESET, gatepinhash[gconhash].name[gcondepth]);
                         }
-                        // break;
                     }
                 }
                 printf(ANSI_COLOR_MAGENDA"Location is: (X: %f, Y: %f)\n" ANSI_COLOR_RESET, compslocation[chash].x[cdepth], compslocation[chash].y[cdepth]);
+                printf(ANSI_COLOR_MAGENDA "Drawing location is (X: %f, Y: %f)\n" ANSI_COLOR_RESET, compslocation[chash].drawing_x[cdepth], compslocation[chash].drawing_y[cdepth]);
                 for(i = 0; i < strlen(comphash[chash].name[cdepth]) + 44; i++)
                 {
                     printf(ANSI_COLOR_BLUE "-" ANSI_COLOR_RESET);
@@ -1324,7 +1324,7 @@ int report_gatepins_levelized(ClientData clientdata, Tcl_Interp *interp, int obj
     {
         for(j = 0; j < HASHDEPTH; j++)
         {
-            if(gatepinhash[i].hashpresent[j] == 1)
+            if(gatepinhash[i].hashpresent[j] != 0)
             {
                 max_level = max(max_level, gatepinhashv[i].level[j]);
             }
@@ -1338,7 +1338,7 @@ int report_gatepins_levelized(ClientData clientdata, Tcl_Interp *interp, int obj
         {
             for(j = 0; j < HASHDEPTH; j++)
             {
-                if(gatepinhash[i].hashpresent[j] == 1)
+                if(gatepinhash[i].hashpresent[j] != 0)
                 {
                     if (gatepinhashv[i].level[j] == level) 
                     {
@@ -1400,7 +1400,7 @@ int report_level_gatepins(ClientData clientdata, Tcl_Interp *interp, int objc, T
     {
         for(j = 0; j < HASHDEPTH; j++)
         {
-            if(gatepinhash[i].hashpresent[j] == 1)
+            if(gatepinhash[i].hashpresent[j] != 0)
             {
                 if (gatepinhashv[i].level[j] == level) 
                 {
@@ -1799,7 +1799,7 @@ int set_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc, 
         {
             for(j = 0; j < HASHDEPTH; j++)
             {
-                if(gatepinhash[i].hashpresent[j] == 1)
+                if(gatepinhash[i].hashpresent[j] != 0)
                 {   
                     if(gatepinhashv[i].level[j] == 0)
                     {
@@ -1927,7 +1927,7 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
     {
         for(j = 0; j < HASHDEPTH; j++)
         {
-            if(gatepinhash[i].hashpresent[j] == 1)
+            if(gatepinhash[i].hashpresent[j] != 0)
             {
                 if (check_gatepin_type(i, j) == 1)
                 {
@@ -1950,7 +1950,7 @@ int list_static_probability(ClientData clientdata, Tcl_Interp *interp, int objc,
         {
             for(j = 0; j < HASHDEPTH; j++)
             {
-                if(gatepinhash[i].hashpresent[j] == 1)
+                if(gatepinhash[i].hashpresent[j] != 0)
                 {   
                     if(check_gatepin_type(i, j) == 1)
                     {
@@ -2215,6 +2215,24 @@ int highligth_component(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl
     return TCL_OK;
 }
 
+int list_gatepins(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    dump_gatepinhash();
+
+    return TCL_OK;
+}
+
+int report_hpwl(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    double hpwl = 0.0;
+    
+    hpwl = calculate_HPWL();
+
+    printf("INFO: HPWL is %lf\n", hpwl);
+
+    return TCL_OK;
+}
+
 void *main_tcl(void *arg)
 {
     char *text = NULL; // readline result //
@@ -2275,6 +2293,8 @@ void *main_tcl(void *arg)
     Tcl_CreateObjCommand(interp, "report_coresite", report_coresite, NULL, NULL);
     Tcl_CreateObjCommand(interp, "list_rows", list_rows, NULL, NULL);
     Tcl_CreateObjCommand(interp, "highligth_component", highligth_component, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "list_gatepins", list_gatepins, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "report_hpwl", report_hpwl, NULL, NULL);
 
     signal(SIGSEGV, segfault_handler);
     signal(SIGINT, sigint_handler);

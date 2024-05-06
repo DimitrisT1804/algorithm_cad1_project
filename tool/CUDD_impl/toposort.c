@@ -457,7 +457,7 @@ void add_startpoints()
     {
         for(gdepth = 0; gdepth < HASHDEPTH; gdepth++)
         {
-            if(gatepinhash[ghash].hashpresent[gdepth] == 1)
+            if(gatepinhash[ghash].hashpresent[gdepth] != 0)
             {
                 if(gatepinhash[ghash].type[gdepth] == IO_TYPE)
                 {
@@ -538,7 +538,7 @@ void add_startpoints()
     {
         for(j = 0; j < HASHDEPTH; j++)
         {
-            if(gatepinhash[i].hashpresent[j] == 1)
+            if(gatepinhash[i].hashpresent[j] != 0)
             {
                 if(gatepinhashv[i].level[j] == -1)
                 {
@@ -571,7 +571,7 @@ void add_startpoints()
     {
         for(j = 0; j < HASHDEPTH; j++)
         {
-            if(gatepinhash[i].hashpresent[j] == 1)
+            if(gatepinhash[i].hashpresent[j] != 0)
             {
                 max_level = max(max_level, gatepinhashv[i].level[j]);
             }
@@ -586,7 +586,7 @@ void add_startpoints()
         {
             for(j = 0; j < HASHDEPTH; j++)
             {
-                if(gatepinhash[i].hashpresent[j] == 1)
+                if(gatepinhash[i].hashpresent[j] != 0)
                 {
                     if (gatepinhashv[i].level[j] == level) 
                     {

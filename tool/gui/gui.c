@@ -252,6 +252,10 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
 
                     cairo_rectangle(maincanvas_cs, (translate_um_to_pixels(compslocation[i].x[j]) - offset_x + maincanvasOx) * current_scale + offset_x, (translate_um_to_pixels(compslocation[i].y[j]) - offset_y + maincanvasOy) * current_scale + offset_y, current_scale * translate_um_to_pixels(cell_width), current_scale * translate_um_to_pixels(cell_height)); 
                     cairo_fill(maincanvas_cs);
+
+                    compslocation[i].drawing_x[j] = (translate_um_to_pixels(compslocation[i].x[j]) - offset_x + maincanvasOx) * current_scale + offset_x;
+
+                    compslocation[i].drawing_y[j] = (translate_um_to_pixels(compslocation[i].y[j]) - offset_y + maincanvasOy) * current_scale + offset_y;
                 }
             }
         }
@@ -276,6 +280,29 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
                     cairo_rectangle(maincanvas_cs, (translate_um_to_pixels(compslocation[i].x[j]) - offset_x + maincanvasOx) * current_scale + offset_x, (translate_um_to_pixels(compslocation[i].y[j]) - offset_y + maincanvasOy) * current_scale + offset_y, current_scale * translate_um_to_pixels(cell_width), current_scale * translate_um_to_pixels(cell_height)); 
                     cairo_stroke(maincanvas_cs);
                 }
+            }
+        }
+
+        for(int i = 0; i < gatepinhash_size; i++)
+        {
+            for (int j = 0; j < HASHDEPTH; j++)
+            {
+                if(gatepinhash[i].hashpresent[j] != 0)
+                {
+                    if(gatepinhash[i].type[j] == IO_TYPE)
+                    {
+                        cairo_set_source_rgb(maincanvas_cs, 0, 0, 255.0);
+                        cairo_rectangle(maincanvas_cs, (translate_um_to_pixels(gatepinhash[i].location_x[j]) - offset_x + maincanvasOx) * current_scale + offset_x, (translate_um_to_pixels(gatepinhash[i].location_y[j]) - offset_y + maincanvasOy) * current_scale + offset_y, 5 * current_scale, 2 * current_scale); 
+                        
+                        cairo_fill(maincanvas_cs);
+
+                        cairo_set_source_rgb(maincanvas_cs, 252.0 / 255.0, 109.0 / 255.0, 0);
+                        cairo_rectangle(maincanvas_cs, (translate_um_to_pixels(gatepinhash[i].location_x[j]) - offset_x + maincanvasOx) * current_scale + offset_x, (translate_um_to_pixels(gatepinhash[i].location_y[j]) - offset_y + maincanvasOy) * current_scale + offset_y, 5 * current_scale, 2 * current_scale); 
+
+                        cairo_stroke(maincanvas_cs);
+                    }
+                }
+            
             }
         }
     }
@@ -480,6 +507,9 @@ void setupscrolladjustments()
 
 static void mousebutton(GtkWidget *widget, GdkEventButton *eev, gpointer data)
 {
+    int i;
+    int j;
+
     #ifdef DEBUGGUI
     {
       printf("DEBUG: Mouse Button %d Pressed\n", eev->button);
@@ -489,6 +519,20 @@ static void mousebutton(GtkWidget *widget, GdkEventButton *eev, gpointer data)
     if (eev->button == 1) // Left Mouse Button //
     {
         // code here //
+        printf("Mouse location: X: %f, Y: %f\n", ( (eev->x - offset_x + maincanvasOx) * current_scale + offset_x) , (eev->y - offset_y + maincanvasOy) * current_scale + offset_y);
+
+        // for(i = 0; i < comphash_size; i++)
+        // {
+        //     for(j = 0; j < HASHDEPTH; j++)
+        //     {
+        //         if(comphash[i].hashpresent[j] == 0)
+        //         {
+        //             continue;
+        //         }
+
+
+        //     }
+        // }
 
     }
 

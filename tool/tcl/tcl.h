@@ -26,6 +26,7 @@
 #include "../structs/structs.h"
 #include "../probabilities_annotations/probabilities_annotations.h"
 #include "../gui/gui.h"
+#include "../placer/placer.h"
 
 
 /* Global array that stores all custom, system and TCL commands for tab-completion */
@@ -77,6 +78,7 @@ static const char *commands[] =
     "report_gatepin_level", "report_library_cell_BDD", "annotate_bdd", "report_bdd_dot_gatepin",
     "get_traverse_cudd",  "set_static_probability", "list_static_probability", "report_bdd_dot_component", "show_gui",
     "hide_gui", "report_coresite", "list_rows", "highligth_component", 
+    "list_gatepins", "report_hpwl", 
     
      
     NULL    // should terminate with NULL //
@@ -100,6 +102,9 @@ int report_bdd_dot_component(ClientData clientdata, Tcl_Interp *interp, int objc
 int report_coresite(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
 int list_rows(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
 int highligth_component(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
+int list_gatepins(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
+int report_hpwl(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
+
 void *main_tcl(void *arg);
 
 #endif

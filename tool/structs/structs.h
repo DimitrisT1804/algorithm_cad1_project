@@ -40,6 +40,10 @@ struct gatepins
     int parentComponentDepth[HASHDEPTH];
     int type[HASHDEPTH];   /* what type this pin is --> 0: input / output
                                              1: wire */
+    float location_x[HASHDEPTH];
+    float location_y[HASHDEPTH];
+    char side[HASHDEPTH];   // E:east / W:west / N:north / S:south //
+
     int hashpresent[HASHDEPTH];
 };
 typedef struct gatepins gatePins;
@@ -91,6 +95,9 @@ struct componentslocation
 {
     float x[HASHDEPTH];
     float y[HASHDEPTH];
+
+    float drawing_x[HASHDEPTH];
+    float drawing_y[HASHDEPTH];
 };
 typedef struct componentslocation Componentslocation;
 
@@ -145,6 +152,8 @@ void gatepin_add_CCs(char *source_pin, char *connection_pin);
 void gatepins_complete_parent();
 void gatepin_characterize_IOs();
 void get_predecessors_pin(char *gatepin, int *ghash, int *gdepth);
+void add_ios_location(int, int, float, float, char);
+void dump_gatepinhash();
 
 unsigned int hash_function(const char *str, unsigned int num_buckets);
 

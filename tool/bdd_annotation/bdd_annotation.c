@@ -43,7 +43,7 @@ void annotate_bdds()
     {
         for(j = 0; j < HASHDEPTH; j++)
         {
-            if(gatepinhash[i].hashpresent[j] == 1)
+            if(gatepinhash[i].hashpresent[j] != 0)
             {
                 if(gatepinhashv[i].level[j] == 0)
                 {
@@ -96,7 +96,7 @@ void annotate_bdds()
         {
             for(j = 0; j < HASHDEPTH; j++)
             {             
-                if(gatepinhash[i].hashpresent[j] == 1 && gatepinhash[i].type[j] == WIRE)
+                if(gatepinhash[i].hashpresent[j] != 0 && gatepinhash[i].type[j] == WIRE)
                 {
                     if (check_gatepin_type(i, j) == 1)  // it is Output //
                     {
@@ -217,7 +217,7 @@ void annotate_bdds()
     {
         for(j = 0; j < HASHDEPTH; j++)
         {
-            if(gatepinhash[i].hashpresent[j] == 1)
+            if(gatepinhash[i].hashpresent[j] != 0)
             {
                 if(gatepinhash[i].type[j] == WIRE)
                 {
@@ -257,7 +257,7 @@ void annotate_bdds()
     {
         for(j = 0; j < HASHDEPTH; j++)
         {
-            if(gatepinhash[i].hashpresent[j] == 1)
+            if(gatepinhash[i].hashpresent[j] != 0)
             {
                 if(gatepinhash[i].type[j] == PO)
                 {

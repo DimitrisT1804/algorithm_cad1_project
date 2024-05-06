@@ -846,6 +846,64 @@ enum proccess_ROWS proccess_rows(enum proccess_ROWS currentState, char *event)
     }
 }
 
+enum IOs_LOCATIONS get_ios_location(enum IOs_LOCATIONS currentState, char *event)
+{
+    static int ghash;
+    static int gdepth;
+    static float location_x;
+    static float location_y;
+    static char side;
+
+    switch(currentState)
+    {
+        case WAIT_IO_WORD:
+            if(strcmp(event, "IO:") == 0)
+            {
+                return GET_IO_NAME;
+            }
+            else
+            {
+                return WAIT_IO_WORD;
+            }
+
+        case GET_IO_NAME:
+            get_gatepin_indices(event, &ghash, &gdepth);
+
+            return WAIT_LOCATION_IOS;
+        
+        case WAIT_LOCATION_IOS:
+            if(strcmp(event, "Location:") == 0)
+            {
+                return GET_X_IO;
+            }
+            else
+            {
+                return WAIT_LOCATION_IOS;
+            }
+        
+        case GET_X_IO:
+            location_x = atof(event);
+            return GET_Y_IO;
+        
+        case GET_Y_IO:
+            location_y = atof(event);
+            return WAIT_SYMBOL;
+
+        case WAIT_SYMBOL:
+            return GET_SIDE;
+        
+        case GET_SIDE:
+            side = event[0];
+            add_ios_location(ghash, gdepth, location_x, location_y, side);
+
+            return WAIT_IO_WORD;
+
+        default:
+            return currentState;
+        
+    }
+}
+
 /* #################### print_gatepinhash() #################### */
 /* This function prints all gatepis from gatepinhash with CCs and 
    parent component and also if it is WIRE or IO*/
@@ -976,6 +1034,7 @@ int call_parser(char *input_file)
     enum CORE_PARSE_STATES currentState6 = WAIT_UTILISATION;
     enum count_ROWS currentState7 = WAIT_ROW_COUNT;
     enum proccess_ROWS currentState8 = WAIT_ROW;
+    enum IOs_LOCATIONS currentState9 = WAIT_IO_WORD;
 
 
     clock_t clock_start = clock();
@@ -1162,6 +1221,12 @@ int call_parser(char *input_file)
     while((read_length = (getline(&line, &line_size, filename) ) )!= -1)
     {
 
+        find_line = strstr(line, "# Top-Level I/O Ports:");
+        if(find_line != NULL)
+        {
+            choose_FSM = 9;
+        }
+
         find_line = strstr(line, "# Top-Level I/O CCs:");
         if(find_line != NULL)
         {
@@ -1197,6 +1262,10 @@ int call_parser(char *input_file)
             else if (choose_FSM == 5)
             {  
                 currentState4 = proccess_lib_pins(currentState4, word);
+            }
+            else if (choose_FSM == 9)
+            {
+                currentState9 = get_ios_location(currentState9, word);
             }
 
             while (line[i] == ' ') 
@@ -1275,7 +1344,7 @@ int call_parser(char *input_file)
     {
         for(j = 0; j < HASHDEPTH; j++)
         {
-            if(gatepinhash[i].hashpresent[j] == 1)
+            if(gatepinhash[i].hashpresent[j] != 0)
             {
                 count_gatepins++;
             }

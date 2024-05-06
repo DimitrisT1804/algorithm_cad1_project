@@ -99,6 +99,17 @@ enum proccess_ROWS
     GET_HEIGHT_ROW
 };
 
+enum IOs_LOCATIONS
+{
+    WAIT_IO_WORD,
+    GET_IO_NAME,
+    WAIT_LOCATION_IOS,
+    GET_X_IO,
+    GET_Y_IO,
+    WAIT_SYMBOL,
+    GET_SIDE
+};
+
 enum IO_STATES_CCS countIOS(enum IO_STATES_CCS currentState, char *event);
 enum lib_parse count_components_CCS(enum lib_parse currentState, char *event);
 enum IO_STATES proccessIOS(enum IO_STATES currentState, char *event);
@@ -108,6 +119,7 @@ enum proccess_lib_pins_IO proccess_lib_pins_IO(enum proccess_lib_pins_IO current
 enum proccess_lib_pins proccess_lib_pins(enum proccess_lib_pins currentState, char *event);
 enum count_ROWS count_rows(enum count_ROWS currentState, char *event);
 enum proccess_ROWS proccess_rows(enum proccess_ROWS currentState, char *event);
+enum IOs_LOCATIONS get_ios_location(enum IOs_LOCATIONS currentState, char *event);
 
 void print_gatepinhash();
 void print_libhash();

@@ -44,6 +44,10 @@ void Gatepins_init()
             gatepinhash[i].parentComponent[j] = -1;
             gatepinhash[i].parentComponentDepth[j] = -1;
             gatepinhash[i].hashpresent[j] = 0;
+
+            gatepinhash[i].location_x[j] = -1.0;
+            gatepinhash[i].location_y[j] = -1.0;
+            gatepinhash[i].side[j] = '\0';
         }
     }
 }
@@ -808,7 +812,7 @@ void get_predecessors_pin(char *gatepin, int *ghash, int *gdepth)
     {
         for(j = 0; j < HASHDEPTH; j++)
         {
-            if(gatepinhash[i].hashpresent[j] == 1)
+            if(gatepinhash[i].hashpresent[j] != 0)
             {
                 for(k = 0; k < gatepinhash[i].connections_size[j]; k++)
                 {
@@ -936,6 +940,8 @@ void componentslocation_init()
         {
             compslocation[i].x[j] = -1.0;
             compslocation[i].y[j] = -1.0;
+            compslocation[i].drawing_x[j]  = -1.0;
+            compslocation[i].drawing_y[j] = -1.0;
         }
     }
 }
@@ -1108,4 +1114,73 @@ void dump_rows()
 }
 
 // TODO: implement struct 1-1 with gatepinhash to store IOs location and side //
- 
+
+void add_ios_location(int ghash, int gdepth, float location_x, float location_y, char side)
+{
+    gatepinhash[ghash].location_x[gdepth] = location_x;
+    gatepinhash[ghash].location_y[gdepth] = location_y;
+    gatepinhash[ghash].side[gdepth] = side;
+}
+
+
+void dump_gatepinhash()
+{
+    int i;
+    int j;
+    int k;
+
+    printf(BOLD_LETTERS);
+    printf(ANSI_COLOR_ORANGE "------------- INFO GATEPINS ----------------\n\n" ANSI_COLOR_RESET);
+    for(i = 0; i < gatepinhash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] == 0)
+            {
+                continue;
+            }
+            printf(ANSI_COLOR_BLUE "------------- INFO GATEPINS: %s -------------\n" ANSI_COLOR_RESET, gatepinhash[i].name[j]);
+            printf(ANSI_COLOR_ORANGE "Name: %s\n", gatepinhash[i].name[j]);
+            if(gatepinhash[i].type[j] == WIRE)
+            {
+                printf(ANSI_COLOR_MAGENDA "Type: WIRE\n");
+            }
+            else if(gatepinhash[i].type[j] == IO_TYPE)
+            {
+                printf(ANSI_COLOR_MAGENDA "Type: IO_TYPE\n");
+                printf("Location X: %f\n", gatepinhash[i].location_x[j]);
+                printf("Location Y: %f\n", gatepinhash[i].location_y[j]);
+                if(gatepinhash[i].side[j] == 'E')
+                {
+                    printf("Side: East\n");
+                }
+                else if(gatepinhash[i].side[j] == 'W')
+                {
+                    printf("Side: West\n");
+                }
+                else if(gatepinhash[i].side[j] == 'N')
+                {
+                    printf("Side: North\n");
+                }
+                else if(gatepinhash[i].side[j] == 'S')
+                {
+                    printf("Side: South\n");
+                }
+            }
+            else
+            {
+                printf("Type: UNKNOWN\n");
+            }
+            printf(ANSI_COLOR_BLUE "Successors pins:\n");
+            for(k = 0; k < gatepinhash[i].connections_size[j]; k++)
+            {
+                printf(ANSI_COLOR_GREEN "• %s\n", gatepinhash[gatepinhash[i].pinConn[j][k]].name[gatepinhash[i].pinConnDepth[j][k]]);
+            }
+            for(k = 0; k < strlen(gatepinhash[i].name[j]) + 45; k++)
+            {
+                printf(ANSI_COLOR_BLUE "-" ANSI_COLOR_RESET);
+            }
+            printf("\n\n");
+        }
+    }
+}

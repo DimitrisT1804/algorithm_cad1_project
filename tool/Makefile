@@ -1,7 +1,7 @@
 CXX = gcc
 CXXFLAGS = -Wall -g 
 LDFLAGS = -lm -ltcl -lreadline -lcudd -lutil -lpthread
-SRC_DIRS = structs parser tcl CUDD_impl convert_infix signals bdd_annotation probabilities_annotations gui
+SRC_DIRS = structs parser tcl CUDD_impl convert_infix signals bdd_annotation probabilities_annotations gui placer
 SRC_FILES = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
 OBJ_FILES = $(SRC_FILES:.c=.o)
 GTKFLAGS=`pkg-config --cflags gtk+-2.0`
