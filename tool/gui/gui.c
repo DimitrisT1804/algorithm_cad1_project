@@ -31,7 +31,9 @@ GtkAdjustment *adjust_scrollbar;
 GtkWidget *buttons; // buttons container //
 GtkWidget *button1; // button 1 //
 GtkWidget *hierarchybrowserframe;
-GtkWidget *list_cells_button; // button 1 //
+GtkWidget *list_cells_button;
+GtkWidget *random_place_button_2;
+GtkWidget *report_hpwl_button;
 
 double offset_x = 1.0;
 double offset_y = 1.0;
@@ -81,6 +83,8 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     // // Set the clipping region to the visible area
     // cairo_rectangle(maincanvas_cs, 0, 0, 800, 500);
     // cairo_clip(maincanvas_cs);
+
+    pthread_mutex_lock(&mutex);
 
     if(comphash == NULL || design_is_placed == 0)
     {
@@ -311,6 +315,7 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
             
             }
         }
+        gtk_widget_queue_draw(maincanvas);
     }
 
 
@@ -321,6 +326,8 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     // cairo_move_to(maincanvas_cs, 0, 645);
     // cairo_show_text(maincanvas_cs, "Designer: Dimitrios Tsalapatas");
     // cairo_fill(maincanvas_cs);
+
+    pthread_mutex_unlock(&mutex);
 
     cairo_destroy(maincanvas_cs);
 }
@@ -583,10 +590,7 @@ static void button1_clicked(GtkButton *button, gpointer data)
     }
     #endif
 
-  // code here //
-
     Tcl_Eval(interp, "get_toposort");
-
 }
 
 static void list_cells_button_clicked(GtkButton *button, gpointer data)
@@ -597,10 +601,29 @@ static void list_cells_button_clicked(GtkButton *button, gpointer data)
     }
     #endif
 
-  // code here //
-
     Tcl_Eval(interp, "list_cells");
+}
 
+static void random_place_button(GtkButton *button, gpointer data)
+{
+    #ifdef DEBUGGUI
+    {
+      printf("DEBUG: Flow Button Clicked\n");
+    }
+    #endif
+
+    Tcl_Eval(interp, "place_random");
+}
+
+static void report_hpwl_pressed(GtkButton *button, gpointer data)
+{
+    #ifdef DEBUGGUI
+    {
+      printf("DEBUG: Flow Button Clicked\n");
+    }
+    #endif
+
+    Tcl_Eval(interp, "report_hpwl");
 }
 
 static void create_buttons_frame()
@@ -611,11 +634,18 @@ static void create_buttons_frame()
 
     button1 = gtk_button_new_with_label("get_toposort");
     list_cells_button = gtk_button_new_with_label("list_cells");
+    random_place_button_2 = gtk_button_new_with_label("place_random");
+    report_hpwl_button = gtk_button_new_with_label("report_hpwl");
 
     g_signal_connect(G_OBJECT(button1), "clicked", G_CALLBACK(button1_clicked), NULL);
     g_signal_connect(G_OBJECT(list_cells_button), "clicked", G_CALLBACK(list_cells_button_clicked), NULL);
+    g_signal_connect(G_OBJECT(random_place_button_2), "clicked", G_CALLBACK(random_place_button), NULL);
+    g_signal_connect(G_OBJECT(report_hpwl_button), "clicked", G_CALLBACK(report_hpwl_pressed), NULL);
+
     gtk_box_pack_start(GTK_BOX(buttons), button1, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(buttons), list_cells_button, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(buttons), random_place_button_2, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(buttons), report_hpwl_button, FALSE, FALSE, 0);
 }
 
 

@@ -9,8 +9,8 @@
 #include <readline/history.h>
 #include <unistd.h>
 // #include <tcl8.6/tcl.h>
-#include <tcl.h>
-// #include <tcl/tcl.h>
+// #include <tcl.h>
+#include <tcl/tcl.h>
 #include <limits.h>
 #include <syscall.h>
 #include <sys/types.h>
@@ -78,7 +78,7 @@ static const char *commands[] =
     "report_gatepin_level", "report_library_cell_BDD", "annotate_bdd", "report_bdd_dot_gatepin",
     "get_traverse_cudd",  "set_static_probability", "list_static_probability", "report_bdd_dot_component", "show_gui",
     "hide_gui", "report_coresite", "list_rows", "highligth_component", 
-    "list_gatepins", "report_hpwl", 
+    "list_gatepins", "report_hpwl", "place_random", 
     
      
     NULL    // should terminate with NULL //
@@ -104,6 +104,7 @@ int list_rows(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *cons
 int highligth_component(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
 int list_gatepins(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
 int report_hpwl(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
+int random_place(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv);
 
 void *main_tcl(void *arg);
 

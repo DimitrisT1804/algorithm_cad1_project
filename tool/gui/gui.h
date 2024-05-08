@@ -11,8 +11,8 @@
 #include "../tcl/tcl.h"
 #include "../structs/structs.h"
 
-// #include <tcl/tcl.h>
-#include <tcl.h>
+#include <tcl/tcl.h>
+// #include <tcl.h>
 
 // #define DEBUGGUI
 
@@ -30,6 +30,8 @@ extern GtkWidget *buttons; // buttons container //
 extern GtkWidget *button1; // button 1 //
 extern GtkWidget *list_cells_button; // button 1 //
 extern GtkWidget *hierarchybrowserframe; // hierarchy browser frame //
+extern GtkWidget *random_place_button_2;
+extern GtkWidget *report_hpwl_button;
 
 extern int reversey; // reverse y-axis flag, place origin at bottom-left //
 

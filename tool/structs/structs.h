@@ -6,6 +6,7 @@
 #include <string.h>
 #include <limits.h>
 #include <cudd.h>
+#include <pthread.h>
 #include "../parser/custom_functions.h"
 
 #define HASHDEPTH 10
@@ -207,5 +208,7 @@ void rows_init();
 void rows_free();
 void add_row(char *name, float x, float y, float width, float height);
 void dump_rows();
+
+extern pthread_mutex_t mutex;
 
 #endif

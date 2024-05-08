@@ -24,6 +24,8 @@ int rows_size;
 int design_is_placed = 0;
 char *highlighted_component = NULL;
 
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
 /* #################### Gatepins_init() #################### */
 /* This function just initialize all fields of gatepin hash */
 void Gatepins_init()

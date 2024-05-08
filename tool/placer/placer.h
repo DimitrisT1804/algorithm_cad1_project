@@ -4,3 +4,5 @@
 
 
 double calculate_HPWL();
+double random_double(double, double);
+void random_placer();

@@ -551,6 +551,8 @@ int clear_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
         printf(ANSI_COLOR_RED "ERROR: No design loaded, nothing to clear!" ANSI_COLOR_RESET);
         return TCL_ERROR;
     }
+    pthread_mutex_lock(&mutex);
+
     structs_free();
     gatepinhash = NULL;
     comphash = NULL;
@@ -570,6 +572,7 @@ int clear_design(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
     ghash_added_size = 0;
 
     design_is_placed = 0;
+    pthread_mutex_unlock(&mutex);
 
     if(gbm != NULL)
     {
@@ -2217,6 +2220,12 @@ int highligth_component(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl
 
 int list_gatepins(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
 {
+    if(gatepinhash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
     dump_gatepinhash();
 
     return TCL_OK;
@@ -2225,10 +2234,39 @@ int list_gatepins(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *
 int report_hpwl(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
 {
     double hpwl = 0.0;
+
+    if(gatepinhash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    if(design_is_placed == 0)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Design is not placed\n" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
     
     hpwl = calculate_HPWL();
 
-    printf("INFO: HPWL is %lf\n", hpwl);
+    printf(ANSI_COLOR_BLUE "INFO: HPWL is %lf\n" ANSI_COLOR_RESET, hpwl);
+
+    return TCL_OK;
+}
+
+int place_random(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    if(gatepinhash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    random_placer();
+
+    design_is_placed = 1;
+
+    printf(ANSI_COLOR_BLUE "INFO: Design placed randomly\n" ANSI_COLOR_RESET);
 
     return TCL_OK;
 }
@@ -2295,6 +2333,7 @@ void *main_tcl(void *arg)
     Tcl_CreateObjCommand(interp, "highligth_component", highligth_component, NULL, NULL);
     Tcl_CreateObjCommand(interp, "list_gatepins", list_gatepins, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_hpwl", report_hpwl, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "place_random", place_random, NULL, NULL);
 
     signal(SIGSEGV, segfault_handler);
     signal(SIGINT, sigint_handler);
@@ -2386,6 +2425,8 @@ void *main_tcl(void *arg)
             }
             printf(ANSI_COLOR_BLUE BOLD_LETTERS "EDA TOOL EXITING\n" ANSI_COLOR_RESET);
             Tcl_Finalize();
+
+            pthread_mutex_destroy(&mutex);
 
             return EXIT_SUCCESS;
         }
