@@ -210,19 +210,19 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     {
 
         // gtk_widget_set_size_request(maincanvas, translate_um_to_pixels(coresite->core_height) + 20, translate_um_to_pixels(coresite->core_width) + 20);
+        
 
         cairo_scale(maincanvas_cs, 650.0 / translate_um_to_pixels(coresite->core_height), 650.0 / translate_um_to_pixels(coresite->core_height));  
 
         double height_scale = 650.0 / translate_um_to_pixels(coresite->core_height);
 
-        cairo_set_source_rgb(maincanvas_cs,0, 255.0, 0); 
+        cairo_set_source_rgb(maincanvas_cs, 0, 255.0, 0); 
         cairo_rectangle(maincanvas_cs, (maincanvasOx - offset_x) * current_scale + offset_x, (maincanvasOy - offset_y) * current_scale + offset_y, current_scale * translate_um_to_pixels(coresite->core_width), current_scale * translate_um_to_pixels(coresite->core_height));
-        // current_scale = (double) (650.0 / translate_um_to_pixels(coresite->core_height));
-        // printf("current_scale = %lf\n", current_scale);
-
-        // maincanvasOy = current_scale * (translate_um_to_pixels(coresite->core_height)) + 20;
-        // maincanvasOx = (current_scale * translate_um_to_pixels(coresite->core_width)) + 20;
         cairo_stroke(maincanvas_cs);
+
+        cairo_set_source_rgb(maincanvas_cs, 0.0, 0.0, 0.0); 
+        cairo_rectangle(maincanvas_cs, (maincanvasOx - offset_x) * current_scale + offset_x, (maincanvasOy - offset_y) * current_scale + offset_y, current_scale * translate_um_to_pixels(coresite->core_width), current_scale * translate_um_to_pixels(coresite->core_height));
+        cairo_fill(maincanvas_cs);
 
         cairo_set_source_rgb(maincanvas_cs, 255.0, 0, 0);
         for(int i = 0; i < rows_size; i++)

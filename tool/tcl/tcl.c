@@ -2233,7 +2233,9 @@ int list_gatepins(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *
 
 int report_hpwl(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
 {
-    double hpwl = 0.0;
+    double total_hpwl = 0.0;
+    double net_hpwl = 0.0;
+    double IO_hpwl = 0.0;
 
     if(gatepinhash == NULL)
     {
@@ -2247,9 +2249,14 @@ int report_hpwl(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *co
         return TCL_ERROR;
     }
     
-    hpwl = calculate_HPWL();
+    net_hpwl = calculate_HPWL();
+    printf(ANSI_COLOR_BLUE "INFO: HPWL old is %lf\n" ANSI_COLOR_RESET, net_hpwl);
+    net_hpwl = 0.0;
 
-    printf(ANSI_COLOR_BLUE "INFO: HPWL is %lf\n" ANSI_COLOR_RESET, hpwl);
+    calculate_hpwl_new(&net_hpwl, &IO_hpwl, &total_hpwl);
+    printf(ANSI_COLOR_BLUE "INFO: Net HPWL is %lf\n", net_hpwl);
+    printf(ANSI_COLOR_BLUE "INFO: IO HPWL is %lf\n", IO_hpwl);
+    printf(ANSI_COLOR_BLUE "INFO: Total HPWL is %lf\n" ANSI_COLOR_RESET, total_hpwl);
 
     return TCL_OK;
 }
@@ -2419,12 +2426,15 @@ void *main_tcl(void *arg)
             // }
             removeFolder("bdd_output");
             Tcl_DeleteInterp(interp);
+            
+            pthread_mutex_lock(&mutex);
             if(gatepinhash != NULL)
             {
                 structs_free();
             }
             printf(ANSI_COLOR_BLUE BOLD_LETTERS "EDA TOOL EXITING\n" ANSI_COLOR_RESET);
             Tcl_Finalize();
+            pthread_mutex_unlock(&mutex);
 
             pthread_mutex_destroy(&mutex);
 
