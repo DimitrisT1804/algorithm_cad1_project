@@ -75,9 +75,6 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
   maincanvas_cs = gdk_cairo_create(maincanvas_drawable); // corresponding cairo state //
 
   // call main drawing function //
-    double c1_x = 0.0;
-    double c1_y = 0.0;
-
 
     // set visible area clipping //
     // // Set the clipping region to the visible area
@@ -495,8 +492,6 @@ static void scroll(GtkWidget *widget, GdkEventScroll *eev, gpointer data)
     GtkAllocation allocation;
     gtk_widget_get_allocation(widget, &allocation);
 
-    double center_x = allocation.width / 2;
-    double center_y = allocation.height / 2;
 
     offset_x = x;
     offset_y = y;
@@ -520,9 +515,6 @@ void setupscrolladjustments()
 
 static void mousebutton(GtkWidget *widget, GdkEventButton *eev, gpointer data)
 {
-    int i;
-    int j;
-
     #ifdef DEBUGGUI
     {
       printf("DEBUG: Mouse Button %d Pressed\n", eev->button);
@@ -686,13 +678,8 @@ void start_gui()
     GtkWidget *maincanvasvbox; // contains maincanvashbox and horizontal scrollbar //
 
     GtkWidget *hpane; // horizontal pane //
-    GtkWidget *hpane2; // horizontal pane //
 
     GtkWidget *mainframe; // main canvas frame //
-
-    GtkWidget *menubar;
-    GtkWidget *filemenu;
-    GtkWidget *file;
 
     // *** Local Variables End *** //
 

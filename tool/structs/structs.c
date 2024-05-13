@@ -1153,7 +1153,29 @@ void dump_gatepinhash()
             }
             else if(gatepinhash[i].type[j] == IO_TYPE)
             {
-                printf(ANSI_COLOR_MAGENDA "Type: IO_TYPE\n");
+                printf(ANSI_COLOR_MAGENDA "Type: PI\n");
+                printf("Location X: %f\n", gatepinhash[i].location_x[j]);
+                printf("Location Y: %f\n", gatepinhash[i].location_y[j]);
+                if(gatepinhash[i].side[j] == 'E')
+                {
+                    printf("Side: East\n");
+                }
+                else if(gatepinhash[i].side[j] == 'W')
+                {
+                    printf("Side: West\n");
+                }
+                else if(gatepinhash[i].side[j] == 'N')
+                {
+                    printf("Side: North\n");
+                }
+                else if(gatepinhash[i].side[j] == 'S')
+                {
+                    printf("Side: South\n");
+                }
+            }
+            else if(gatepinhash[i].type[j] == PO)
+            {
+                printf(ANSI_COLOR_MAGENDA "Type: PO\n");
                 printf("Location X: %f\n", gatepinhash[i].location_x[j]);
                 printf("Location Y: %f\n", gatepinhash[i].location_y[j]);
                 if(gatepinhash[i].side[j] == 'E')
