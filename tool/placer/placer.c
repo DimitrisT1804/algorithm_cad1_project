@@ -287,3 +287,26 @@ void calculate_hpwl_new(double *net_hpwl, double *IO_hpwl, double *total_hpwl)
 
     *total_hpwl = *net_hpwl + *IO_hpwl;
 }
+
+// void create_array_A()
+// {
+//     int i;
+//     int j;
+//     int k;
+
+//     for(i = 0; i < gatepinhash_size; i++)
+//     {
+//         for(j = 0; j < HASHDEPTH; j++)
+//         {
+//             if(gatepinhash[i].hashpresent[j] == 0)
+//             {
+//                 continue;
+//             }
+
+//             for(k = 0; k < gatepinhash[i].connections_size[j]; k++)
+//             {
+//                 [i][gatepinhash[i].pinConn[j][k]] = 
+//             }
+//         }
+//     }
+// }
