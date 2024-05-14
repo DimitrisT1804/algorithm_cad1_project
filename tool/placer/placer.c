@@ -70,31 +70,28 @@ double calculate_HPWL()
                     // diff_y = 0.0;
                 }
             }
-            // else if(gatepinhash[ghash].type[gdepth] == IO_TYPE)
-            // {
-            //     for(k = 0; k < gatepinhash[ghash].connections_size[gdepth]; k++)
-            //     {
-            //         ghash_connection = gatepinhash[ghash].pinConn[gdepth][k];
-            //         gdepth_connection = gatepinhash[ghash].pinConnDepth[gdepth][k];
+            else if( (gatepinhash[ghash].type[gdepth] == IO_TYPE) || (gatepinhash[ghash].type[gdepth] == PO) )
+            {
+                for(k = 0; k < gatepinhash[ghash].connections_size[gdepth]; k++)
+                {
+                    ghash_connection = gatepinhash[ghash].pinConn[gdepth][k];
+                    gdepth_connection = gatepinhash[ghash].pinConnDepth[gdepth][k];
 
-            //         chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
-            //         cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
+                    chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
+                    cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
 
-            //         lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
-            //         ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
+                    lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
+                    ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
 
-            //         diff_x = abs( gatepinhash[ghash].location_x[gdepth] - compslocation[ghash_connection].x[gdepth_connection] );
-            //         diff_x = diff_x + (libhash[lhash_connection].width[ldepth_connection] / 2);
+                    diff_x = abs( gatepinhash[ghash].location_x[gdepth] - compslocation[ghash_connection].x[gdepth_connection] );
+                    diff_x = diff_x + (libhash[lhash_connection].width[ldepth_connection] / 2);
 
-            //         diff_y = abs ( gatepinhash[ghash].location_y[gdepth] - compslocation[ghash_connection].y[gdepth_connection] );
-            //         diff_y = diff_y + (libhash[lhash_connection].height[ldepth_connection] / 2);
+                    diff_y = abs ( gatepinhash[ghash].location_y[gdepth] - compslocation[ghash_connection].y[gdepth_connection] );
+                    diff_y = diff_y + (libhash[lhash_connection].height[ldepth_connection] / 2);
 
-            //         hpwl = hpwl + sqrt( (pow(diff_x, 2) + pow(diff_y, 2) ) );
-
-            //         diff_x = 0.0;
-            //         diff_y = 0.0;
-            //     }
-            // }
+                    hpwl = hpwl + sqrt( (pow(diff_x, 2) + pow(diff_y, 2) ) );
+                }
+            }
 
         }
     }

@@ -2178,13 +2178,8 @@ int list_rows(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *cons
 
 int highligth_component(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
 {
-    int i, j;
     int chash, cdepth;
-    int lhash, ldepth;
-    int ghash, gdepth;
-    int gconhash, gcondepth;
     char *currComp = NULL;
-    char *currPin = NULL;
 
     if(objc != 2)
     {
@@ -2369,7 +2364,7 @@ void *main_tcl(void *arg)
             #ifdef DEBUG
             printf("Error creating directory \"%s\".\n", directory);
             #endif
-            return 1; // Return an error code
+            return; // Return an error code
         }
     }
 
@@ -2438,7 +2433,7 @@ void *main_tcl(void *arg)
 
             pthread_mutex_destroy(&mutex);
 
-            return EXIT_SUCCESS;
+            return;
         }
         else if (strcmp(command, "history") == 0)
         {
