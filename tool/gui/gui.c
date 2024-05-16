@@ -312,6 +312,57 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
             
             }
         }
+
+        int ghash_connection, gdepth_connection, chash_connection, cdepth_connection;
+        int chash;
+        int cdepth;
+        int lhash;
+        int ldepth;
+        int lhash_connection;
+        int ldepth_connection;
+
+        for(int i = 0; i < gatepinhash_size; i++)
+        {
+            for(int j = 0; j < HASHDEPTH; j++)
+            {
+                if(gatepinhash[i].hashpresent[j] == 0)
+                {
+                    continue;
+                }
+
+                if(gatepinhash[i].type[j] == PO || gatepinhash[i].type[j] == IO_TYPE)
+                {
+                    continue;
+                }
+
+                chash = gatepinhash[i].parentComponent[j];
+                cdepth = gatepinhash[i].parentComponentDepth[j];
+
+                lhash = comphash[chash].lib_type[cdepth];
+                ldepth = comphash[chash].lib_type_depth[cdepth];
+
+
+                for(int k = 0; k < gatepinhash[i].connections_size[j]; k++)
+                {
+                    ghash_connection = gatepinhash[i].pinConn[j][k];
+                    gdepth_connection = gatepinhash[i].pinConnDepth[j][k];
+
+                    chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
+                    cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
+
+                    lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
+                    ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
+
+                    cairo_set_source_rgb(maincanvas_cs, 227.0/255.0, 151.0/255.0, 116.0/255.0); // Black
+                    cairo_set_line_width(maincanvas_cs, 3.0);
+                    cairo_move_to(maincanvas_cs, (translate_um_to_pixels( compslocation[chash].x[cdepth] ) + maincanvasOx - offset_x + translate_um_to_pixels(libhash[lhash].width[ldepth]) / 2 ) * current_scale + offset_x, (translate_um_to_pixels( compslocation[chash].y[cdepth] ) + maincanvasOy - offset_y + translate_um_to_pixels(libhash[lhash].height[ldepth]) / 2 )  * current_scale + offset_y);
+
+                    cairo_line_to(maincanvas_cs, (translate_um_to_pixels( compslocation[chash_connection].x[cdepth_connection] ) + maincanvasOx - offset_x + translate_um_to_pixels(libhash[lhash_connection].width[ldepth_connection]) / 2 ) * current_scale + offset_x, (translate_um_to_pixels( compslocation[chash_connection].y[cdepth_connection] ) + maincanvasOy - offset_y + translate_um_to_pixels(libhash[lhash_connection].height[ldepth_connection]) / 2)  * current_scale + offset_y);
+                    cairo_stroke(maincanvas_cs);
+                }
+            }
+        }
+
         gtk_widget_queue_draw(maincanvas);
     }
 

@@ -2244,14 +2244,14 @@ int report_hpwl(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *co
         return TCL_ERROR;
     }
     
-    net_hpwl = calculate_HPWL();
-    printf(ANSI_COLOR_BLUE "INFO: HPWL old is %lf\n" ANSI_COLOR_RESET, net_hpwl);
-    net_hpwl = 0.0;
+    // net_hpwl = calculate_HPWL();
+    // printf(ANSI_COLOR_BLUE "INFO: HPWL old is %lf\n" ANSI_COLOR_RESET, net_hpwl);
+    // net_hpwl = 0.0;
 
     calculate_hpwl_new(&net_hpwl, &IO_hpwl, &total_hpwl);
-    printf(ANSI_COLOR_BLUE "INFO: Net HPWL is %lf\n", net_hpwl);
-    printf(ANSI_COLOR_BLUE "INFO: IO HPWL is %lf\n", IO_hpwl);
-    printf(ANSI_COLOR_BLUE "INFO: Total HPWL is %lf\n" ANSI_COLOR_RESET, total_hpwl);
+    printf(ANSI_COLOR_BLUE "INFO: Net HPWL is %.3lf\n", net_hpwl);
+    printf(ANSI_COLOR_BLUE "INFO: IO HPWL is %.3lf\n", IO_hpwl);
+    printf(ANSI_COLOR_BLUE "INFO: Total HPWL is %.3lf\n" ANSI_COLOR_RESET, total_hpwl);
 
     return TCL_OK;
 }

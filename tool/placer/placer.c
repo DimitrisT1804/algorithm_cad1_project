@@ -199,12 +199,6 @@ void calculate_hpwl_new(double *net_hpwl, double *IO_hpwl, double *total_hpwl)
                     ghash_connection = gatepinhash[ghash].pinConn[gdepth][k];
                     gdepth_connection = gatepinhash[ghash].pinConnDepth[gdepth][k];
 
-                    if(gatepinhash[ghash_connection].type[gdepth_connection] == IO_TYPE)
-                    {
-                        // printf("It is IO\n");
-                        continue;
-                    }
-
                     chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
                     cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
 
@@ -234,7 +228,7 @@ void calculate_hpwl_new(double *net_hpwl, double *IO_hpwl, double *total_hpwl)
 
                 *net_hpwl = *net_hpwl + fabs(max_x - min_x) + fabs(max_y - min_y);
             }
-            else if(gatepinhash[ghash].type[gdepth] == IO_TYPE || gatepinhash[ghash].type[gdepth] == PO)
+            else if(gatepinhash[ghash].type[gdepth] == IO_TYPE)
             {
                 max_x = gatepinhash[ghash].location_x[gdepth];
                 max_y = gatepinhash[ghash].location_y[gdepth];
@@ -245,6 +239,60 @@ void calculate_hpwl_new(double *net_hpwl, double *IO_hpwl, double *total_hpwl)
                 {
                     ghash_connection = gatepinhash[ghash].pinConn[gdepth][k];
                     gdepth_connection = gatepinhash[ghash].pinConnDepth[gdepth][k];
+
+                    if(gatepinhash[ghash_connection].type[gdepth_connection] == IO_TYPE)
+                    {
+                        continue;
+                    }
+
+                    chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
+                    cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
+
+                    lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
+                    ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
+
+                    dest_location_x = compslocation[chash_connection].x[cdepth_connection] + (libhash[lhash_connection].width[ldepth_connection] / 2.0);
+                    dest_location_y = compslocation[chash_connection].y[cdepth_connection] + (libhash[lhash_connection].height[ldepth_connection] / 2.0);
+
+                    if(dest_location_x > max_x)
+                    {
+                        max_x = dest_location_x;
+                    }
+                    if(dest_location_y > max_y)
+                    {
+                        max_y = dest_location_y;
+                    }
+                    if(dest_location_x < min_x)
+                    {
+                        min_x = dest_location_x;
+                    }
+                    if(dest_location_y < min_y)
+                    {
+                        min_y = dest_location_y;
+                    }
+                }
+                *IO_hpwl = *IO_hpwl + fabs(max_x - min_x) + fabs(max_y - min_y);
+            }
+            else if( gatepinhash[ghash].type[gdepth] == PO)
+            {
+                max_x = gatepinhash[ghash].location_x[gdepth];
+                max_y = gatepinhash[ghash].location_y[gdepth];
+                min_x = gatepinhash[ghash].location_x[gdepth];
+                min_y = gatepinhash[ghash].location_y[gdepth];
+                
+                for(k = 0; k < gatepinhash[ghash].connections_size[gdepth]; k++)
+                {
+                    int is_output = 0;
+
+                    ghash_connection = gatepinhash[ghash].pinConn[gdepth][k];
+                    gdepth_connection = gatepinhash[ghash].pinConnDepth[gdepth][k];
+
+                    is_output = check_gatepin_type(ghash_connection, gdepth_connection);
+
+                    if(is_output == -1) // it is input //
+                    {
+                        continue;
+                    }
 
                     if(gatepinhash[ghash_connection].type[gdepth_connection] == IO_TYPE)
                     {

@@ -2,6 +2,8 @@
 #include <math.h>
 #include "../structs/structs.h"
 
+#include <gsl/gsl_matrix.h>
+
 
 double calculate_HPWL();
 double random_double(double, double);

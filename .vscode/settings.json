@@ -8,7 +8,8 @@
         "ui-scrolled-canvas-skeleton.h": "c",
         "stat.h": "c",
         "probabilities_annotations.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "tcl.h": "c"
     },
     "cSpell.enableFiletypes": [
         "!c",
