@@ -11,8 +11,8 @@
 #include "../tcl/tcl.h"
 #include "../structs/structs.h"
 
-#include <tcl/tcl.h>
-// #include <tcl.h>
+// #include <tcl/tcl.h>
+#include <tcl.h>
 
 // #define DEBUGGUI
 

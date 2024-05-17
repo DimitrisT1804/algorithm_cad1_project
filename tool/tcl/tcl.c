@@ -2273,6 +2273,27 @@ int place_random(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
     return TCL_OK;
 }
 
+int create_array(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+{
+    if(gatepinhash == NULL)
+    {
+        printf(ANSI_COLOR_RED "ERROR: No design loaded" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    if(design_is_placed == 0)
+    {
+        printf(ANSI_COLOR_RED "ERROR: Design is not placed\n" ANSI_COLOR_RESET);
+        return TCL_ERROR;
+    }
+
+    create_array_A();
+    
+    create_pin_vectors();
+
+    return TCL_OK;
+}
+
 void *main_tcl(void *arg)
 {
     char *text = NULL; // readline result //
@@ -2336,6 +2357,7 @@ void *main_tcl(void *arg)
     Tcl_CreateObjCommand(interp, "list_gatepins", list_gatepins, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_hpwl", report_hpwl, NULL, NULL);
     Tcl_CreateObjCommand(interp, "place_random", place_random, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "create_array", create_array, NULL, NULL);
 
     signal(SIGSEGV, segfault_handler);
     signal(SIGINT, sigint_handler);

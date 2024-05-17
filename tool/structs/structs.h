@@ -45,6 +45,8 @@ struct gatepins
     float location_y[HASHDEPTH];
     char side[HASHDEPTH];   // E:east / W:west / N:north / S:south //
 
+    int value[HASHDEPTH];
+
     int hashpresent[HASHDEPTH];
 };
 typedef struct gatepins gatePins;
@@ -101,6 +103,8 @@ struct componentslocation
     float drawing_y[HASHDEPTH];
     float drawing_x_max[HASHDEPTH];
     float drawing_y_max[HASHDEPTH];
+    
+    int value[HASHDEPTH];
 };
 typedef struct componentslocation Componentslocation;
 
@@ -208,6 +212,8 @@ void rows_init();
 void rows_free();
 void add_row(char *name, float x, float y, float width, float height);
 void dump_rows();
+
+void get_gatepin_from_value(int value, int *ghash, int *gdepth);
 
 extern pthread_mutex_t mutex;
 

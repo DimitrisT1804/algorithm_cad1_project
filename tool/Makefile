@@ -6,7 +6,7 @@ SRC_FILES = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
 OBJ_FILES = $(SRC_FILES:.c=.o)
 GTKFLAGS=`pkg-config --cflags gtk+-2.0`
 GTTHREADFLAGS=`pkg-config --cflags gthread-2.0`
-LIBS=`pkg-config --libs gtk+-2.0` `pkg-config --libs gthread-2.0` -lm
+LIBS=`pkg-config --libs gtk+-2.0` `pkg-config --libs gthread-2.0` -lgsl -lgslcblas -lm
 TARGET = cad_tool
 
 # Main rule

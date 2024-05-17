@@ -2,6 +2,13 @@
 
 #include "placer.h"
 
+gsl_spmatrix *array_A;
+gsl_spmatrix *array_IO;
+gsl_spmatrix *array_diag;
+gsl_spmatrix *laplacian_matrix;
+gsl_spmatrix *io_locationx;
+int IOs_size = 0;
+
 double calculate_HPWL()
 {
     double hpwl = 0.0;
@@ -355,3 +362,212 @@ void calculate_hpwl_new(double *net_hpwl, double *IO_hpwl, double *total_hpwl)
 //         }
 //     }
 // }
+
+// Function to calculate the degree matrix from an adjacency matrix
+void calculate_degree_matrix(int IO_size) 
+{
+    // Iterate over each row of the adjacency matrix
+    for (int i = 0; i < comphash_size; i++) 
+    {
+        int degree = 0;
+        // Sum the entries in the row to calculate the degree
+        for (int j = 0; j < comphash_size; j++) 
+        {
+            degree += gsl_spmatrix_get(array_A, i, j);
+        }
+
+        for (int j = 0; j < IO_size; j++) 
+        {
+            degree += gsl_spmatrix_get(array_IO, i, j);
+        }
+        // Set the corresponding diagonal element in the degree matrix
+        // degree_matrix[i * comphash_size + i] = degree;
+        gsl_spmatrix_set(array_diag, i, i, degree);
+    }
+}
+
+// Function to perform element-wise subtraction between two sparse matrices
+void spmatrix_sub() 
+{
+    // Iterate over non-zero elements of matrix A
+    for (size_t i = 0; i < comphash_size; ++i) 
+    {
+        for (size_t j = 0; j < comphash_size; ++j) 
+        {
+            double valA = gsl_spmatrix_get(array_diag, i, j);
+            double valB = gsl_spmatrix_get(array_A, i, j);
+            gsl_spmatrix_set(laplacian_matrix, i, j, valA - valB); // Subtract corresponding elements
+        }
+    }
+}
+
+void create_array_A()
+{
+    int i;
+    int j;
+    int k;
+    int ghash_connection;
+    int gdepth_connection;
+    int chash;
+    int cdepth;
+    int chash_connection;
+    int cdepth_connection;
+    int value = 0;
+
+    array_A = gsl_spmatrix_alloc(comphash_size, comphash_size);
+    gsl_spmatrix_set_zero(array_A);
+
+    for(i = 0; i < comphash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(comphash[i].hashpresent[j] == 0)
+            {
+                continue;
+            }
+
+            compslocation[i].value[j] = value;
+            printf("component %s has value: %d\n", comphash[i].name[j], value);
+            value++;
+        }
+    }
+
+    value = 0;
+
+    for(i = 0; i < gatepinhash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] == 0)
+            {
+                continue;
+            }
+
+            if(gatepinhash[i].type[j] == IO_TYPE || gatepinhash[i].type[j] == PO)
+            {
+                gatepinhash[i].value[j] = value;
+                printf("PI %s has value: %d\n", gatepinhash[i].name[j], value);
+                value++;
+            }
+
+        }
+    }
+
+    array_IO = gsl_spmatrix_alloc(comphash_size, value);
+    gsl_spmatrix_set_zero(array_IO);
+
+    IOs_size = value;
+
+    for(i = 0; i < gatepinhash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] == 0)
+            {
+                continue;
+            }
+
+            if(gatepinhash[i].type[j] == WIRE)
+            {
+                for(k = 0; k < gatepinhash[i].connections_size[j]; k++)
+                {   
+                    chash = gatepinhash[i].parentComponent[j];
+                    cdepth = gatepinhash[i].parentComponentDepth[j];
+
+                    ghash_connection = gatepinhash[i].pinConn[j][k];
+                    gdepth_connection = gatepinhash[i].pinConnDepth[j][k];
+
+                    chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
+                    cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
+
+                    gsl_spmatrix_set(array_A, compslocation[chash].value[cdepth], compslocation[chash_connection].value[cdepth_connection], 1);
+
+                    gsl_spmatrix_set(array_A, compslocation[chash_connection].value[cdepth_connection], compslocation[chash].value[cdepth], 1);
+                }
+
+            }
+            else if(gatepinhash[i].type[j] == IO_TYPE || gatepinhash[i].type[j] == PO)
+            {
+                for(k = 0; k < gatepinhash[i].connections_size[j]; k++)
+                {
+                    ghash_connection = gatepinhash[i].pinConn[j][k];
+                    gdepth_connection = gatepinhash[i].pinConnDepth[j][k];
+
+                    chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
+                    cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
+
+                    gsl_spmatrix_set(array_IO, compslocation[chash_connection].value[cdepth_connection], gatepinhash[i].value[j], 1);
+
+                }
+            }
+        }
+    }
+
+    // gsl_spmatrix_set(array_A, 0, 1, 1);
+    // gsl_spmatrix_set(array_A, 1, 0, 1);
+
+    // Print the sparse matrix
+    printf("Sparse Matrix A:\n");
+    gsl_spmatrix_fprintf(stdout, array_A, "%g");
+
+    printf("\n\nSparse Matrix IO:\n");
+    gsl_spmatrix_fprintf(stdout, array_IO, "%g");
+
+    array_diag = gsl_spmatrix_alloc(comphash_size, comphash_size);
+    gsl_spmatrix_set_zero(array_diag);
+
+    calculate_degree_matrix(value);
+
+    printf("\n\nSparse Matrix diag:\n");
+    gsl_spmatrix_fprintf(stdout, array_diag, "%g");
+
+    laplacian_matrix = gsl_spmatrix_alloc(comphash_size, comphash_size);
+    gsl_spmatrix_set_zero(laplacian_matrix);
+
+    spmatrix_sub();
+    printf("\n\nSparse Matrix laplacian:\n");
+    gsl_spmatrix_fprintf(stdout, laplacian_matrix, "%g");
+}
+
+void create_pin_vectors()
+{
+    int i;
+    int j;
+    int ghash;
+    int gdepth;
+    double value_x = 0;
+
+    io_locationx = gsl_spmatrix_alloc(IOs_size, 1);
+    gsl_spmatrix_set_zero(io_locationx);
+
+    for(i = 0; i < IOs_size; i++)
+    {
+        value_x = 0;
+
+        for(j = 0; j < comphash_size; j++)
+        {
+            if(comphash[i].hashpresent[j] == 0)
+            {
+                continue;
+            }
+
+            value_x = value_x + gsl_spmatrix_get(array_IO, i, j);
+        }
+
+        // multiply by location of IO //
+        get_gatepin_from_value(i, &ghash, &gdepth);
+        if(gdepth == -1)
+        {
+            printf("Error: gatepin not found\n");
+            exit(1);
+        }
+
+        value_x = value_x * (gatepinhash[ghash].location_x[gdepth] * 10);
+        value_x = -value_x;
+
+        gsl_spmatrix_set(io_locationx, i, 0, value_x);
+    }
+
+    printf("\n\nSparse Matrix io_locationx:\n");
+    gsl_spmatrix_fprintf(stdout, io_locationx, "%g");
+}

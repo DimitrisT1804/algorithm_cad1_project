@@ -50,6 +50,7 @@ void Gatepins_init()
             gatepinhash[i].location_x[j] = -1.0;
             gatepinhash[i].location_y[j] = -1.0;
             gatepinhash[i].side[j] = '\0';
+            gatepinhash[i].value[j] = -1;
         }
     }
 }
@@ -948,6 +949,7 @@ void componentslocation_init()
             compslocation[i].drawing_y[j] = -1.0;
             compslocation[i].drawing_x_max[j] = -1.0;
             compslocation[i].drawing_y_max[j] = -1.0;
+            compslocation[i].value[j] = -1;
         }
     }
 }
@@ -1272,4 +1274,29 @@ void dump_component(char *comp_name)
         printf(ANSI_COLOR_BLUE "-" ANSI_COLOR_RESET);
     }
     printf("\n\n");
+}
+
+void get_gatepin_from_value(int value, int *ghash, int *gdepth)
+{
+    int i;
+    int j;
+
+    *ghash = -1;
+    *gdepth = -1;
+
+    for(i = 0; i < gatepinhash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(gatepinhash[i].hashpresent[j] != 0)
+            {
+                if(gatepinhash[i].value[j] == value)
+                {
+                    *ghash = i;
+                    *gdepth = j;
+                    return;
+                }
+            }
+        }
+    }
 }
