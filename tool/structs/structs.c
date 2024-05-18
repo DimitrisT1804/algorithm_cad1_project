@@ -1300,3 +1300,28 @@ void get_gatepin_from_value(int value, int *ghash, int *gdepth)
         }
     }
 }
+
+void get_component_from_value(int value, int *chash, int *cdepth)
+{
+    int i;
+    int j;
+
+    *chash = -1;
+    *cdepth = -1;
+
+    for(i = 0; i < comphash_size; i++)
+    {
+        for(j = 0; j < HASHDEPTH; j++)
+        {
+            if(comphash[i].hashpresent[j] != 0)
+            {
+                if(compslocation[i].value[j] == value)
+                {
+                    *chash = i;
+                    *cdepth = j;
+                    return;
+                }
+            }
+        }
+    }
+}

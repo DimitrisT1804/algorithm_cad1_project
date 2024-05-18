@@ -214,6 +214,7 @@ void add_row(char *name, float x, float y, float width, float height);
 void dump_rows();
 
 void get_gatepin_from_value(int value, int *ghash, int *gdepth);
+void get_component_from_value(int value, int *chash, int *cdepth);
 
 extern pthread_mutex_t mutex;
 

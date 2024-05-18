@@ -367,21 +367,21 @@ void calculate_hpwl_new(double *net_hpwl, double *IO_hpwl, double *total_hpwl)
 void calculate_degree_matrix(int IO_size) 
 {
     // Iterate over each row of the adjacency matrix
-    for (int i = 0; i < comphash_size; i++) 
+    for (int i = 0; i < comphash_size - 1; i++) 
     {
         int degree = 0;
         // Sum the entries in the row to calculate the degree
-        for (int j = 0; j < comphash_size; j++) 
+        for (int j = 0; j < comphash_size - 1; j++) 
         {
             degree += gsl_spmatrix_get(array_A, i, j);
         }
 
-        for (int j = 0; j < IO_size; j++) 
+        for (int j = 0; j < IOs_size; j++) 
         {
             degree += gsl_spmatrix_get(array_IO, i, j);
         }
         // Set the corresponding diagonal element in the degree matrix
-        // degree_matrix[i * comphash_size + i] = degree;
+        // degree_matrix[i * comphash_size - 1 + i] = degree;
         gsl_spmatrix_set(array_diag, i, i, degree);
     }
 }
@@ -390,13 +390,13 @@ void calculate_degree_matrix(int IO_size)
 void spmatrix_sub() 
 {
     // Iterate over non-zero elements of matrix A
-    for (size_t i = 0; i < comphash_size; ++i) 
+    for (size_t i = 0; i < comphash_size - 1; i++) 
     {
-        for (size_t j = 0; j < comphash_size; ++j) 
+        for (size_t j = 0; j < comphash_size - 1; j++) 
         {
             double valA = gsl_spmatrix_get(array_diag, i, j);
             double valB = gsl_spmatrix_get(array_A, i, j);
-            gsl_spmatrix_set(laplacian_matrix, i, j, valA - valB); // Subtract corresponding elements
+            gsl_spmatrix_set(laplacian_matrix, i, j, valA - valB); // Subtract corresponding elements //
         }
     }
 }
@@ -414,10 +414,10 @@ void create_array_A()
     int cdepth_connection;
     int value = 0;
 
-    array_A = gsl_spmatrix_alloc(comphash_size, comphash_size);
+    array_A = gsl_spmatrix_alloc(comphash_size - 1, comphash_size - 1);
     gsl_spmatrix_set_zero(array_A);
 
-    for(i = 0; i < comphash_size; i++)
+    for(i = 0; i < comphash_size - 1; i++)
     {
         for(j = 0; j < HASHDEPTH; j++)
         {
@@ -453,10 +453,10 @@ void create_array_A()
         }
     }
 
-    array_IO = gsl_spmatrix_alloc(comphash_size, value);
+    array_IO = gsl_spmatrix_alloc(comphash_size - 1, value);
     gsl_spmatrix_set_zero(array_IO);
 
-    IOs_size = value;
+    IOs_size = value - 1;
 
     for(i = 0; i < gatepinhash_size; i++)
     {
@@ -513,15 +513,15 @@ void create_array_A()
     printf("\n\nSparse Matrix IO:\n");
     gsl_spmatrix_fprintf(stdout, array_IO, "%g");
 
-    array_diag = gsl_spmatrix_alloc(comphash_size, comphash_size);
+    array_diag = gsl_spmatrix_alloc(comphash_size - 1, comphash_size - 1);
     gsl_spmatrix_set_zero(array_diag);
 
-    calculate_degree_matrix(value);
+    calculate_degree_matrix(comphash_size - 1);
 
     printf("\n\nSparse Matrix diag:\n");
     gsl_spmatrix_fprintf(stdout, array_diag, "%g");
 
-    laplacian_matrix = gsl_spmatrix_alloc(comphash_size, comphash_size);
+    laplacian_matrix = gsl_spmatrix_alloc(comphash_size - 1, comphash_size - 1);
     gsl_spmatrix_set_zero(laplacian_matrix);
 
     spmatrix_sub();
@@ -536,29 +536,36 @@ void create_pin_vectors()
     int ghash;
     int gdepth;
     double value_x = 0.0;
+    double temp_x = 0.0;
 
-    io_locationx = gsl_spmatrix_alloc(IOs_size, 1);
+    io_locationx = gsl_spmatrix_alloc(comphash_size - 1, 1);
     gsl_spmatrix_set_zero(io_locationx);
 
-    for(i = 0; i < IOs_size; i++)
+    for(i = 0; i < comphash_size - 1; i++)
     {
-        value_x = 0;
+        value_x = 0.0;
+        temp_x = 0.0;
 
-        for(j = 0; j < comphash_size; j++)
+        for(j = 0; j < IOs_size; j++)
         {
 
-            value_x = value_x + gsl_spmatrix_get(array_IO, i, j);
+            // value_x = value_x + gsl_spmatrix_get(array_IO, i, j);
+            temp_x = gsl_spmatrix_get(array_IO, i, j);
+
+            get_gatepin_from_value(j, &ghash, &gdepth);
+            if(gdepth == -1)
+            {
+                printf("Error: gatepin not found\n");
+                exit(1);
+            }
+            // printf("Gatepin is %s\n", gatepinhash[ghash].name[gdepth]);
+            
+            temp_x = temp_x * gatepinhash[ghash].location_x[gdepth];
+
+            value_x = value_x + temp_x;
         }
 
         // multiply by location of IO //
-        get_gatepin_from_value(i, &ghash, &gdepth);
-        if(gdepth == -1)
-        {
-            printf("Error: gatepin not found\n");
-            exit(1);
-        }
-
-        value_x = value_x * (gatepinhash[ghash].location_x[gdepth] * 10.0);
         if(value_x != 0)
         {
             value_x = -value_x;
@@ -573,18 +580,23 @@ void create_pin_vectors()
 
 void solve_linear_system()
 {
-    gsl_vector *x = gsl_vector_alloc(comphash_size);
+    int chash;
+    int cdepth; 
 
-    gsl_splinalg_itersolve *solver = gsl_splinalg_itersolve_alloc(gsl_splinalg_itersolve_gmres, comphash_size, 0);
-    gsl_spmatrix *A_csc = gsl_spmatrix_alloc_nzmax(comphash_size, comphash_size, comphash_size, GSL_SPMATRIX_CSC);
+    gsl_vector *x = gsl_vector_alloc(comphash_size - 1);
+
+    gsl_splinalg_itersolve *solver = gsl_splinalg_itersolve_alloc(gsl_splinalg_itersolve_gmres, comphash_size - 1, 0);
+    gsl_spmatrix *A_csc = gsl_spmatrix_alloc_nzmax(comphash_size - 1, comphash_size - 1, comphash_size - 1, GSL_SPMATRIX_CSC);
     A_csc = gsl_spmatrix_compcol(laplacian_matrix);
 
     // Convert sparse vector b to a dense vector
-    gsl_vector *b_dense = gsl_vector_alloc(comphash_size);
-    for (size_t i = 0; i < comphash_size; ++i) 
+    gsl_vector *b_dense = gsl_vector_alloc(comphash_size - 1);
+    for (size_t i = 0; i < comphash_size - 1; ++i) 
     {
         gsl_vector_set(b_dense, i, gsl_spmatrix_get(io_locationx, i, 0));
     }
+
+    gsl_vector_scale(b_dense, -1.0);
 
     int status;
     double tol = 1e-7;
@@ -600,7 +612,7 @@ void solve_linear_system()
     if (status == GSL_SUCCESS) 
     {
         printf("Converged after %zu iterations.\n", iter);
-        for (size_t i = 0; i < comphash_size; i++) 
+        for (size_t i = 0; i < comphash_size - 1; i++) 
         {
             printf("x_%zu = %g\n", i, gsl_vector_get(x, i));
         }
@@ -609,5 +621,19 @@ void solve_linear_system()
     {
         printf("Failed to converge.\n");
     }
+
+    for(int i = 0; i < comphash_size - 2; i++)
+    {
+        get_component_from_value(i, &chash, &cdepth);
+        if(cdepth == -1)
+        {
+            printf("Error: component not found\n");
+            exit(1);
+        }
+
+        compslocation[chash].x[cdepth] = gsl_vector_get(x, i);
+
+    }
+
 
 }

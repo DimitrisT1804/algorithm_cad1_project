@@ -9,7 +9,8 @@
         "stat.h": "c",
         "probabilities_annotations.h": "c",
         "string.h": "c",
-        "tcl.h": "c"
+        "tcl.h": "c",
+        "type_traits": "c"
     },
     "cSpell.enableFiletypes": [
         "!c",
