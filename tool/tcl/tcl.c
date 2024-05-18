@@ -2291,6 +2291,8 @@ int create_array(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
     
     create_pin_vectors();
 
+    solve_linear_system();
+
     return TCL_OK;
 }
 

@@ -535,7 +535,7 @@ void create_pin_vectors()
     int j;
     int ghash;
     int gdepth;
-    double value_x = 0;
+    double value_x = 0.0;
 
     io_locationx = gsl_spmatrix_alloc(IOs_size, 1);
     gsl_spmatrix_set_zero(io_locationx);
@@ -546,10 +546,6 @@ void create_pin_vectors()
 
         for(j = 0; j < comphash_size; j++)
         {
-            if(comphash[i].hashpresent[j] == 0)
-            {
-                continue;
-            }
 
             value_x = value_x + gsl_spmatrix_get(array_IO, i, j);
         }
@@ -562,12 +558,56 @@ void create_pin_vectors()
             exit(1);
         }
 
-        value_x = value_x * (gatepinhash[ghash].location_x[gdepth] * 10);
-        value_x = -value_x;
+        value_x = value_x * (gatepinhash[ghash].location_x[gdepth] * 10.0);
+        if(value_x != 0)
+        {
+            value_x = -value_x;
+        }
 
         gsl_spmatrix_set(io_locationx, i, 0, value_x);
     }
 
     printf("\n\nSparse Matrix io_locationx:\n");
     gsl_spmatrix_fprintf(stdout, io_locationx, "%g");
+}
+
+void solve_linear_system()
+{
+    gsl_vector *x = gsl_vector_alloc(comphash_size);
+
+    gsl_splinalg_itersolve *solver = gsl_splinalg_itersolve_alloc(gsl_splinalg_itersolve_gmres, comphash_size, 0);
+    gsl_spmatrix *A_csc = gsl_spmatrix_alloc_nzmax(comphash_size, comphash_size, comphash_size, GSL_SPMATRIX_CSC);
+    A_csc = gsl_spmatrix_compcol(laplacian_matrix);
+
+    // Convert sparse vector b to a dense vector
+    gsl_vector *b_dense = gsl_vector_alloc(comphash_size);
+    for (size_t i = 0; i < comphash_size; ++i) 
+    {
+        gsl_vector_set(b_dense, i, gsl_spmatrix_get(io_locationx, i, 0));
+    }
+
+    int status;
+    double tol = 1e-7;
+    size_t iter = 0, max_iter = 1000;
+
+    do 
+    {
+        status = gsl_splinalg_itersolve_iterate(A_csc, b_dense, tol, x, solver);
+        iter++;
+    }
+    while (status == GSL_CONTINUE && iter < max_iter);
+
+    if (status == GSL_SUCCESS) 
+    {
+        printf("Converged after %zu iterations.\n", iter);
+        for (size_t i = 0; i < comphash_size; i++) 
+        {
+            printf("x_%zu = %g\n", i, gsl_vector_get(x, i));
+        }
+    } 
+    else 
+    {
+        printf("Failed to converge.\n");
+    }
+
 }
