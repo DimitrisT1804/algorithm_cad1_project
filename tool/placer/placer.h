@@ -15,6 +15,7 @@ extern gsl_spmatrix *array_IO;
 extern gsl_spmatrix *array_diag;
 extern gsl_spmatrix *laplacian_matrix;
 extern gsl_spmatrix *io_locationx;
+extern gsl_spmatrix *io_locationy;
 
 extern int IOs_size;
 

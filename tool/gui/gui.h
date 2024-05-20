@@ -8,11 +8,12 @@
 #include <time.h>
 #include <string.h>
 #include <limits.h>
+#include <gdk/gdkkeysyms.h>
 #include "../tcl/tcl.h"
 #include "../structs/structs.h"
 
-//  #include <tcl/tcl.h>
-#include <tcl.h>
+#include <tcl/tcl.h>
+//#include <tcl.h>
 
 // #define DEBUGGUI
 
@@ -51,6 +52,9 @@ extern GtkAdjustment *adjust_scrollbar;
 extern double offset_x;
 extern double offset_y;
 
+extern int show_wires;
+extern int show_wires_IOs;
+
 // *** Function Prototypes *** //
 
 static void expose(GtkWidget *, GdkEventExpose *, gpointer);
@@ -69,3 +73,4 @@ static void create_buttons_frame();
 static void list_cells_button_clicked(GtkButton *button, gpointer data);
 double translate_um_to_pixels(double um);
 void find_cell_pos(double mouse_x, double mouse_y);
+gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer data);

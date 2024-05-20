@@ -38,6 +38,8 @@ GtkWidget *report_hpwl_button;
 double offset_x = 1.0;
 double offset_y = 1.0;
 
+int show_wires = 1;
+int show_wires_IOs = 1;
 
 double max_double(double a, double b)
 {
@@ -320,48 +322,91 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
         int ldepth;
         int lhash_connection;
         int ldepth_connection;
+        int is_IO = 0;
 
-        for(int i = 0; i < gatepinhash_size; i++)
+        if(show_wires == 1)
         {
-            for(int j = 0; j < HASHDEPTH; j++)
+            for(int i = 0; i < gatepinhash_size; i++)
             {
-                if(gatepinhash[i].hashpresent[j] == 0)
+                for(int j = 0; j < HASHDEPTH; j++)
                 {
-                    continue;
-                }
+                    if(gatepinhash[i].hashpresent[j] == 0)
+                    {
+                        continue;
+                    }
 
-                if(gatepinhash[i].type[j] == PO || gatepinhash[i].type[j] == IO_TYPE)
-                {
-                    continue;
-                }
+                    if(gatepinhash[i].type[j] == PO || gatepinhash[i].type[j] == IO_TYPE)
+                    {
+                       continue;
+                    }
 
-                chash = gatepinhash[i].parentComponent[j];
-                cdepth = gatepinhash[i].parentComponentDepth[j];
+                    chash = gatepinhash[i].parentComponent[j];
+                    cdepth = gatepinhash[i].parentComponentDepth[j];
 
-                lhash = comphash[chash].lib_type[cdepth];
-                ldepth = comphash[chash].lib_type_depth[cdepth];
+                    lhash = comphash[chash].lib_type[cdepth];
+                    ldepth = comphash[chash].lib_type_depth[cdepth];
 
 
-                for(int k = 0; k < gatepinhash[i].connections_size[j]; k++)
-                {
-                    ghash_connection = gatepinhash[i].pinConn[j][k];
-                    gdepth_connection = gatepinhash[i].pinConnDepth[j][k];
+                    for(int k = 0; k < gatepinhash[i].connections_size[j]; k++)
+                    {
+                        ghash_connection = gatepinhash[i].pinConn[j][k];
+                        gdepth_connection = gatepinhash[i].pinConnDepth[j][k];
 
-                    chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
-                    cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
+                        chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
+                        cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
 
-                    lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
-                    ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
+                        lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
+                        ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
 
-                    cairo_set_source_rgb(maincanvas_cs, 227.0/255.0, 151.0/255.0, 116.0/255.0); // Black
-                    cairo_set_line_width(maincanvas_cs, 3.0);
-                    cairo_move_to(maincanvas_cs, (translate_um_to_pixels( compslocation[chash].x[cdepth] ) + maincanvasOx - offset_x + translate_um_to_pixels(libhash[lhash].width[ldepth]) / 2 ) * current_scale + offset_x, (translate_um_to_pixels( compslocation[chash].y[cdepth] ) + maincanvasOy - offset_y + translate_um_to_pixels(libhash[lhash].height[ldepth]) / 2 )  * current_scale + offset_y);
+                        cairo_set_source_rgb(maincanvas_cs, 227.0/255.0, 151.0/255.0, 116.0/255.0); // Black
+                        cairo_set_line_width(maincanvas_cs, 1.0);
+                        cairo_move_to(maincanvas_cs, (translate_um_to_pixels( compslocation[chash].x[cdepth] ) + maincanvasOx - offset_x + translate_um_to_pixels(libhash[lhash].width[ldepth]) / 2 ) * current_scale + offset_x, (translate_um_to_pixels( compslocation[chash].y[cdepth] ) + maincanvasOy - offset_y + translate_um_to_pixels(libhash[lhash].height[ldepth]) / 2 )  * current_scale + offset_y);
 
-                    cairo_line_to(maincanvas_cs, (translate_um_to_pixels( compslocation[chash_connection].x[cdepth_connection] ) + maincanvasOx - offset_x + translate_um_to_pixels(libhash[lhash_connection].width[ldepth_connection]) / 2 ) * current_scale + offset_x, (translate_um_to_pixels( compslocation[chash_connection].y[cdepth_connection] ) + maincanvasOy - offset_y + translate_um_to_pixels(libhash[lhash_connection].height[ldepth_connection]) / 2)  * current_scale + offset_y);
-                    cairo_stroke(maincanvas_cs);
+                        cairo_line_to(maincanvas_cs, (translate_um_to_pixels( compslocation[chash_connection].x[cdepth_connection] ) + maincanvasOx - offset_x + translate_um_to_pixels(libhash[lhash_connection].width[ldepth_connection]) / 2 ) * current_scale + offset_x, (translate_um_to_pixels( compslocation[chash_connection].y[cdepth_connection] ) + maincanvasOy - offset_y + translate_um_to_pixels(libhash[lhash_connection].height[ldepth_connection]) / 2)  * current_scale + offset_y);
+                        cairo_stroke(maincanvas_cs);
+                    }
                 }
             }
         }
+
+        if(show_wires_IOs == 1)
+        {
+            for(int i = 0; i < gatepinhash_size; i++)
+            {
+                for(int j = 0; j < HASHDEPTH; j++)
+                {
+                    if(gatepinhash[i].hashpresent[j] == 0)
+                    {
+                        continue;
+                    }
+
+                    if(gatepinhash[i].type[j] == WIRE)
+                    {
+                        continue;
+                    }
+
+                    for(int k = 0; k < gatepinhash[i].connections_size[j]; k++)
+                    {
+                        ghash_connection = gatepinhash[i].pinConn[j][k];
+                        gdepth_connection = gatepinhash[i].pinConnDepth[j][k];
+
+                        chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
+                        cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
+
+                        lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
+                        ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
+
+                        cairo_set_source_rgb(maincanvas_cs, 0.0, 128.0/255.0, 255.0/255.0); // Black
+                        cairo_set_line_width(maincanvas_cs, 1.0);
+                        cairo_move_to(maincanvas_cs, (translate_um_to_pixels( gatepinhash[i].location_x[j] ) + maincanvasOx - offset_x ) * current_scale + offset_x, (translate_um_to_pixels( gatepinhash[i].location_y[j] ) + maincanvasOy - offset_y )  * current_scale + offset_y);
+                        
+                        cairo_line_to(maincanvas_cs, (translate_um_to_pixels( compslocation[chash_connection].x[cdepth_connection] ) + maincanvasOx - offset_x + translate_um_to_pixels(libhash[lhash_connection].width[ldepth_connection]) / 2 ) * current_scale + offset_x, (translate_um_to_pixels( compslocation[chash_connection].y[cdepth_connection] ) + maincanvasOy - offset_y + translate_um_to_pixels(libhash[lhash_connection].height[ldepth_connection]) / 2)  * current_scale + offset_y);
+                        cairo_stroke(maincanvas_cs);
+                    }
+                }
+            }
+        }
+
 
         gtk_widget_queue_draw(maincanvas);
     }
@@ -721,6 +766,56 @@ void find_cell_pos(double mouse_x, double mouse_y)
     }
 }
 
+// Callback function to handle key press events
+gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer data) 
+{
+    // Check if the Shift key is held down and 'W' is pressed
+    if ((event->state & GDK_SHIFT_MASK) && (event->keyval == GDK_w || event->keyval == GDK_W) ) 
+    {
+        // g_print("Shift+W pressed\n");
+
+        show_wires = !show_wires;
+
+        if(show_wires == 1)
+        {
+            printf("INFO: Disable internal wires of design\n");
+        }
+        else
+        {
+            printf("INFO: Enable internal wires of design\n");
+        }
+
+        return TRUE; // Event handled
+    }
+
+    return FALSE; // Event not handled
+}
+
+// Callback function to handle key press events
+gboolean on_key_press_IOs(GtkWidget *widget, GdkEventKey *event, gpointer data) 
+{
+    // Check if the Shift key is held down and 'W' is pressed
+    if ((event->state & GDK_CONTROL_MASK) && (event->keyval == GDK_w || event->keyval == GDK_W) ) 
+    {
+        // g_print("Shift+W pressed\n");
+
+        show_wires_IOs = !show_wires_IOs;
+
+        if(show_wires_IOs == 1)
+        {
+            printf("INFO: Disable IOs wires of design\n");
+        }
+        else
+        {
+            printf("INFO: Enable IOs wires of design\n");
+        }
+
+        return TRUE; // Event handled
+    }
+
+    return FALSE; // Event not handled
+}
+
 void start_gui()
 {  
     // *** Local Variables *** //
@@ -806,6 +901,10 @@ void start_gui()
     gtk_container_add(GTK_CONTAINER(mainwindow), hpane);
 
     create_buttons_frame();
+
+    // Connect the key press event to the callback function
+    g_signal_connect(mainwindow, "key-press-event", G_CALLBACK(on_key_press), NULL);
+    g_signal_connect(mainwindow, "key-press-event", G_CALLBACK(on_key_press_IOs), NULL);
 
     // // Create the menu
     // GtkWidget *menu_bar = create_menu();
