@@ -10,12 +10,12 @@
 #include <gsl/gsl_splinalg.h>
 #include <gsl/gsl_vector.h>
 
-extern gsl_spmatrix *array_A;
-extern gsl_spmatrix *array_IO;
-extern gsl_spmatrix *array_diag;
+// extern gsl_spmatrix *array_A;
+// extern gsl_spmatrix *array_IO;
+// extern gsl_spmatrix *array_diag;
 extern gsl_spmatrix *laplacian_matrix;
-extern gsl_spmatrix *io_locationx;
-extern gsl_spmatrix *io_locationy;
+extern gsl_vector *io_locationx;
+extern gsl_vector *io_locationy;
 
 extern int IOs_size;
 
@@ -23,9 +23,10 @@ double calculate_HPWL();
 double random_double(double, double);
 void random_placer();
 void calculate_hpwl_new(double *, double *, double *);
-void create_array_A();
-void calculate_degree_matrix(int IO_size);
-void spmatrix_sub();
-void create_pin_vectors();
-void solve_linear_system();
+// void create_array_A();
+// void calculate_degree_matrix(int IO_size);
+// void spmatrix_sub();
+// void create_pin_vectors();
+// void solve_linear_system();
+void create_laplacian_matrix();
 

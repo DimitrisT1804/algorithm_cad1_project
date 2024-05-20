@@ -2273,7 +2273,7 @@ int place_random(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
     return TCL_OK;
 }
 
-int create_array(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
+int minimise_QPWL(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *const* objv)
 {
     if(gatepinhash == NULL)
     {
@@ -2287,11 +2287,13 @@ int create_array(ClientData clientdata, Tcl_Interp *interp, int objc, Tcl_Obj *c
         return TCL_ERROR;
     }
 
-    create_array_A();
+    // create_array_A();
     
-    create_pin_vectors();
+    // create_pin_vectors();
 
-    solve_linear_system();
+    // solve_linear_system();
+
+    create_laplacian_matrix();
 
     return TCL_OK;
 }
@@ -2359,7 +2361,7 @@ void *main_tcl(void *arg)
     Tcl_CreateObjCommand(interp, "list_gatepins", list_gatepins, NULL, NULL);
     Tcl_CreateObjCommand(interp, "report_hpwl", report_hpwl, NULL, NULL);
     Tcl_CreateObjCommand(interp, "place_random", place_random, NULL, NULL);
-    Tcl_CreateObjCommand(interp, "create_array", create_array, NULL, NULL);
+    Tcl_CreateObjCommand(interp, "minimise_QPWL", minimise_QPWL, NULL, NULL);
 
     signal(SIGSEGV, segfault_handler);
     signal(SIGINT, sigint_handler);
