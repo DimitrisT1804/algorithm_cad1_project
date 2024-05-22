@@ -23,6 +23,7 @@ Rows *rows;
 int rows_size;
 int design_is_placed = 0;
 char *highlighted_component = NULL;
+double scale = 0.0;
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 

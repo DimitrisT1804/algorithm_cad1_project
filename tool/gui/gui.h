@@ -12,8 +12,8 @@
 #include "../tcl/tcl.h"
 #include "../structs/structs.h"
 
-//#include <tcl/tcl.h>
-#include <tcl.h>
+#include <tcl/tcl.h>
+// #include <tcl.h>
 
 // #define DEBUGGUI
 
@@ -54,6 +54,9 @@ extern double offset_y;
 
 extern int show_wires;
 extern int show_wires_IOs;
+extern int show_rows;
+extern double mid_x;
+extern double mid_y;
 
 // *** Function Prototypes *** //
 

@@ -149,6 +149,7 @@ extern int rows_size;
 
 extern int design_is_placed;
 extern char *highlighted_component;
+extern double scale;
 
 /* gatepinhash functions*/
 void Gatepins_init();

@@ -1356,6 +1356,10 @@ int call_parser(char *input_file)
     printf("IO pins size is %d and compsize is %d\n", gatepinhash_size, comphash_size);
     #endif
 
+    scale = (600.0 / (coresite->core_height));
+
+    printf("scale is %lf\n", scale);
+
     printf(ANSI_COLOR_BLUE "####### Summary of Design: %s #######\n" ANSI_COLOR_RESET, input_file);
     printf(ANSI_COLOR_GREEN "Components: %d\n" ANSI_COLOR_RESET, count);
     printf(ANSI_COLOR_GREEN "IOs: %d\n" ANSI_COLOR_RESET, count_IOs);

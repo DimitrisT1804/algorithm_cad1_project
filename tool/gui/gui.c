@@ -40,6 +40,9 @@ double offset_y = 1.0;
 
 int show_wires = 1;
 int show_wires_IOs = 1;
+int show_rows = 1;
+double mid_x = 0.0;
+double mid_y = 0.0;
 
 double max_double(double a, double b)
 {
@@ -64,9 +67,11 @@ static void expose(GtkWidget *widget, GdkEventExpose *event, gpointer data)
   maincanvaspaint(widget, event, data);
 }
 
+
 double translate_um_to_pixels(double um)
 {
-    return um * 10;
+    return um * scale;
+    // return um * 16.0;
 }
 
 // Expose-Event Paint Function for maincanvas //
@@ -207,28 +212,43 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     }
     else if(design_is_placed == 1)
     {
-
         // gtk_widget_set_size_request(maincanvas, translate_um_to_pixels(coresite->core_height) + 20, translate_um_to_pixels(coresite->core_width) + 20);
+
+        mid_x = (850.0 - translate_um_to_pixels(coresite->core_width)) / 2.0;
+        mid_y = (650.0 - translate_um_to_pixels(coresite->core_height)) / 2.0;
+
+        cairo_translate(maincanvas_cs, mid_x, mid_y);
+
+        cairo_set_source_rgb(maincanvas_cs, 0.0, 0.0, 0.0);
+        cairo_paint(maincanvas_cs);
         
 
-        cairo_scale(maincanvas_cs, 650.0 / translate_um_to_pixels(coresite->core_height), 650.0 / translate_um_to_pixels(coresite->core_height));  
+        // cairo_scale(maincanvas_cs, 650.0 / translate_um_to_pixels(coresite->core_height), 650.0 / translate_um_to_pixels(coresite->core_height));  
 
         double height_scale = 650.0 / translate_um_to_pixels(coresite->core_height);
 
-        cairo_set_source_rgb(maincanvas_cs, 0, 255.0, 0); 
-        cairo_rectangle(maincanvas_cs, (maincanvasOx - offset_x) * current_scale + offset_x, (maincanvasOy - offset_y) * current_scale + offset_y, current_scale * translate_um_to_pixels(coresite->core_width), current_scale * translate_um_to_pixels(coresite->core_height));
+        cairo_set_source_rgb(maincanvas_cs, 153.0/255.0, 0.0, 153.0/255.0); 
+        cairo_set_line_width(maincanvas_cs, 10.0);
+        cairo_rectangle(maincanvas_cs, (maincanvasOx - offset_x) * current_scale + offset_x, (maincanvasOy - offset_y) * current_scale + offset_y, current_scale * translate_um_to_pixels(coresite->core_width) + 2, current_scale * translate_um_to_pixels(coresite->core_height) + 2);
         cairo_stroke(maincanvas_cs);
 
         cairo_set_source_rgb(maincanvas_cs, 0.0, 0.0, 0.0); 
         cairo_rectangle(maincanvas_cs, (maincanvasOx - offset_x) * current_scale + offset_x, (maincanvasOy - offset_y) * current_scale + offset_y, current_scale * translate_um_to_pixels(coresite->core_width), current_scale * translate_um_to_pixels(coresite->core_height));
         cairo_fill(maincanvas_cs);
 
-        cairo_set_source_rgb(maincanvas_cs, 255.0, 0, 0);
-        for(int i = 0; i < rows_size; i++)
+        cairo_set_line_width(maincanvas_cs, 1.0);
+
+        if(show_rows == 1)
         {
-            cairo_rectangle(maincanvas_cs,(translate_um_to_pixels(rows[i].location_x) - offset_x + maincanvasOx) * current_scale + offset_x, (translate_um_to_pixels(rows[i].location_y) - offset_y + maincanvasOy) * current_scale + offset_y, current_scale * translate_um_to_pixels(rows[i].width), current_scale * translate_um_to_pixels(rows[i].height)); 
-            cairo_stroke(maincanvas_cs);
+            cairo_set_line_width(maincanvas_cs, 2.0);
+            cairo_set_source_rgb(maincanvas_cs, 255.0, 0, 0);
+            for(int i = 0; i < rows_size; i++)
+            {
+                cairo_rectangle(maincanvas_cs,(translate_um_to_pixels(rows[i].location_x) - offset_x + maincanvasOx) * current_scale + offset_x, (translate_um_to_pixels(rows[i].location_y) - offset_y + maincanvasOy) * current_scale + offset_y, current_scale * translate_um_to_pixels(rows[i].width), current_scale * translate_um_to_pixels(rows[i].height)); 
+                cairo_stroke(maincanvas_cs);
+            }
         }
+        cairo_set_line_width(maincanvas_cs, 1.0);
 
         for(int i = 0; i < comphash_size; i++)
         {
@@ -258,13 +278,13 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
                     cairo_rectangle(maincanvas_cs, (translate_um_to_pixels(compslocation[i].x[j]) - offset_x + maincanvasOx) * current_scale + offset_x, (translate_um_to_pixels(compslocation[i].y[j]) - offset_y + maincanvasOy) * current_scale + offset_y, current_scale * translate_um_to_pixels(cell_width), current_scale * translate_um_to_pixels(cell_height)); 
                     cairo_fill(maincanvas_cs);
 
-                    compslocation[i].drawing_x[j] = ( (translate_um_to_pixels(compslocation[i].x[j]) - offset_x + maincanvasOx) * current_scale + offset_x) * height_scale ;
+                    compslocation[i].drawing_x[j] = ( (translate_um_to_pixels(compslocation[i].x[j]) - offset_x + maincanvasOx) * current_scale + offset_x) * 1 ;
 
-                    compslocation[i].drawing_y[j] = ( (translate_um_to_pixels(compslocation[i].y[j]) - offset_y + maincanvasOy) * current_scale + offset_y ) * height_scale;
+                    compslocation[i].drawing_y[j] = ( (translate_um_to_pixels(compslocation[i].y[j]) - offset_y + maincanvasOy) * current_scale + offset_y ) * 1;
 
-                    compslocation[i].drawing_x_max[j] = ( (translate_um_to_pixels(compslocation[i].x[j]) - offset_x + maincanvasOx) * current_scale + offset_x) * height_scale + current_scale * translate_um_to_pixels(cell_width) * height_scale;
+                    compslocation[i].drawing_x_max[j] = ( (translate_um_to_pixels(compslocation[i].x[j]) - offset_x + maincanvasOx) * current_scale + offset_x) * 1 + current_scale * translate_um_to_pixels(cell_width) * 1;
 
-                    compslocation[i].drawing_y_max[j] = ( (translate_um_to_pixels(compslocation[i].y[j]) - offset_y + maincanvasOy) * current_scale + offset_y ) * height_scale + current_scale * translate_um_to_pixels(cell_height) * height_scale;
+                    compslocation[i].drawing_y_max[j] = ( (translate_um_to_pixels(compslocation[i].y[j]) - offset_y + maincanvasOy) * current_scale + offset_y ) * 1 + current_scale * translate_um_to_pixels(cell_height) * 1;
                 }
             }
         }
@@ -620,9 +640,9 @@ static void mousebutton(GtkWidget *widget, GdkEventButton *eev, gpointer data)
     if (eev->button == 1) // Left Mouse Button //
     {
         // code here //
-        printf("Mouse location: X: %f, Y: %f\n", ( (eev->x - offset_x + maincanvasOx) * current_scale + offset_x) , (eev->y - offset_y + maincanvasOy) * current_scale + offset_y);
+        printf("Mouse location: X: %f, Y: %f\n", ( (eev->x - offset_x + maincanvasOx) * current_scale + offset_x - mid_x) , (eev->y - offset_y + maincanvasOy) * current_scale + offset_y - mid_y);
 
-        find_cell_pos((eev->x - offset_x + maincanvasOx) * current_scale + offset_x, (eev->y - offset_y + maincanvasOy) * current_scale + offset_y);
+        find_cell_pos((eev->x - offset_x + maincanvasOx) * current_scale + offset_x - mid_x, (eev->y - offset_y + maincanvasOy) * current_scale + offset_y - mid_y);
 
         // for(i = 0; i < comphash_size; i++)
         // {
@@ -778,11 +798,11 @@ gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer data)
 
         if(show_wires == 1)
         {
-            printf("INFO: Disable internal wires of design\n");
+            printf(ANSI_COLOR_BLUE "INFO: Disable internal wires of design\n" ANSI_COLOR_RESET);
         }
         else
         {
-            printf("INFO: Enable internal wires of design\n");
+            printf(ANSI_COLOR_BLUE "INFO: Enable internal wires of design\n" ANSI_COLOR_RESET);
         }
 
         return TRUE; // Event handled
@@ -803,11 +823,34 @@ gboolean on_key_press_IOs(GtkWidget *widget, GdkEventKey *event, gpointer data)
 
         if(show_wires_IOs == 1)
         {
-            printf("INFO: Disable IOs wires of design\n");
+            printf(ANSI_COLOR_BLUE "INFO: Disable IOs wires of design\n" ANSI_COLOR_RESET);
         }
         else
         {
-            printf("INFO: Enable IOs wires of design\n");
+            printf(ANSI_COLOR_BLUE "INFO: Enable IOs wires of design\n" ANSI_COLOR_RESET);
+        }
+
+        return TRUE; // Event handled
+    }
+
+    return FALSE; // Event not handled
+}
+
+// Callback function to handle key press events
+gboolean on_key_press_hide_rows(GtkWidget *widget, GdkEventKey *event, gpointer data) 
+{
+    // Check if the Shift key is held down and 'W' is pressed
+    if ((event->state & GDK_CONTROL_MASK) && (event->keyval == GDK_r || event->keyval == GDK_R) ) 
+    {
+        show_rows = !show_rows;
+
+        if(show_wires_IOs == 1)
+        {
+            printf(ANSI_COLOR_BLUE "INFO: Disable Rows of design\n" ANSI_COLOR_RESET);
+        }
+        else
+        {
+            printf(ANSI_COLOR_BLUE "INFO: Enable Rows of design\n" ANSI_COLOR_RESET);
         }
 
         return TRUE; // Event handled
@@ -905,6 +948,7 @@ void start_gui()
     // Connect the key press event to the callback function
     g_signal_connect(mainwindow, "key-press-event", G_CALLBACK(on_key_press), NULL);
     g_signal_connect(mainwindow, "key-press-event", G_CALLBACK(on_key_press_IOs), NULL);
+    g_signal_connect(mainwindow, "key-press-event", G_CALLBACK(on_key_press_hide_rows), NULL);
 
     // // Create the menu
     // GtkWidget *menu_bar = create_menu();
