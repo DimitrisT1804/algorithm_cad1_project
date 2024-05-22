@@ -730,6 +730,9 @@ void create_laplacian_matrix()
 
     gsl_vector *x = gsl_vector_alloc(comphash_size - 1);
     gsl_vector *y = gsl_vector_alloc(comphash_size - 1);
+    gsl_vector_set_zero(x);
+    gsl_vector_set_zero(y);
+
     gsl_splinalg_itersolve *solver = gsl_splinalg_itersolve_alloc(gsl_splinalg_itersolve_gmres, comphash_size - 1, 0);
 
     laplacian_matrix = gsl_spmatrix_alloc(comphash_size - 1, comphash_size - 1);
@@ -845,10 +848,9 @@ void create_laplacian_matrix()
     printf("\n\nvector io_locationy:\n");
     gsl_vector_fprintf(stdout, io_locationy, "%g");
 
-    gsl_spmatrix *laplacian_matrix_csr = gsl_spmatrix_alloc_nzmax(comphash_size - 1, comphash_size - 1, comphash_size - 1, GSL_SPMATRIX_CSR);
+    // gsl_spmatrix *laplacian_matrix_csr = gsl_spmatrix_alloc_nzmax(comphash_size - 1, comphash_size - 1, comphash_size - 1, GSL_SPMATRIX_CSR);
 
-    laplacian_matrix_csr = gsl_spmatrix_compcol(laplacian_matrix);
-
+    // laplacian_matrix_csr = gsl_spmatrix_compcol(laplacian_matrix);
 
     int status;
     double tol = 1e-7;
@@ -856,7 +858,7 @@ void create_laplacian_matrix()
 
     do 
     {
-        status = gsl_splinalg_itersolve_iterate(laplacian_matrix_csr, io_locationx, tol, x, solver);
+        status = gsl_splinalg_itersolve_iterate(laplacian_matrix, io_locationx, tol, x, solver);
         iter++;
     }
     while (status == GSL_CONTINUE && iter < max_iter);
@@ -882,7 +884,7 @@ void create_laplacian_matrix()
 
     do 
     {
-        status = gsl_splinalg_itersolve_iterate(laplacian_matrix_csr, io_locationy, tol, y, solver);
+        status = gsl_splinalg_itersolve_iterate(laplacian_matrix, io_locationy, tol, y, solver);
         iter++;
     }
     while (status == GSL_CONTINUE && iter < max_iter);
@@ -919,7 +921,7 @@ void create_laplacian_matrix()
     gsl_vector_free(x);
     gsl_vector_free(y);
     gsl_spmatrix_free(laplacian_matrix);
-    gsl_spmatrix_free(laplacian_matrix_csr);
+    // gsl_spmatrix_free(laplacian_matrix_csr);
     gsl_vector_free(io_locationx);
     gsl_vector_free(io_locationy);
 }
