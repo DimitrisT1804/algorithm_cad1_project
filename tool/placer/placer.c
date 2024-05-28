@@ -342,6 +342,186 @@ void calculate_hpwl_new(double *net_hpwl, double *IO_hpwl, double *total_hpwl)
     *total_hpwl = *net_hpwl + *IO_hpwl;
 }
 
+void calculate_hpwl_pararel(double *net_hpwl, double *IO_hpwl, double *total_hpwl)
+{
+    double max_x, max_y, min_x, min_y;
+    int chash, cdepth, ghash, gdepth;
+    int ghash_connection, gdepth_connection, chash_connection, cdepth_connection;
+    int lhash, ldepth, lhash_connection, ldepth_connection;
+    int k;
+    double dest_location_x, dest_location_y;
+    double local_net_hpwl = 0.0;
+    double local_IO_hpwl = 0.0;
+
+    #pragma omp parallel for private(gdepth, max_x, max_y, min_x, min_y, chash, cdepth, lhash, ldepth, k, ghash_connection, gdepth_connection, chash_connection, cdepth_connection, lhash_connection, ldepth_connection, dest_location_x, dest_location_y) reduction(+:local_net_hpwl,local_IO_hpwl)
+    for (ghash = 0; ghash < gatepinhash_size; ghash++)
+    {
+        for (gdepth = 0; gdepth < HASHDEPTH; gdepth++)
+        {
+            if (gatepinhash[ghash].hashpresent[gdepth] == 0)
+            {
+                continue;
+            }
+
+            if (gatepinhash[ghash].type[gdepth] == WIRE)
+            {
+                chash = gatepinhash[ghash].parentComponent[gdepth];
+                cdepth = gatepinhash[ghash].parentComponentDepth[gdepth];
+
+                lhash = comphash[chash].lib_type[cdepth];
+                ldepth = comphash[chash].lib_type_depth[cdepth];
+
+                max_x = compslocation[chash].x[cdepth] + (libhash[lhash].width[ldepth] / 2.0);
+                max_y = compslocation[chash].y[cdepth] + (libhash[lhash].height[ldepth] / 2.0);
+                min_x = compslocation[chash].x[cdepth] + (libhash[lhash].width[ldepth] / 2.0);
+                min_y = compslocation[chash].y[cdepth] + (libhash[lhash].height[ldepth] / 2.0);
+
+                for (k = 0; k < gatepinhash[ghash].connections_size[gdepth]; k++)
+                {
+                    ghash_connection = gatepinhash[ghash].pinConn[gdepth][k];
+                    gdepth_connection = gatepinhash[ghash].pinConnDepth[gdepth][k];
+
+                    chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
+                    cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
+
+                    lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
+                    ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
+
+                    dest_location_x = compslocation[chash_connection].x[cdepth_connection] + (libhash[lhash_connection].width[ldepth_connection] / 2.0);
+                    dest_location_y = compslocation[chash_connection].y[cdepth_connection] + (libhash[lhash_connection].height[ldepth_connection] / 2.0);
+
+                    if (dest_location_x > max_x)
+                    {
+                        max_x = dest_location_x;
+                    }
+                    if (dest_location_y > max_y)
+                    {
+                        max_y = dest_location_y;
+                    }
+                    if (dest_location_x < min_x)
+                    {
+                        min_x = dest_location_x;
+                    }
+                    if (dest_location_y < min_y)
+                    {
+                        min_y = dest_location_y;
+                    }
+                }
+
+                local_net_hpwl += fabs(max_x - min_x) + fabs(max_y - min_y);
+            }
+            else if (gatepinhash[ghash].type[gdepth] == IO_TYPE)
+            {
+                max_x = gatepinhash[ghash].location_x[gdepth];
+                max_y = gatepinhash[ghash].location_y[gdepth];
+                min_x = gatepinhash[ghash].location_x[gdepth];
+                min_y = gatepinhash[ghash].location_y[gdepth];
+
+                for (k = 0; k < gatepinhash[ghash].connections_size[gdepth]; k++)
+                {
+                    ghash_connection = gatepinhash[ghash].pinConn[gdepth][k];
+                    gdepth_connection = gatepinhash[ghash].pinConnDepth[gdepth][k];
+
+                    if (gatepinhash[ghash_connection].type[gdepth_connection] == IO_TYPE)
+                    {
+                        continue;
+                    }
+
+                    chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
+                    cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
+
+                    lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
+                    ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
+
+                    dest_location_x = compslocation[chash_connection].x[cdepth_connection] + (libhash[lhash_connection].width[ldepth_connection] / 2.0);
+                    dest_location_y = compslocation[chash_connection].y[cdepth_connection] + (libhash[lhash_connection].height[ldepth_connection] / 2.0);
+
+                    if (dest_location_x > max_x)
+                    {
+                        max_x = dest_location_x;
+                    }
+                    if (dest_location_y > max_y)
+                    {
+                        max_y = dest_location_y;
+                    }
+                    if (dest_location_x < min_x)
+                    {
+                        min_x = dest_location_x;
+                    }
+                    if (dest_location_y < min_y)
+                    {
+                        min_y = dest_location_y;
+                    }
+                }
+                local_IO_hpwl += fabs(max_x - min_x) + fabs(max_y - min_y);
+            }
+            else if (gatepinhash[ghash].type[gdepth] == PO)
+            {
+                max_x = gatepinhash[ghash].location_x[gdepth];
+                max_y = gatepinhash[ghash].location_y[gdepth];
+                min_x = gatepinhash[ghash].location_x[gdepth];
+                min_y = gatepinhash[ghash].location_y[gdepth];
+
+                for (k = 0; k < gatepinhash[ghash].connections_size[gdepth]; k++)
+                {
+                    int is_output = 0;
+
+                    ghash_connection = gatepinhash[ghash].pinConn[gdepth][k];
+                    gdepth_connection = gatepinhash[ghash].pinConnDepth[gdepth][k];
+
+                    is_output = check_gatepin_type(ghash_connection, gdepth_connection);
+
+                    if (is_output == -1) // it is input //
+                    {
+                        continue;
+                    }
+
+                    if (gatepinhash[ghash_connection].type[gdepth_connection] == IO_TYPE)
+                    {
+                        continue;
+                    }
+
+                    chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
+                    cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
+
+                    lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
+                    ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
+
+                    dest_location_x = compslocation[chash_connection].x[cdepth_connection] + (libhash[lhash_connection].width[ldepth_connection] / 2.0);
+                    dest_location_y = compslocation[chash_connection].y[cdepth_connection] + (libhash[lhash_connection].height[ldepth_connection] / 2.0);
+
+                    if (dest_location_x > max_x)
+                    {
+                        max_x = dest_location_x;
+                    }
+                    if (dest_location_y > max_y)
+                    {
+                        max_y = dest_location_y;
+                    }
+                    if (dest_location_x < min_x)
+                    {
+                        min_x = dest_location_x;
+                    }
+                    if (dest_location_y < min_y)
+                    {
+                        min_y = dest_location_y;
+                    }
+                }
+                local_IO_hpwl += fabs(max_x - min_x) + fabs(max_y - min_y);
+            }
+        }
+    }
+
+    #pragma omp critical
+    {
+        *net_hpwl += local_net_hpwl;
+        *IO_hpwl += local_IO_hpwl;
+    }
+
+    *total_hpwl = *net_hpwl + *IO_hpwl;
+}
+
+
 // void create_array_A()
 // {
 //     int i;
@@ -852,57 +1032,139 @@ void create_laplacian_matrix()
 
     // laplacian_matrix_csr = gsl_spmatrix_compcol(laplacian_matrix);
 
-    int status;
+    // int status;
+    // double tol = 1e-7;
+    // size_t iter = 0, max_iter = 10000;
+
+    // do 
+    // {
+    //     status = gsl_splinalg_itersolve_iterate(laplacian_matrix, io_locationx, tol, x, solver);
+    //     iter++;
+
+    //     for(i = 0; i < comphash_size - 2; i++)
+    //     {
+    //         get_component_from_value(i, &chash, &cdepth);
+    //         if(cdepth == -1)
+    //         {
+    //             printf("Error: component not found\n");
+    //             exit(1);
+    //         }
+
+    //         compslocation[chash].x[cdepth] = gsl_vector_get(x, i);
+    //         // compslocation[chash].y[cdepth] = gsl_vector_get(y, i);
+    //     }
+    // }
+    // while (status == GSL_CONTINUE && iter < max_iter);
+
+    // if (status == GSL_SUCCESS) 
+    // {
+    //     printf("Converged after %zu iterations.\n", iter);
+    //     for (size_t i = 0; i < comphash_size - 1; i++) 
+    //     {
+    //         printf("x_%zu = %g\n", i, gsl_vector_get(x, i));
+    //     }
+    // } 
+    // else 
+    // {
+    //     printf("x solution Failed to converge. and status is %d, and iter is %zu \n", status, iter);
+
+    //     return;
+    // }
+
+    // tol = 1e-7;
+    // iter = 0;
+    // max_iter = 10000;
+
+    // do 
+    // {
+    //     status = gsl_splinalg_itersolve_iterate(laplacian_matrix, io_locationy, tol, y, solver);
+    //     iter++;
+    // }
+    // while (status == GSL_CONTINUE && iter < max_iter);
+
+    // if (status == GSL_SUCCESS) 
+    // {
+    //     printf("Converged after %zu iterations.\n", iter);
+    //     for (size_t i = 0; i < comphash_size - 1; i++) 
+    //     {
+    //         printf("y_%zu = %g\n", i, gsl_vector_get(x, i));
+    //     }
+    // } 
+    // else 
+    // {
+    //     printf("y solution Failed to converge.\n");
+
+    //     return; 
+    // }
+
+    // for(i = 0; i < comphash_size - 2; i++)
+    // {
+    //     get_component_from_value(i, &chash, &cdepth);
+    //     if(cdepth == -1)
+    //     {
+    //         printf("Error: component not found\n");
+    //         exit(1);
+    //     }
+
+    //     compslocation[chash].x[cdepth] = gsl_vector_get(x, i);
+    //     compslocation[chash].y[cdepth] = gsl_vector_get(y, i);
+    // }
+
+    run_parallel_iterations();
+
+    gsl_splinalg_itersolve_free(solver);
+    gsl_vector_free(x);
+    gsl_vector_free(y);
+    gsl_spmatrix_free(laplacian_matrix);
+    // gsl_spmatrix_free(laplacian_matrix_csr);
+    gsl_vector_free(io_locationx);
+    gsl_vector_free(io_locationy);
+}
+
+
+void solve_array_parallel(gsl_spmatrix *matrix, gsl_vector *input, gsl_vector *output) 
+{
+    gsl_splinalg_itersolve *solver = gsl_splinalg_itersolve_alloc(gsl_splinalg_itersolve_gmres, comphash_size - 1, 0);
     double tol = 1e-7;
+    int status;
     size_t iter = 0, max_iter = 10000;
 
-    do 
-    {
-        status = gsl_splinalg_itersolve_iterate(laplacian_matrix, io_locationx, tol, x, solver);
+    do
+     {
+        status = gsl_splinalg_itersolve_iterate(matrix, input, tol, output, solver);
         iter++;
-    }
+    } 
     while (status == GSL_CONTINUE && iter < max_iter);
 
-    if (status == GSL_SUCCESS) 
+    gsl_splinalg_itersolve_free(solver);
+}
+
+void run_parallel_iterations() 
+{
+    int status_x, status_y;
+    int i;
+    size_t comphash_size_minus_one = comphash_size - 1;
+    int chash;
+    int cdepth; 
+
+    gsl_vector *x = gsl_vector_alloc(comphash_size - 1);
+    gsl_vector *y = gsl_vector_alloc(comphash_size - 1);
+    gsl_vector_set_zero(x);
+    gsl_vector_set_zero(y);
+
+    #pragma omp parallel sections
     {
-        printf("Converged after %zu iterations.\n", iter);
-        for (size_t i = 0; i < comphash_size - 1; i++) 
+        #pragma omp section
         {
-            printf("x_%zu = %g\n", i, gsl_vector_get(x, i));
+            solve_array_parallel(laplacian_matrix, io_locationx, x);
         }
-    } 
-    else 
-    {
-        printf("x solution Failed to converge. and status is %d, and iter is %zu \n", status, iter);
 
-        return;
-    }
-
-    tol = 1e-7;
-    iter = 0;
-    max_iter = 10000;
-
-    do 
-    {
-        status = gsl_splinalg_itersolve_iterate(laplacian_matrix, io_locationy, tol, y, solver);
-        iter++;
-    }
-    while (status == GSL_CONTINUE && iter < max_iter);
-
-    if (status == GSL_SUCCESS) 
-    {
-        printf("Converged after %zu iterations.\n", iter);
-        for (size_t i = 0; i < comphash_size - 1; i++) 
+        #pragma omp section
         {
-            printf("y_%zu = %g\n", i, gsl_vector_get(x, i));
+            solve_array_parallel(laplacian_matrix, io_locationy, y);
         }
-    } 
-    else 
-    {
-        printf("y solution Failed to converge.\n");
-
-        return; 
     }
+
 
     for(i = 0; i < comphash_size - 2; i++)
     {
@@ -916,12 +1178,4 @@ void create_laplacian_matrix()
         compslocation[chash].x[cdepth] = gsl_vector_get(x, i);
         compslocation[chash].y[cdepth] = gsl_vector_get(y, i);
     }
-
-    gsl_splinalg_itersolve_free(solver);
-    gsl_vector_free(x);
-    gsl_vector_free(y);
-    gsl_spmatrix_free(laplacian_matrix);
-    // gsl_spmatrix_free(laplacian_matrix_csr);
-    gsl_vector_free(io_locationx);
-    gsl_vector_free(io_locationy);
 }

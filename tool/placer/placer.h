@@ -1,5 +1,9 @@
 #include <stdio.h>
+#include <omp.h>
 #include <math.h>
+#include <stdlib.h>
+#include <time.h>
+#include <unistd.h>
 #include "../structs/structs.h"
 
 #include <gsl/gsl_matrix.h>
@@ -23,10 +27,13 @@ double calculate_HPWL();
 double random_double(double, double);
 void random_placer();
 void calculate_hpwl_new(double *, double *, double *);
+void calculate_hpwl_pararel(double *, double *, double *);
 // void create_array_A();
 // void calculate_degree_matrix(int IO_size);
 // void spmatrix_sub();
 // void create_pin_vectors();
 // void solve_linear_system();
 void create_laplacian_matrix();
+void run_parallel_iterations();
+void solve_array_parallel(gsl_spmatrix *matrix, gsl_vector *input, gsl_vector *output);
 
