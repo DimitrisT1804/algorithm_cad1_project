@@ -1358,7 +1358,7 @@ int call_parser(char *input_file)
 
     scale = (600.0 / (coresite->core_height));
 
-    printf("scale is %lf\n", scale);
+    // printf("scale is %lf\n", scale);
 
     printf(ANSI_COLOR_BLUE "####### Summary of Design: %s #######\n" ANSI_COLOR_RESET, input_file);
     printf(ANSI_COLOR_GREEN "Components: %d\n" ANSI_COLOR_RESET, count);

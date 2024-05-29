@@ -2528,6 +2528,7 @@ int main(int argc, char *argv[])
     int hideguiindex = 0;
     int helpindex = 0;
     int findex = 0;
+    char *command = NULL;
 
     // pthread_create(&tcl_thread, NULL, main_tcl, NULL);
     // pthread_join(tcl_thread, NULL);
@@ -2569,6 +2570,19 @@ int main(int argc, char *argv[])
         main_tcl(NULL);
         
         gdk_threads_leave();
+    }
+
+    if(findex != 0)
+    {
+        if(argv[findex + 1] != NULL)
+        {
+            command = my_calloc(strlen(argv[findex + 1]) + strlen("read_design "), sizeof(char));
+            sprintf(command, "read_design %s", argv[findex + 1]);
+            Tcl_Eval(interp, command);
+
+            free (command);
+            command = NULL;
+        }
     }
 
     // pthread_join(gui_thread, NULL);

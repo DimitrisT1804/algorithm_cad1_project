@@ -153,8 +153,8 @@ void random_placer()
                 continue;
             }
 
-            compslocation[i].x[j] = random_double(0, (coresite[0].core_width - max_cell_width) );
-            compslocation[i].y[j] = random_double(0, (coresite[0].core_height - max_cell_height) );
+            compslocation[i].x[j] = random_double(0, (coresite->core_width - max_cell_width) );
+            compslocation[i].y[j] = random_double(0, (coresite->core_height - max_cell_height) );
         }
     }
 }
@@ -198,10 +198,10 @@ void calculate_hpwl_new(double *net_hpwl, double *IO_hpwl, double *total_hpwl)
                 lhash = comphash[chash].lib_type[cdepth];
                 ldepth = comphash[chash].lib_type_depth[cdepth];
 
-                max_x = compslocation[chash].x[cdepth] + (libhash[lhash].width[ldepth] / 2.0);
-                max_y = compslocation[chash].y[cdepth] + (libhash[lhash].height[ldepth] / 2.0);
-                min_x = compslocation[chash].x[cdepth] + (libhash[lhash].width[ldepth] / 2.0);
-                min_y = compslocation[chash].y[cdepth] + (libhash[lhash].height[ldepth] / 2.0);
+                max_x = compslocation[chash].x[cdepth];
+                max_y = compslocation[chash].y[cdepth];
+                min_x = compslocation[chash].x[cdepth];
+                min_y = compslocation[chash].y[cdepth];
 
                 for(k = 0; k < gatepinhash[ghash].connections_size[gdepth]; k++)
                 {
@@ -214,8 +214,8 @@ void calculate_hpwl_new(double *net_hpwl, double *IO_hpwl, double *total_hpwl)
                     lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
                     ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
 
-                    dest_location_x = compslocation[chash_connection].x[cdepth_connection] + (libhash[lhash_connection].width[ldepth_connection] / 2.0);
-                    dest_location_y = compslocation[chash_connection].y[cdepth_connection] + (libhash[lhash_connection].height[ldepth_connection] / 2.0);
+                    dest_location_x = compslocation[chash_connection].x[cdepth_connection];
+                    dest_location_y = compslocation[chash_connection].y[cdepth_connection];
 
                     if(dest_location_x > max_x)
                     {
@@ -260,9 +260,8 @@ void calculate_hpwl_new(double *net_hpwl, double *IO_hpwl, double *total_hpwl)
                     lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
                     ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
 
-                    dest_location_x = compslocation[chash_connection].x[cdepth_connection] + (libhash[lhash_connection].width[ldepth_connection] / 2.0);
-                    dest_location_y = compslocation[chash_connection].y[cdepth_connection] + (libhash[lhash_connection].height[ldepth_connection] / 2.0);
-
+                    dest_location_x = compslocation[chash_connection].x[cdepth_connection];
+                    dest_location_y = compslocation[chash_connection].y[cdepth_connection];
                     if(dest_location_x > max_x)
                     {
                         max_x = dest_location_x;
@@ -314,8 +313,8 @@ void calculate_hpwl_new(double *net_hpwl, double *IO_hpwl, double *total_hpwl)
                     lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
                     ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
 
-                    dest_location_x = compslocation[chash_connection].x[cdepth_connection] + (libhash[lhash_connection].width[ldepth_connection] / 2.0);
-                    dest_location_y = compslocation[chash_connection].y[cdepth_connection] + (libhash[lhash_connection].height[ldepth_connection] / 2.0);
+                    dest_location_x = compslocation[chash_connection].x[cdepth_connection];
+                    dest_location_y = compslocation[chash_connection].y[cdepth_connection];
 
                     if(dest_location_x > max_x)
                     {
@@ -368,13 +367,10 @@ void calculate_hpwl_pararel(double *net_hpwl, double *IO_hpwl, double *total_hpw
                 chash = gatepinhash[ghash].parentComponent[gdepth];
                 cdepth = gatepinhash[ghash].parentComponentDepth[gdepth];
 
-                lhash = comphash[chash].lib_type[cdepth];
-                ldepth = comphash[chash].lib_type_depth[cdepth];
-
-                max_x = compslocation[chash].x[cdepth] + (libhash[lhash].width[ldepth] / 2.0);
-                max_y = compslocation[chash].y[cdepth] + (libhash[lhash].height[ldepth] / 2.0);
-                min_x = compslocation[chash].x[cdepth] + (libhash[lhash].width[ldepth] / 2.0);
-                min_y = compslocation[chash].y[cdepth] + (libhash[lhash].height[ldepth] / 2.0);
+                max_x = compslocation[chash].x[cdepth];
+                max_y = compslocation[chash].y[cdepth];
+                min_x = compslocation[chash].x[cdepth];
+                min_y = compslocation[chash].y[cdepth];
 
                 for (k = 0; k < gatepinhash[ghash].connections_size[gdepth]; k++)
                 {
@@ -384,11 +380,8 @@ void calculate_hpwl_pararel(double *net_hpwl, double *IO_hpwl, double *total_hpw
                     chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
                     cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
 
-                    lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
-                    ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
-
-                    dest_location_x = compslocation[chash_connection].x[cdepth_connection] + (libhash[lhash_connection].width[ldepth_connection] / 2.0);
-                    dest_location_y = compslocation[chash_connection].y[cdepth_connection] + (libhash[lhash_connection].height[ldepth_connection] / 2.0);
+                    dest_location_x = compslocation[chash_connection].x[cdepth_connection];
+                    dest_location_y = compslocation[chash_connection].y[cdepth_connection];
 
                     if (dest_location_x > max_x)
                     {
@@ -430,11 +423,8 @@ void calculate_hpwl_pararel(double *net_hpwl, double *IO_hpwl, double *total_hpw
                     chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
                     cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
 
-                    lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
-                    ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
-
-                    dest_location_x = compslocation[chash_connection].x[cdepth_connection] + (libhash[lhash_connection].width[ldepth_connection] / 2.0);
-                    dest_location_y = compslocation[chash_connection].y[cdepth_connection] + (libhash[lhash_connection].height[ldepth_connection] / 2.0);
+                    dest_location_x = compslocation[chash_connection].x[cdepth_connection];
+                    dest_location_y = compslocation[chash_connection].y[cdepth_connection];
 
                     if (dest_location_x > max_x)
                     {
@@ -484,12 +474,8 @@ void calculate_hpwl_pararel(double *net_hpwl, double *IO_hpwl, double *total_hpw
                     chash_connection = gatepinhash[ghash_connection].parentComponent[gdepth_connection];
                     cdepth_connection = gatepinhash[ghash_connection].parentComponentDepth[gdepth_connection];
 
-                    lhash_connection = comphash[chash_connection].lib_type[cdepth_connection];
-                    ldepth_connection = comphash[chash_connection].lib_type_depth[cdepth_connection];
-
-                    dest_location_x = compslocation[chash_connection].x[cdepth_connection] + (libhash[lhash_connection].width[ldepth_connection] / 2.0);
-                    dest_location_y = compslocation[chash_connection].y[cdepth_connection] + (libhash[lhash_connection].height[ldepth_connection] / 2.0);
-
+                    dest_location_x = compslocation[chash_connection].x[cdepth_connection];
+                    dest_location_y = compslocation[chash_connection].y[cdepth_connection];
                     if (dest_location_x > max_x)
                     {
                         max_x = dest_location_x;

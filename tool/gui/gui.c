@@ -212,8 +212,6 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
     }
     else if(design_is_placed == 1)
     {
-        // gtk_widget_set_size_request(maincanvas, translate_um_to_pixels(coresite->core_height) + 20, translate_um_to_pixels(coresite->core_width) + 20);
-
         mid_x = (850.0 - translate_um_to_pixels(coresite->core_width)) / 2.0;
         mid_y = (650.0 - translate_um_to_pixels(coresite->core_height)) / 2.0;
 
@@ -221,9 +219,6 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
 
         cairo_set_source_rgb(maincanvas_cs, 0.0, 0.0, 0.0);
         cairo_paint(maincanvas_cs);
-        
-
-        // cairo_scale(maincanvas_cs, 650.0 / translate_um_to_pixels(coresite->core_height), 650.0 / translate_um_to_pixels(coresite->core_height));  
 
         double height_scale = 650.0 / translate_um_to_pixels(coresite->core_height);
 
@@ -258,8 +253,7 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
                 {
                     int lhash, ldepth;
                     double cell_width, cell_height;
-
-                    
+  
                     if(highlighted_component != NULL && strcmp(comphash[i].name[j], highlighted_component) == 0)
                     {
                         cairo_set_source_rgb(maincanvas_cs, 7.0 / 255.0, 243.0 /255.0, 227.0 / 255.0);
@@ -326,7 +320,7 @@ static void maincanvaspaint(GtkWidget *widget, GdkEventExpose *event, gpointer d
                         cairo_fill(maincanvas_cs);
 
                         cairo_set_source_rgb(maincanvas_cs, 252.0 / 255.0, 109.0 / 255.0, 0);
-                        cairo_rectangle(maincanvas_cs, (translate_um_to_pixels(gatepinhash[i].location_x[j]) - offset_x + maincanvasOx) * current_scale + offset_x, (translate_um_to_pixels(gatepinhash[i].location_y[j]) - offset_y + maincanvasOy) * current_scale + offset_y, 5 * current_scale, 2 * current_scale); 
+                        cairo_rectangle(maincanvas_cs, (translate_um_to_pixels(gatepinhash[i].location_x[j]) - offset_x + maincanvasOx) * current_scale + offset_x, (translate_um_to_pixels(gatepinhash[i].location_y[j]) - offset_y + maincanvasOy) * current_scale + offset_y, 10 * current_scale, 2 * current_scale); 
 
                         cairo_stroke(maincanvas_cs);
                     }
@@ -640,7 +634,7 @@ static void mousebutton(GtkWidget *widget, GdkEventButton *eev, gpointer data)
     if (eev->button == 1) // Left Mouse Button //
     {
         // code here //
-        printf("Mouse location: X: %f, Y: %f\n", ( (eev->x - offset_x + maincanvasOx) * current_scale + offset_x - mid_x) , (eev->y - offset_y + maincanvasOy) * current_scale + offset_y - mid_y);
+        // printf("Mouse location: X: %f, Y: %f\n", ( (eev->x - offset_x + maincanvasOx) * current_scale + offset_x - mid_x) , (eev->y - offset_y + maincanvasOy) * current_scale + offset_y - mid_y);
 
         find_cell_pos((eev->x - offset_x + maincanvasOx) * current_scale + offset_x - mid_x, (eev->y - offset_y + maincanvasOy) * current_scale + offset_y - mid_y);
 
